@@ -26,23 +26,29 @@ public class MemberEntity {
     private String memberName;
 
     @Column
-    private String memberBirth;
-
-    @Column
-    private String memberPNum;
+    private String memberPnum;
 
     @Column
     private String memberEmail;
 
+    @Column
+    private String memberBirth;
+
+    @Column
+    private String memberGender;
+
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();
+
         memberEntity.setId(memberDTO.getId());
         memberEntity.setMemberId(memberDTO.getMemberId());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
-        memberEntity.setMemberPNum(memberDTO.getMemberPNum());
+        memberEntity.setMemberPnum(memberDTO.getMemberPnum());
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
+        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
+        memberEntity.setMemberGender(memberDTO.getMemberGender());
+
         return memberEntity;
     }
 }
