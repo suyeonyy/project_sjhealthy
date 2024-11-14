@@ -1,4 +1,4 @@
-package com.example.sjhealthy.controller.common;
+package com.example.sjhealthy.controller.member;
 
 import org.springframework.stereotype.Controller;
 

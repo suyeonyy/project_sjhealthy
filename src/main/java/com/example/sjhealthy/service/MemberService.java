@@ -14,9 +14,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberDTO login(MemberDTO memberDTO) {
-        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberEmail());
+        //DB에 계정이 있는지 확인
+        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
+        
         if (byMemberId.isPresent()){
-            MemberEntity memberEntity = byMemberId.get();
+            MemberEntity memberEntity = byMemberId.get(); //get: Optional 껍데기 벗기기?
+
             if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())){
                 // 비밀번호 일치
                 // entity -> dto 변환 후 리턴
