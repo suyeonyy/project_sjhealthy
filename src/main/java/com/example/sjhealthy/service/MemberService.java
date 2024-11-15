@@ -29,9 +29,4 @@ public class MemberService {
             return null;
         }
     }
-/*
-    public MemberDTO join(MemberDTO memberDTO){
-
-    }
- */
 }

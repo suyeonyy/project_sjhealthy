@@ -1,4 +1,4 @@
-package com.example.sjhealthy.controller.common;
+package com.example.sjhealthy.controller.member;
 
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.service.MemberService;
