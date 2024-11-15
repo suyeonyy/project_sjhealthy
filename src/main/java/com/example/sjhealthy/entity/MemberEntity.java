@@ -2,7 +2,6 @@ package com.example.sjhealthy.entity;
 
 import com.example.sjhealthy.dto.MemberDTO;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +10,14 @@ import lombok.Setter;
 @Setter
 @Table(name = "member_table")
 public class MemberEntity {
+    /*
+    @Id // pk 지정
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    private Long id;
+     */
+
+    //@Column(unique = true) // 제약조건 추가
+
 //
 //    @Id // pk 지정
 //    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
@@ -39,6 +46,15 @@ public class MemberEntity {
     private String memberGender;
 
     @Column
+    private String memberEmail;
+
+    @Column
+    private String memberBirth;
+
+    @Column
+    private String memberGender;
+
+    @Column
     private String auth;
 
     @Column
@@ -55,8 +71,6 @@ public class MemberEntity {
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
         memberEntity.setMemberBirth(memberDTO.getMemberBirth());
         memberEntity.setMemberGender(memberDTO.getMemberGender());
-        memberEntity.setAuth(memberDTO.getAuth());
-        memberEntity.setIsExist(memberDTO.getIsExist());
 
         return memberEntity;
     }
