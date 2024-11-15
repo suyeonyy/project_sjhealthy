@@ -17,6 +17,14 @@ public class MemberEntity {
      */
 
     //@Column(unique = true) // 제약조건 추가
+
+//
+//    @Id // pk 지정
+//    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+//    private String id;
+
+    @Id
+//    @Column(unique = true) // 제약조건 추가
     private String memberId;
 
     @Column
@@ -36,6 +44,22 @@ public class MemberEntity {
 
     @Column
     private String memberGender;
+
+    @Column
+    private String memberEmail;
+
+    @Column
+    private String memberBirth;
+
+    @Column
+    private String memberGender;
+
+    @Column
+    private String auth;
+
+    @Column
+    private String IsExist;
+
 
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();
