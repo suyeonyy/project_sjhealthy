@@ -8,9 +8,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class MainController {
 
     @RequestMapping("/sjhealthy")
-    @ResponseBody
     public String index() {
         System.out.println("index");
-        return "index2";
+        return "main";
     }
 }
