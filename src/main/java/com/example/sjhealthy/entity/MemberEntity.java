@@ -10,8 +10,13 @@ import lombok.Setter;
 @Setter
 @Table(name = "member_table")
 public class MemberEntity {
+    /*
+    @Id // pk 지정
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    private Long id;
+     */
 
-    @Column(unique = true) // 제약조건 추가
+    //@Column(unique = true) // 제약조건 추가
     private String memberId;
 
     @Column
@@ -21,26 +26,28 @@ public class MemberEntity {
     private String memberName;
 
     @Column
-    private String memberBirth;
-
-    @Column
-    private String memberPNum;
+    private String memberPnum;
 
     @Column
     private String memberEmail;
 
     @Column
-    private String auth;
+    private String memberBirth;
+
+    @Column
+    private String memberGender;
 
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();
+
         memberEntity.setMemberId(memberDTO.getMemberId());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
-        memberEntity.setMemberPNum(memberDTO.getMemberPNum());
+        memberEntity.setMemberPnum(memberDTO.getMemberPnum());
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
-        memberEntity.setAuth(memberDTO.getAuth());
+        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
+        memberEntity.setMemberGender(memberDTO.getMemberGender());
+
         return memberEntity;
     }
 }
