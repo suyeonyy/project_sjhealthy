@@ -46,15 +46,6 @@ public class MemberEntity {
     private String memberGender;
 
     @Column
-    private String memberEmail;
-
-    @Column
-    private String memberBirth;
-
-    @Column
-    private String memberGender;
-
-    @Column
     private String auth;
 
     @Column
