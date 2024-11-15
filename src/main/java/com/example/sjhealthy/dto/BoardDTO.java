@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @ToString
 public class BoardDTO {
-    private String boardId;
+    private Long boardId;
     private String memberId;
     private int boardViews;
     private String boardContent;
