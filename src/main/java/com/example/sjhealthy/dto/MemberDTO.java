@@ -19,7 +19,7 @@ public class MemberDTO { //회원 정보에 필요한 내용 필드로 정의
 
     public static MemberDTO toMemberDTO(MemberEntity memberEntity){
         MemberDTO memberDTO = new MemberDTO();
-        memberDTO.setId(memberEntity.getId());
+
         memberDTO.setMemberId(memberEntity.getMemberId());
         memberDTO.setMemberPassword(memberEntity.getMemberPassword());
         memberDTO.setMemberName(memberEntity.getMemberName());
@@ -27,6 +27,7 @@ public class MemberDTO { //회원 정보에 필요한 내용 필드로 정의
         memberDTO.setMemberPNum(memberEntity.getMemberPNum());
         memberDTO.setMemberEmail(memberEntity.getMemberEmail());
         memberDTO.setAuth(memberEntity.getAuth());
+
         return memberDTO;
     }
 }

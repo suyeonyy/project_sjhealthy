@@ -29,7 +29,7 @@ public class JoinController {
     public String join(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         System.out.println("회원가입@@@@@@@@@@@");
 
-        MemberDTO joinResult = memberService.join(memberDTO);
+        //MemberDTO joinResult = memberService.join(memberDTO);
         
         
         return "login";
