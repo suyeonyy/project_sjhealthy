@@ -37,10 +37,16 @@ public class MemberEntity {
     @Column
     private String memberGender;
 
+    @Column
+    private String auth;
+
+    @Column
+    private String IsExist;
+
+
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();
 
-        memberEntity.setId(memberDTO.getId());
         memberEntity.setMemberId(memberDTO.getMemberId());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
@@ -48,6 +54,8 @@ public class MemberEntity {
         memberEntity.setMemberEmail(memberDTO.getMemberEmail());
         memberEntity.setMemberBirth(memberDTO.getMemberBirth());
         memberEntity.setMemberGender(memberDTO.getMemberGender());
+        memberEntity.setAuth(memberDTO.getAuth());
+        memberEntity.setIsExist(memberDTO.getIsExist());
 
         return memberEntity;
     }
