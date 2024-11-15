@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class MemberDTO {
-    private Long id; //pk
     private String memberId; //계정
     private String memberPassword; //패스워드
     private String memberName; //사용자 명
@@ -21,7 +20,6 @@ public class MemberDTO {
     public static MemberDTO toMemberDTO(MemberEntity memberEntity){
         MemberDTO memberDTO = new MemberDTO();
 
-        memberDTO.setId(memberEntity.getId());
         memberDTO.setMemberId(memberEntity.getMemberId());
         memberDTO.setMemberPassword(memberEntity.getMemberPassword());
         memberDTO.setMemberName(memberEntity.getMemberName());
