@@ -32,12 +32,15 @@ public class LoginController {
             if (loginResult != null){
 //                로그인 성공
                 session.setAttribute("loginId", loginResult.getMemberId());
-                return "main"; // main 없음. 메인 페이지 만들어야 함
+                System.out.println("로그인 성공");
+                return "main";
             } else {
 //                로그인 실패
+                System.out.println("로그인 실패");
                 return "login";
             }
         } catch (Exception e){
+            System.out.println("시스템 오류");
             return "main";
         }
     }
