@@ -14,7 +14,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public MemberDTO login(MemberDTO memberDTO, HttpSession session) {
+    public MemberDTO login(MemberDTO memberDTO) {
         //DB에 계정이 있는지 확인
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(memberDTO.getMemberId());
 
@@ -25,7 +25,6 @@ public class MemberService {
                 // 비밀번호 일치
                 // entity -> dto 변환 후 리턴
                 MemberDTO dto = MemberDTO.toMemberDTO(memberEntity);
-                session.setAttribute("loginMember", dto);
                 return dto;
             } else {
                 return null; // 로그인 실패
