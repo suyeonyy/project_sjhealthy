@@ -4,8 +4,10 @@ import com.example.sjhealthy.dto.BoardDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.aspectj.weaver.loadtime.definition.Definition;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Getter
@@ -17,49 +19,63 @@ public class BoardEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardId;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false) // 형식과 NOTNULL (nullable은 기본값이 true)
+    private String boardTitle;
+
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String memberId;
 
-    @Column
+    @Column(columnDefinition = "NUMERIC(18,0) DEFAULT 0", nullable = false)
     private int boardViews;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(2000)", nullable = false)
     private String boardContent;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(50)")
     private String File;
 
-    @Column
-    private Date credat;
+    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
+    private String credat;
 
-    @Column
-    private Date moddat;
+    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
+    private String moddat;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
     private String creusr;
 
-    @Column
+    @Column(columnDefinition = "VARCHAR(8)")
     private String modusr;
 
-    @Column
-    private String isExist;
+    @Column(columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false) // 형식, 기본값 지정
+    private String isDeleted = "N"; // columnDefinition이 적용이 안 될 수 있어 이중으로 기본값 설정 -> 그래도 null이 뜸..
 
+    @PrePersist // 날짜 기본 형식 지정하여 DB로
+    public void prePersist(){
+        if (this.credat == null){
+            // 날짜 저장 형식 지정하여 현재시간 저장
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            this.credat = LocalDate.now().format(formatter);
 
-    public static BoardEntity toBoardEntity(BoardDTO boardDTO){
-        BoardEntity boardEntity = new BoardEntity();
+            if (this.moddat == null){
+                // 수정일 없으면 작성일과 동일하게 저장
+                this.moddat = this.credat;
+            }
+        }
 
-        boardEntity.setBoardId(boardDTO.getBoardId());
-        boardEntity.setMemberId(boardDTO.getMemberId());
-        boardEntity.setBoardViews(boardDTO.getBoardViews());
-        boardEntity.setBoardContent(boardDTO.getBoardContent());
-        boardEntity.setFile(boardDTO.getFile());
-        boardEntity.setCredat(boardDTO.getCredat());
-        boardEntity.setModdat(boardDTO.getModdat());
-        boardEntity.setCreusr(boardDTO.getCreusr());
-        boardEntity.setModusr(boardDTO.getModusr());
-        boardEntity.setIsExist(boardDTO.getIsExist());
+        // creusr에 memberId 넣어줌
+        // 이때 memberId가 null 일 수도 있어서 null인지 확인하고 default값도 설정해준다.
+        if (this.creusr == null){
+            this.creusr = this.memberId != null ? this.memberId : "defaultUser";
+        }
 
-        return boardEntity;
+        // 생성자 수정자 다르면 수정자에 최근 작성자를 넣음
+        if (!this.creusr.equals(this.memberId)){
+            this.modusr = this.memberId != null ? this.memberId : "defaultUser";
+        }
+
+        if (this.isDeleted == null){
+            this.isDeleted = "N"; // 그냥 여기에 해주는 게 제일 확실하다
+        }
     }
 
 }

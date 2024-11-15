@@ -27,6 +27,7 @@ public class LoginController {
     public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         System.out.println("login");
 
+        // TODO: write나 다른 위치에서 온 경우엔 다시 그 위치로 보내는 로직
         try {
             MemberDTO loginResult = memberService.login(memberDTO);
             if (loginResult != null){
