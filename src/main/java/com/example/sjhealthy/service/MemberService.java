@@ -3,7 +3,6 @@ package com.example.sjhealthy.service;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.MemberRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +11,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    //레파지토리 호출
     private final MemberRepository memberRepository;
 
     public MemberDTO login(MemberDTO memberDTO) {
@@ -32,5 +32,10 @@ public class MemberService {
         } else {
             return null;
         }
+    }
+
+    public void join(MemberDTO memberDTO) {
+        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
+        memberRepository.save(memberEntity);
     }
 }
