@@ -1,5 +1,6 @@
 package com.example.sjhealthy.service;
 
+import com.example.sjhealthy.component.BoardMapper;
 import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.BoardEntity;
@@ -12,19 +13,15 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@RequestMapping("/board/")
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public BoardDTO write(@ModelAttribute BoardDTO boardDTO){
-            Optional<BoardEntity> writeResult = boardRepository.save(boardDTO);
-
-            if (writeResult.isPresent()){
-                BoardEntity entity = writeResult.get();
-                BoardDTO dto = BoardDTO.toBoardDTO(entity);
-                return dto;
-            } else {
-                return null;
-            }
+    public BoardDTO write(BoardDTO boardDTO){
+        // dto를 entity로 변환
+        BoardEntity postEntity = BoardMapper.toBoardEntity(boardDTO);
+        // 저장
+        BoardEntity savedEntity = boardRepository.save(postEntity);
+        // 다시 dto로 변환해 반환
+        return BoardMapper.toBoardDTO(savedEntity);
     }
 }
