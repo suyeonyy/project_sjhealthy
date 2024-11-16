@@ -2,11 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>JoinForm</title>
+  <title>join</title>
 </head>
 <body>
   <h1>회원가입</h1>
-  <form action="/join">
+  <form action="../member/join" method="POST">
     계정: <input type="text" name="memberId"><br>
     패스워드: <input type="password" name="memberPassword"><br>
     사용자 명: <input type="text" name="memberName"><br>
@@ -15,7 +15,7 @@
     생년월일: <input type="text" name="memberBirth"><br>
     성별: <input type="text" name="memberGender"><br>
     권한: <input type="text" name="memberAuth"><br>
-    삭제여부: <input type="text" name="isExist"><br>
+    삭제여부: <input type="text" name="isDeleted"><br>
     <input type="submit" name="submit" value="회원가입">
   </form>
 </body>
