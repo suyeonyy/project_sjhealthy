@@ -6,9 +6,10 @@
 </head>
 <body>
 <h1>글 작성</h1>
-<form action="/save">
-    제목: <input type="text" name="title"><br>
-    내용: <textarea name="content"></textarea><br>
+<form action="/sjhealthy/board/write" method="POST">
+    제목: <input type="text" name="boardTitle"><br>
+    내용: <textarea name="boardContent"></textarea><br>
+    <input type="hidden" name="memberId" th:value="${loginId}">
     <input type="submit" name="submit" value="작성">
 </form>
 </body>

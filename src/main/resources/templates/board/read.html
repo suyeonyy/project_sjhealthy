@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>readForm</title>
+</head>
+<body>
+    <h1 th:text="${boardDTO.boardTitle}"></h1>
+    작성자: <p th:text="${boardDTO.memberId}"></p><br>
+    작성일: <p th:text="${boardDTO.credat}"></p><br>
+    <hr>
+    <p th:text="${boardDTO.boardContent}"></p>
+    <a><button>목록</button></a>
+    <a th:if="${boardDTO.memberId == loginId}">
+        <button>수정</button>
+    </a>
+    <a th:if="${boardDTO.memberId == loginId}">
+        <button>삭제</button><
+    </a>
+</body>
+</html>
