@@ -23,6 +23,7 @@ public class MemberEntity {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
 //    private String id;
 
+    // TODO: 가입일, 수정일 필요
     @Id
 //    @Column(unique = true) // 제약조건 추가
     private String memberId;
