@@ -55,8 +55,8 @@ public class BoardController {
             BoardDTO writeResult = boardService.write(boardDTO);
 
             if (writeResult != null) {
-                ra.addAttribute("boardId", boardDTO.getBoardId());
-                ra.addFlashAttribute("boardDTO", boardDTO);
+                ra.addAttribute("boardId", writeResult.getBoardId());
+                ra.addFlashAttribute("boardDTO", writeResult);
                 System.out.println("글 등록 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
@@ -132,8 +132,15 @@ public class BoardController {
     }
 
     @RequestMapping("/board/delete")
-    public String deletePost(){
-
-        return "redirect:/sjhealthy/board/list";
+    public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra){
+        boolean isDeleted = boardService.delete(boardId);
+        if (isDeleted){
+            System.out.println("글이 삭제되었습니다.");
+            return "redirect:/sjhealthy/board/list";
+        } else {
+            System.out.println("글을 삭제하지 못했습니다.");
+            ra.addAttribute("boardId", boardId);
+            return "redirect:/sjhealthy/board/read";
+        }
     }
 }

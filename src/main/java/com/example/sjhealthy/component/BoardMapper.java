@@ -14,11 +14,11 @@ public class BoardMapper {
         boardEntity.setMemberId(boardDTO.getMemberId());
         boardEntity.setBoardViews(boardDTO.getBoardViews());
         boardEntity.setBoardContent(boardDTO.getBoardContent());
-        boardEntity.setFile(boardDTO.getFile());
-        boardEntity.setCredat(boardDTO.getCredat());
-        boardEntity.setModdat(boardDTO.getModdat());
-        boardEntity.setCreusr(boardDTO.getCreusr());
-        boardEntity.setModusr(boardDTO.getModusr());
+        boardEntity.setBoardFile(boardDTO.getBoardFile());
+        boardEntity.setCreateDate(boardDTO.getCreateDate());
+        boardEntity.setUpdateDate(boardDTO.getUpdateDate());
+        boardEntity.setCreateUser(boardDTO.getCreateUser());
+        boardEntity.setUpdateUser(boardDTO.getUpdateUser());
         boardEntity.setIsDeleted(boardDTO.getIsDeleted());
 
         return boardEntity;
@@ -32,11 +32,11 @@ public class BoardMapper {
         boardDTO.setMemberId(boardEntity.getMemberId());
         boardDTO.setBoardViews(boardEntity.getBoardViews());
         boardDTO.setBoardContent(boardEntity.getBoardContent());
-        boardDTO.setFile(boardEntity.getFile());
-        boardDTO.setCredat(boardEntity.getCredat());
-        boardDTO.setModdat(boardEntity.getModdat());
-        boardDTO.setCreusr(boardEntity.getCreusr());
-        boardDTO.setModusr(boardEntity.getModusr());
+        boardDTO.setBoardFile(boardEntity.getBoardFile());
+        boardDTO.setCreateDate(boardEntity.getCreateDate());
+        boardDTO.setUpdateDate(boardEntity.getUpdateDate());
+        boardDTO.setCreateUser(boardEntity.getCreateUser());
+        boardDTO.setUpdateUser(boardEntity.getUpdateUser());
         boardDTO.setIsDeleted(boardEntity.getIsDeleted());
 
         return boardDTO;
