@@ -32,4 +32,13 @@ public class JoinController {
 
         return "join";
     }
+
+    /********** 중복 체크 ********************************/
+    // 아이디 중복검사
+    @PostMapping(value = "/member/idcheck.do")
+    @ResponseBody
+    public int JoinIdCheck(@RequestParam String memberId) {
+
+        return memberService.memberIdCheck(memberId);
+    }
 }
