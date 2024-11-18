@@ -1,22 +1,233 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>join</title>
+    <title>회원가입</title>
+    <style>
+        h1 {
+          text-align: center;
+          margin: 20px 0;
+        }
+
+        .join_container {
+          width: 50%;
+          margin: 0 auto;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        th {
+          text-align: left;
+          padding: 10px;
+          background-color: #f8f8f8;
+          font-weight: normal;
+        }
+
+        td {
+          padding: 10px;
+          border: 1px solid #ddd;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"] {
+          width: 80%;
+          padding: 8px;
+          margin: 5px 0;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        .radio_group {
+          display: flex;
+          align-items: center;
+        }
+
+        .radios {
+          margin-right: 15px;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          border-radius: 4px;
+          cursor: pointer;
+          border: none;
+          font-size: 14px;
+        }
+
+        .btn_st1 {
+          background-color: #4CAF50;
+          color: white;
+        }
+
+        .btn_set {
+          text-align: center;
+          margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>회원가입</h1>
-  <form action="../member/join" method="POST">
-    계정: <input type="text" name="memberId"><br>
-    패스워드: <input type="password" name="memberPassword"><br>
-    사용자 명: <input type="text" name="memberName"><br>
-    전화번호: <input type="text" name="memberPnum"><br>
-    이메일: <input type="text" name="memberEmail"><br>
-    생년월일: <input type="text" name="memberBirth"><br>
-    성별: <input type="text" name="memberGender"><br>
-    권한: <input type="text" name="memberAuth"><br>
-    삭제여부: <input type="text" name="isDeleted"><br>
-    <input type="submit" name="submit" value="회원가입">
-  </form>
+<h1>회원가입</h1>
+<div class="join_container">
+    <!-- # onsubmit
+         onsubmit의 return 역할: form 전송하기 전 함수 실행하여
+         함수가 ture 반환하면 form 전송, false를 반환하면 form 전송하지 않음
+
+         onsubmit="return chkSum();" 와 같은 식으로 수정필요
+         https://kim22036.tistory.com/entry/onsubmit-return-false%EC%9D%98-%EC%9D%98%EB%AF%B8
+
+
+         # autocomplete
+         자동완성 끄기
+     -->
+    <form id="joinForm" action="../member/join" method="POST" onsubmit="return saveMember();" autocomplete="off">
+        <table>
+            <colgroup>
+                <col style="width:30%;" />
+                <col style="width:70%;" />
+            </colgroup>
+            <tbody>
+            <tr>
+                <th><span>*아이디</span></th>
+                <td>
+                    <input type="text" name="memberId" placeholder="아이디" maxlength="500" />
+                    <button type="button" id="idCheckBtn" class="btn btn_st1" onclick="checkLoginId();">중복 확인</button>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*비밀번호</span></th>
+                <td>
+                    <input type="password" name="memberPassword" placeholder="비밀번호" maxlength="30" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*비밀번호 재입력</span></th>
+                <td>
+                    <input type="password" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*이름</span></th>
+                <td>
+                    <input type="text" name="memberName" placeholder="이름" maxlength="10" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*전화번호</span></th>
+                <td>
+                    <input type="text" name="memberPnum" placeholder="전화번호" maxlength="11" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*이메일</span></th>
+                <td>
+                    <input type="text" name="memberEmailFirst" /> @
+                    <input type="text" name="memberEmailLast" />
+                    <input type="hidden" name="memberEmail" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*생년월일</span></th>
+                <td>
+                    <input type="number" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" />
+                </td>
+            </tr>
+            <tr>
+                <th><span>*성별</span></th>
+                <td>
+                    <div class="radio_group">
+                        <p class="radios">
+                            <input type="radio" id="male" name="gender" value="M" checked />
+                            <label for="male">남</label><span class="check"></span>
+                        </p>
+                        <p class="radios">
+                            <input type="radio" id="female" name="gender" value="F" />
+                            <label for="female">여</label><span class="check"></span>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr style="display:none;">
+                <th><span>*권한</span></th>
+                <td>
+                    <input type="text" name="memberAuth" value="U" />
+                </td>
+            </tr>
+            <tr style="display:none;">
+                <th><span>*삭제여부</span></th>
+                <td>
+                    <input type="text" name="isDeleted" value="N" />
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+    <p class="btn_set">
+        <button type="button" class="btn btn_st1" onclick="saveMember();">가입</button>
+    </p>
+</div>
 </body>
+<script th:inline="javascript">
+    function saveMember() {
+        // 폼을 가져옴
+        var form = document.getElementById('joinForm');
+
+        var memberEmailFirst = form.elements['memberEmailFirst'].value.trim();;
+        var memberEmailLast = form.elements['memberEmailLast'].value.trim();;
+        var memberEmail = ((memberEmailFirst != "" && memberEmailLast != "") ? memberEmailFirst + "@" + memberEmailLast : " ");
+
+/*
+        // 필수 입력값 검증
+        if (form.elements['memberId'].value.trim() === "") {
+            alert("아이디를 입력하세요.");
+            return;  // 아이디가 비어 있으면 폼 제출을 중지
+        }
+
+        if (form.elements['memberPassword'].value.trim() === "") {
+            alert("비밀번호를 입력하세요.");
+            return;  // 비밀번호가 비어 있으면 폼 제출을 중지
+        }
+
+        if (form.elements['memberPasswordCheck'].value.trim() === "") {
+            alert("비밀번호 확인을 입력하세요.");
+            return;  // 비밀번호 확인이 비어 있으면 폼 제출을 중지
+        }
+
+        if (form.elements['memberName'].value.trim() === "") {
+            alert("이름을 입력하세요.");
+            return;  // 이름이 비어 있으면 폼 제출을 중지
+        }
+
+        if (form.elements['memberPnum'].value.trim() === "") {
+            alert("전화번호를 입력하세요.");
+            return;  // 전화번호가 비어 있으면 폼 제출을 중지
+        }
+
+        if (memberEmail === "") {
+            alert("이메일을 입력하세요.");
+            return;  // 이메일이 비어 있으면 폼 제출을 중지
+        }
+
+        if (form.elements['memberBirth'].value.trim() === "") {
+            alert("생년월일을 입력하세요.");
+            return;  // 생년월일이 비어 있으면 폼 제출을 중지
+        }
+
+        if (!form.querySelector('input[name="gender"]:checked')) {
+            alert("성별을 선택하세요.");
+            return;  // 성별이 선택되지 않으면 폼 제출을 중지
+        }
+*/
+
+        console.log(form);
+
+        // 폼 데이터를 서버로 전송
+        form.submit();
+    }
+</script>
 </html>
