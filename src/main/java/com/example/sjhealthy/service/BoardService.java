@@ -44,7 +44,10 @@ public class BoardService {
         } else return null;
     }
 
-    public BoardDTO update(BoardDTO boardDTO){
-        return null;
+    public boolean delete(Long boardId){
+        if (boardRepository.existsById(boardId)){
+            boardRepository.deleteById(boardId);
+            return true;
+        } else return false;
     }
 }
