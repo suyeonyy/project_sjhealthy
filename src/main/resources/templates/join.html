@@ -34,8 +34,17 @@
           border: 1px solid #ddd;
         }
 
-        input[type="text"], input[type="password"], input[type="number"] {
+        .ip_text, input[type="password"], input[type="number"] {
           width: 80%;
+          padding: 8px;
+          margin: 5px 0;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        .memberEmail {
+          width: 35.5%;
           padding: 8px;
           margin: 5px 0;
           border: 1px solid #ddd;
@@ -95,46 +104,45 @@
             <tr>
                 <th><span>*아이디</span></th>
                 <td>
-                    <input type="text" name="memberId" placeholder="아이디" maxlength="500" />
-                    <button type="button" id="idCheckBtn" class="btn btn_st1" onclick="checkLoginId();">중복 확인</button>
+                    <input type="text" class="ip_text" id="memberId" name="memberId" placeholder="아이디" maxlength="500" />
                 </td>
             </tr>
             <tr>
                 <th><span>*비밀번호</span></th>
                 <td>
-                    <input type="password" name="memberPassword" placeholder="비밀번호" maxlength="30" />
+                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" />
                 </td>
             </tr>
             <tr>
                 <th><span>*비밀번호 재입력</span></th>
                 <td>
-                    <input type="password" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" />
+                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" />
                 </td>
             </tr>
             <tr>
                 <th><span>*이름</span></th>
                 <td>
-                    <input type="text" name="memberName" placeholder="이름" maxlength="10" />
+                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" />
                 </td>
             </tr>
             <tr>
                 <th><span>*전화번호</span></th>
                 <td>
-                    <input type="text" name="memberPnum" placeholder="전화번호" maxlength="11" />
+                    <input type="text" class="ip_text" id="memberPnum" name="memberPnum" placeholder="전화번호" maxlength="11" />
                 </td>
             </tr>
             <tr>
                 <th><span>*이메일</span></th>
                 <td>
-                    <input type="text" name="memberEmailFirst" /> @
-                    <input type="text" name="memberEmailLast" />
-                    <input type="hidden" name="memberEmail" />
+                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" /> @
+                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" />
+                    <input type="hidden" id="memberEmail" name="memberEmail" />
                 </td>
             </tr>
             <tr>
                 <th><span>*생년월일</span></th>
                 <td>
-                    <input type="number" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" />
+                    <input type="number" id="memberBirth" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" />
                 </td>
             </tr>
             <tr>
@@ -142,11 +150,11 @@
                 <td>
                     <div class="radio_group">
                         <p class="radios">
-                            <input type="radio" id="male" name="gender" value="M" checked />
+                            <input type="radio" id="male" name="memberGender" value="M" checked />
                             <label for="male">남</label><span class="check"></span>
                         </p>
                         <p class="radios">
-                            <input type="radio" id="female" name="gender" value="F" />
+                            <input type="radio" id="female" name="memberGender" value="F" />
                             <label for="female">여</label><span class="check"></span>
                         </p>
                     </div>
@@ -155,13 +163,13 @@
             <tr style="display:none;">
                 <th><span>*권한</span></th>
                 <td>
-                    <input type="text" name="memberAuth" value="U" />
+                    <input type="text" id="memberAuth" name="memberAuth" value="U" />
                 </td>
             </tr>
             <tr style="display:none;">
                 <th><span>*삭제여부</span></th>
                 <td>
-                    <input type="text" name="isDeleted" value="N" />
+                    <input type="text" id="isDeleted" name="isDeleted" value="N" />
                 </td>
             </tr>
             </tbody>
@@ -172,62 +180,8 @@
     </p>
 </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript" th:src="@{/js/join.js}"></script>
 <script th:inline="javascript">
-    function saveMember() {
-        // 폼을 가져옴
-        var form = document.getElementById('joinForm');
-
-        var memberEmailFirst = form.elements['memberEmailFirst'].value.trim();;
-        var memberEmailLast = form.elements['memberEmailLast'].value.trim();;
-        var memberEmail = ((memberEmailFirst != "" && memberEmailLast != "") ? memberEmailFirst + "@" + memberEmailLast : " ");
-
-/*
-        // 필수 입력값 검증
-        if (form.elements['memberId'].value.trim() === "") {
-            alert("아이디를 입력하세요.");
-            return;  // 아이디가 비어 있으면 폼 제출을 중지
-        }
-
-        if (form.elements['memberPassword'].value.trim() === "") {
-            alert("비밀번호를 입력하세요.");
-            return;  // 비밀번호가 비어 있으면 폼 제출을 중지
-        }
-
-        if (form.elements['memberPasswordCheck'].value.trim() === "") {
-            alert("비밀번호 확인을 입력하세요.");
-            return;  // 비밀번호 확인이 비어 있으면 폼 제출을 중지
-        }
-
-        if (form.elements['memberName'].value.trim() === "") {
-            alert("이름을 입력하세요.");
-            return;  // 이름이 비어 있으면 폼 제출을 중지
-        }
-
-        if (form.elements['memberPnum'].value.trim() === "") {
-            alert("전화번호를 입력하세요.");
-            return;  // 전화번호가 비어 있으면 폼 제출을 중지
-        }
-
-        if (memberEmail === "") {
-            alert("이메일을 입력하세요.");
-            return;  // 이메일이 비어 있으면 폼 제출을 중지
-        }
-
-        if (form.elements['memberBirth'].value.trim() === "") {
-            alert("생년월일을 입력하세요.");
-            return;  // 생년월일이 비어 있으면 폼 제출을 중지
-        }
-
-        if (!form.querySelector('input[name="gender"]:checked')) {
-            alert("성별을 선택하세요.");
-            return;  // 성별이 선택되지 않으면 폼 제출을 중지
-        }
-*/
-
-        console.log(form);
-
-        // 폼 데이터를 서버로 전송
-        form.submit();
-    }
 </script>
 </html>
