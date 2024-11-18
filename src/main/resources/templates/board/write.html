@@ -2,15 +2,17 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Write Form</title>
+    <title th:text="${isUpdate} ? '글 수정' : '글 작성'"></title>
 </head>
 <body>
-<h1>글 작성</h1>
-<form action="/sjhealthy/board/write" method="POST">
-    제목: <input type="text" name="boardTitle"><br>
-    내용: <textarea name="boardContent"></textarea><br>
+<h1 th:text="${isUpdate} ? '글 수정' : '글 작성'"></h1>
+
+<form th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} : '/sjhealthy/board/write'"
+      th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST">
+    제목: <input type="text" name="boardTitle" th:value="*{boardTitle}"><br>
+    내용: <textarea name="boardContent" th:text="*{boardContent}"></textarea><br>
     <input type="hidden" name="memberId" th:value="${loginId}">
-    <input type="submit" name="submit" value="작성">
+    <input type="submit" name="submit" th:value="${isUpdate} ? '수정' : '작성'">
 </form>
 </body>
 </html>
