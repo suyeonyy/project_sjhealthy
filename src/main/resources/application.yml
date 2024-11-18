@@ -18,7 +18,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update # 원래 auto 였음..
+      ddl-auto: validate #엔티티와 테이블이 정상 매핑되었는지만 확인, 정상매핑 시 실행 비정상 매핑 시 에러발생
     show_sql: true
     properties:
       hibernate:
