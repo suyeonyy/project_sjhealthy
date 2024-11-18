@@ -15,10 +15,6 @@ import java.time.format.DateTimeFormatter;
 @EntityListeners(AuditingEntityListener.class) // Auditing 기능 활성화
 @Table(name = "member_table")
 public class MemberEntity {
-//    @Id // pk 지정
-//    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
-//    private Long id;
-
     @Id
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String memberId;
@@ -87,7 +83,6 @@ public class MemberEntity {
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();
 
-//        memberEntity.setId(memberDTO.getId());
         memberEntity.setMemberId(memberDTO.getMemberId());
         memberEntity.setMemberPassword(memberDTO.getMemberPassword());
         memberEntity.setMemberName(memberDTO.getMemberName());
