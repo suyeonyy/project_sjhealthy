@@ -78,6 +78,15 @@ public class MemberEntity {
         if (!this.createUser.equals(this.memberId)){
             this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
         }
+
+
+        if (this.isDeleted == null){
+            this.isDeleted = "N";
+        }
+
+        if (this.memberAuth == null){
+            this.memberAuth = "U";
+        }
     }
 
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){

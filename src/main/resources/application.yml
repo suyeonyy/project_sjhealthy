@@ -15,6 +15,8 @@ spring:
     url: jdbc:mysql://localhost:3306/sjhealthy?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull
     username: root
     password: 1234
+  resources:
+    static-locations: classpath:/static/
 
   jpa:
     hibernate:
