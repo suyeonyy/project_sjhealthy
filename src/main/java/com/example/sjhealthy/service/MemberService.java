@@ -1,5 +1,6 @@
 package com.example.sjhealthy.service;
 
+import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.MemberRepository;
@@ -37,5 +38,9 @@ public class MemberService {
     public void join(MemberDTO memberDTO) {
         MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
         memberRepository.save(memberEntity);
+    }
+
+    public int memberIdCheck(String memberId) {
+        return MemberMapper.memberIdCheck(memberId);
     }
 }
