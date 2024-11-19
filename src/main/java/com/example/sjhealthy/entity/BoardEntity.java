@@ -68,6 +68,10 @@ public class BoardEntity {
             this.createUser = this.memberId != null ? this.memberId : "defaultUser";
         }
 
+        if (this.updateUser == null){
+            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
+        }
+
         // 생성자 수정자 다르면 수정자에 최근 작성자를 넣음
         if (!this.createUser.equals(this.memberId)){
             this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
