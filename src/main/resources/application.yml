@@ -15,10 +15,12 @@ spring:
     url: jdbc:mysql://localhost:3306/sjhealthy?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull
     username: root
     password: 1234
+  resources:
+    static-locations: classpath:/static/
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: validate #엔티티와 테이블이 정상 매핑되었는지만 확인, 정상매핑 시 실행 비정상 매핑 시 에러발생
     show_sql: true
     properties:
       hibernate:
