@@ -50,4 +50,13 @@ public class BoardService {
             return true;
         } else return false;
     }
+
+    public void countBoardView(BoardDTO boardDTO){
+        System.out.println("증가 전 " + boardDTO.getBoardViews());
+        boardDTO.setBoardViews(boardDTO.getBoardViews()+1);
+        System.out.println("증가 후 " + boardDTO.getBoardViews());
+
+        BoardEntity postEntity = BoardMapper.toBoardEntity(boardDTO);
+        boardRepository.save(postEntity);
+    }
 }

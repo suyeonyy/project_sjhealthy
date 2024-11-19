@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/sjhealthy/")
-
 public class BoardController {
 
     @Autowired
@@ -32,7 +31,7 @@ public class BoardController {
     }
 
     @GetMapping("/board/write")
-    public String WriteForm(@SessionAttribute(name = "loginId", required = false) String loginId,
+    public String writeForm(@SessionAttribute(name = "loginId", required = false) String loginId,
                             Model model){
         model.addAttribute("loginId", loginId);
         // 회원인지 확인
@@ -47,7 +46,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/write")
-    public String WriteNewPost(@SessionAttribute(name = "loginId", required = false) String loginId,
+    public String writeNewPost(@SessionAttribute(name = "loginId", required = false) String loginId,
                                @ModelAttribute BoardDTO boardDTO, RedirectAttributes ra, Model model){
         model.addAttribute("loginId", loginId);
 
@@ -77,8 +76,6 @@ public class BoardController {
         model.addAttribute("loginId", loginId);
 
         // TODO: dto 비어있을 때 게시글을 읽어오지 못하였습니다
-        // TODO: 작성일이 출력이 안 됨..
-        // TODO: Redirect로 보낸 거 일회용이라 새로고침 하면 내용 사라짐
 
         try {
             BoardDTO result = boardService.read(boardId);
