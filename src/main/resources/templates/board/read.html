@@ -7,15 +7,76 @@
 <body>
     <h1 th:text="${boardDTO.boardTitle}"></h1>
     작성자: <p th:text="${boardDTO.memberId}"></p><br>
-    작성일: <p th:text="${boardDTO.credat}"></p><br>
+    작성일: <p th:text="${boardDTO.createDate}"></p><br>
+    <input type="hidden" id="boardId" value="${boardDTO.boardId}">
     <hr>
     <p th:text="${boardDTO.boardContent}"></p>
-    <a><button>목록</button></a>
-    <a th:if="${boardDTO.memberId == loginId}">
+    <a href="../board/list">
+        <button>목록</button>
+    </a>
+    <a th:if="${boardDTO.memberId == loginId}"
+        th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}">
         <button>수정</button>
     </a>
-    <a th:if="${boardDTO.memberId == loginId}">
-        <button>삭제</button><
+    <a th:if="${boardDTO.memberId == loginId}"
+        th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}">
+        <button id="deleteButton">삭제</button>
     </a>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", ()=> {
+        const deleteBtn = document.getElementById("deleteButton");
+
+        if (deleteBtn){
+            deleteBtn.addEventListener("click", (e)=> {
+                
+                    if (!window.confirm('정말로 삭제하시겠습니까?')){
+                        event.preventDefault(); // 취소시 이벤트 발생 없음
+                        return false;
+                    }
+                }
+            );
+        }});
+    </script>
+    <!-- 이거 나머지는 댓글 삭제에 쓰자
+<script>
+    document.addEventListener("DOMContentLoaded", ()=> {
+        const deleteBtn = document.getElementById("deleteButton");
+
+        if (deleteBtn){
+            deleteBtn.addEventListener("click", async (e)=> {
+                try{
+                    if (!window.confirm('정말로 삭제하시겠습니까?')){
+                        event.preventDefault(); // 취소시 이벤트 발생 없음
+                        return false;
+                    }
+                    
+                    // 삭제하려는 게시물 ID 가져오기
+                    const boardId = document.getElementById("boardId").value;
+
+                    // 삭제 요청 보내기
+                    const response = await fetch("../board/delete", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            boardId: boardId
+                        })
+                    });
+
+                    if (response.ok){
+                        alert("게시물이 삭제되었습니다.");
+                        window.location.href= "../board/list"
+                    } else {
+                        alert("게시물 삭제에 실패했습니다.");
+                    }
+                } catch (error){
+                    console.log('오류 발생:', error);
+                }
+            });
+        }
+    });
+</script> -->
 </body>
 </html>
