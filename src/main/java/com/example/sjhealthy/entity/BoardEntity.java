@@ -32,45 +32,49 @@ public class BoardEntity {
     private String boardContent;
 
     @Column(columnDefinition = "VARCHAR(50)")
-    private String File;
+    private String boardFile;
 
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
-    private String credat;
+    private String createDate;
 
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
-    private String moddat;
+    private String updateDate;
 
-    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
-    private String creusr;
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    private String createUser;
 
-    @Column(columnDefinition = "VARCHAR(8)")
-    private String modusr;
+    @Column(columnDefinition = "VARCHAR(500)")
+    private String updateUser;
 
     @Column(columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false) // 형식, 기본값 지정
     private String isDeleted = "N"; // columnDefinition이 적용이 안 될 수 있어 이중으로 기본값 설정 -> 그래도 null이 뜸..
 
     @PrePersist // 날짜 기본 형식 지정하여 DB로
     public void prePersist(){
-        if (this.credat == null){
+        if (this.createDate == null){
             // 날짜 저장 형식 지정하여 현재시간 저장
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-            this.credat = LocalDate.now().format(formatter);
+            this.createDate = LocalDate.now().format(formatter);
 
-            if (this.moddat == null){
+            if (this.updateDate == null){
                 // 수정일 없으면 작성일과 동일하게 저장
-                this.moddat = this.credat;
+                this.updateDate = this.createDate;
             }
         }
 
         // creusr에 memberId 넣어줌
         // 이때 memberId가 null 일 수도 있어서 null인지 확인하고 default값도 설정해준다.
-        if (this.creusr == null){
-            this.creusr = this.memberId != null ? this.memberId : "defaultUser";
+        if (this.createUser == null){
+            this.createUser = this.memberId != null ? this.memberId : "defaultUser";
+        }
+
+        if (this.updateUser == null){
+            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
         }
 
         // 생성자 수정자 다르면 수정자에 최근 작성자를 넣음
-        if (!this.creusr.equals(this.memberId)){
-            this.modusr = this.memberId != null ? this.memberId : "defaultUser";
+        if (!this.createUser.equals(this.memberId)){
+            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
         }
 
         if (this.isDeleted == null){
