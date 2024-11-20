@@ -35,10 +35,11 @@ public class JoinController {
 
     /********** 중복 체크 ********************************/
     // 아이디 중복검사
-    @PostMapping(value = "/member/idcheck.do")
+    @PostMapping("/member/idCheck.do")
     @ResponseBody
-    public int JoinIdCheck(@RequestParam String memberId) {
-
+    public int joinIdCheck(@RequestParam String memberId) {
+        System.out.println("중복체크");
+        System.out.println(memberId);
         return memberService.memberIdCheck(memberId);
     }
 }
