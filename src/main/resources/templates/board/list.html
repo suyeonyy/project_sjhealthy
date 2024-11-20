@@ -21,10 +21,11 @@
                 <td th:text="${board.boardId}"></td>
                 <td><a th:href="@{/sjhealthy/board/read?boardId={id}(id=${board.boardId})}" th:text="${board.boardTitle}"></a></td>
                 <td th:text="${board.memberId}"></td>
-                <td th:text="${board.credat}"></td>
+                <td th:text="${board.createDate}"></td>
                 <td th:text="${board.boardViews}"></td>
             </tr>
         </tbody>
     </table>
+    <a href="/sjhealthy"><button>메인</button></a>
 </body>
 </html>

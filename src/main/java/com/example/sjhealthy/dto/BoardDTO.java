@@ -15,11 +15,11 @@ public class BoardDTO {
     private String memberId;
     private int boardViews;
     private String boardContent;
-    private String File;
-    private String credat;
-    private String moddat;
-    private String creusr;
-    private String modusr;
+    private String boardFile;
+    private String createDate;
+    private String updateDate;
+    private String createUser;
+    private String updateUser;
     private String isDeleted;
 
 }
