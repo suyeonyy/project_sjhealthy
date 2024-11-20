@@ -44,7 +44,19 @@ public class BoardService {
         } else return null;
     }
 
-    public BoardDTO update(BoardDTO boardDTO){
-        return null;
+    public boolean delete(Long boardId){
+        if (boardRepository.existsById(boardId)){
+            boardRepository.deleteById(boardId);
+            return true;
+        } else return false;
+    }
+
+    public void countBoardView(BoardDTO boardDTO){
+        System.out.println("증가 전 " + boardDTO.getBoardViews());
+        boardDTO.setBoardViews(boardDTO.getBoardViews()+1);
+        System.out.println("증가 후 " + boardDTO.getBoardViews());
+
+        BoardEntity postEntity = BoardMapper.toBoardEntity(boardDTO);
+        boardRepository.save(postEntity);
     }
 }
