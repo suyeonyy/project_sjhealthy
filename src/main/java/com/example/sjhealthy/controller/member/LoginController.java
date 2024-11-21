@@ -5,6 +5,7 @@ import com.example.sjhealthy.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,53 @@ public class LoginController {
         } catch (Exception e){
             System.out.println("시스템 오류");
             return "main";
+        }
+    }
+
+    @GetMapping("/member/find-id")
+    public String findIdForm(){
+        System.out.println("find-id Form");
+
+        return "findId";
+    }
+
+    @PostMapping("/member/find-id")
+    public String findIdAfterPost(@ModelAttribute MemberDTO memberDTO, Model model){ // 이름, 생년월일로 찾기
+        try {
+            MemberDTO findIdResult = memberService.findMemberId(memberDTO);
+
+            if (findIdResult != null){
+                System.out.println("아이디: " + memberDTO.getMemberId());
+                model.addAttribute("memberDTO", findIdResult);
+            }
+            return "findId"; // 양식만 바꿔 같은 뷰 사용
+
+        } catch (Exception e){
+            System.out.println("시스템 오류");
+            return "redirect:/sjhealthy/member/login";
+        }
+    }
+
+    @GetMapping("/member/find-password")
+    public String findPasswordForm(){
+        System.out.println("find-password Form");
+
+        return "findPassword";
+    }
+
+    @PostMapping("/member/find-password")
+    public String findPasswordAfterPost(@ModelAttribute MemberDTO memberDTO, Model model){
+        // 컨트롤러에서 아이디 존재하는지 확인 후 메일 인증 진행
+        // 메일로 인증메일 발송
+        try {
+            MemberDTO byMemberId = memberService.findMemberId(memberDTO);
+
+            if (byMemberId != null){
+
+            }
+        } catch (Exception e){
+            System.out.println("시스템 오류");
+            return "redirect:/sjhealthy/member/login";
         }
     }
 }
