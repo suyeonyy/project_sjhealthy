@@ -86,7 +86,7 @@ public class LoginController {
             MemberDTO byMemberId = memberService.findMemberId(memberDTO);
 
             if (byMemberId != null){
-
+                return null; // 아직
             }
         } catch (Exception e){
             System.out.println("시스템 오류");
