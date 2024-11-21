@@ -92,6 +92,7 @@ public class LoginController {
             System.out.println("시스템 오류");
             return "redirect:/sjhealthy/member/login";
         }
+        return  null;
     }
 }
 
