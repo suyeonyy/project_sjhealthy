@@ -18,8 +18,6 @@ public class MailServiceController { // 이메일 인증용. js로 요청과 이
                               HttpSession session) throws Exception {
         String email = (String)data.get("email");
         String memberId = (String)data.get("memberId");
-        System.out.println("emial " + email);
-        System.out.println("memberId " + memberId);
         String code = mailService.sendMessage(email);
 
         session.setAttribute("mailCode", code);
