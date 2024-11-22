@@ -12,11 +12,12 @@ public class MailConfig {
 
     @Bean
     public JavaMailSender javaMailSender(){
+        // JavaMailSender: 스프링 프레임워크에서 이메일을 보낼 때 사용하는 인터페이스
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
         javaMailSender.setHost("smtp.naver.com");
         javaMailSender.setUsername("kongjy621@naver.com");
-        javaMailSender.setPassword("비번"); // 일단 공란으로
+        javaMailSender.setPassword("!"); // 일단 공란으로
         javaMailSender.setPort(465);
         javaMailSender.setJavaMailProperties(getMailProperties());
 
