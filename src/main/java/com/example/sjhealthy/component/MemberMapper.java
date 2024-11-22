@@ -18,6 +18,10 @@ public class MemberMapper {
         memberEntity.setMemberGender(memberDTO.getMemberGender());
         memberEntity.setMemberAuth(memberDTO.getMemberAuth());
         memberEntity.setIsDeleted(memberDTO.getIsDeleted());
+        memberEntity.setCreateDate(memberDTO.getCreateDate());
+        memberEntity.setUpdateDate(memberDTO.getUpdateDate());
+        memberEntity.setCreateUser(memberDTO.getCreateUser());
+        memberEntity.setUpdateUser(memberDTO.getUpdateUser());
 
         return memberEntity;
     }
@@ -34,6 +38,10 @@ public class MemberMapper {
         memberDTO.setMemberGender(memberEntity.getMemberGender());
         memberDTO.setMemberAuth(memberEntity.getMemberAuth());
         memberDTO.setIsDeleted(memberEntity.getIsDeleted());
+        memberDTO.setCreateDate(memberEntity.getCreateDate());
+        memberDTO.setUpdateDate(memberEntity.getUpdateDate());
+        memberDTO.setCreateUser(memberEntity.getCreateUser());
+        memberDTO.setUpdateUser(memberEntity.getUpdateUser());
 
         return memberDTO;
 
