@@ -111,41 +111,45 @@
             <tr>
                 <th><span>*비밀번호</span></th>
                 <td>
-                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" onblur="checkPassword(this)" />
+                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" onblur="passwordCheck(this)" />
                     <div id="passMsg"></div>
                 </td>
             </tr>
             <tr>
-                <th><span>*비밀번호 재입력</span></th>
+                <th><span>*비밀번호 확인</span></th>
                 <td>
-                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" onblur="checkPassword(this)" />
+                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 확인" maxlength="30" onblur="cpasswordCheck()" />
                     <div id="cpassMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*이름</span></th>
                 <td>
-                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" />
+                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" />
+                    <div id="nameMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*전화번호</span></th>
                 <td>
-                    <input type="text" class="ip_text" id="memberPnum" name="memberPnum" placeholder="전화번호" maxlength="11" />
+                    <input type="text" class="ip_text" id="memberPnum" name="memberPnum" placeholder="전화번호" maxlength="11" onblur="memberPnumCheck(this)" />
+                    <div id="pnumMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*이메일</span></th>
                 <td>
-                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" /> @
-                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" />
+                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" onblur="memberEmailCheck(this)" /> @
+                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" onblur="memberEmailCheck(this)" />
                     <input type="hidden" id="memberEmail" name="memberEmail" />
+                    <div id="emailMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*생년월일</span></th>
                 <td>
-                    <input type="number" id="memberBirth" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" />
+                    <input type="text" class="ip_text" id="memberBirth" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" onblur="memberBirthCheck(this)" />
+                    <div id="birthMsg"></div>
                 </td>
             </tr>
             <tr>
@@ -175,7 +179,13 @@
                     <input type="text" id="isDeleted" name="isDeleted" value="N" />
                 </td>
             </tr>
-            <input type = "hidden" id = "memberIdCheck">
+            <input type = "hidden" id = "memberIdPass" value = "N">
+            <input type = "hidden" id = "memberPasswordPass" value = "N">
+            <input type = "hidden" id = "memberPasswordCheckPass" value = "N">
+            <input type = "hidden" id = "memberNamePass" value = "N">
+            <input type = "hidden" id = "memberPnumPass" value = "N">
+            <input type = "hidden" id = "memberEmailPass" value = "N">
+            <input type = "hidden" id = "memberBirthPass" value = "N">
             </tbody>
         </table>
     </form>
