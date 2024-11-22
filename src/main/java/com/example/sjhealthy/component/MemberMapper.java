@@ -36,5 +36,12 @@ public class MemberMapper {
         memberDTO.setIsDeleted(memberEntity.getIsDeleted());
 
         return memberDTO;
+<<<<<<< HEAD
+=======
+    }
+
+    public static int memberIdCheck(String memberId) {
+        return 0;
+>>>>>>> a976da0a68a9bbb5a8697b597bca07c186035c6d
     }
 }
