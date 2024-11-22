@@ -4,6 +4,7 @@ import com.example.sjhealthy.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
@@ -43,16 +44,16 @@ public class MemberEntity {
     @Column(columnDefinition = "VARCHAR(2) DEFAULT 'N'", nullable = false)
     private String isDeleted;
 
-    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
+    @Column(name="create_date", columnDefinition = "VARCHAR(8)", nullable = false)
     private String createDate;
 
-    @Column(columnDefinition = "VARCHAR(8)", nullable = false)
+    @Column(name="update_date", columnDefinition = "VARCHAR(8)", nullable = false)
     private String updateDate;
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    @Column(name="create_user", columnDefinition = "VARCHAR(500)", nullable = false)
     private String createUser;
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    @Column(name="update_user", columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
     @PrePersist
@@ -61,12 +62,11 @@ public class MemberEntity {
             // 날짜 저장 형식 지정하여 현재 날짜 저장
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             this.createDate = LocalDate.now().format(formatter);
-
-            if (this.updateDate == null){
-                // 수정일이 null 이면, 등록일과 동일하게 저장
-                this.updateDate = this.createDate;
-            }
         }
+        // 수정시 날짜 저장 형식 지정하여 현재 날짜 저장
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        this.updateDate = LocalDate.now().format(formatter);   // 수정일 저장
+
 
         // memberId 넣어줌 (memberId null 값 확인 후, defaultUser 설정)
         if (this.createUser == null){
@@ -88,20 +88,9 @@ public class MemberEntity {
             this.memberAuth = "U";
         }
     }
-
-    public static MemberEntity toMemberEntity(MemberDTO memberDTO){
-        MemberEntity memberEntity = new MemberEntity();
-
-        memberEntity.setMemberId(memberDTO.getMemberId());
-        memberEntity.setMemberPassword(memberDTO.getMemberPassword());
-        memberEntity.setMemberName(memberDTO.getMemberName());
-        memberEntity.setMemberPnum(memberDTO.getMemberPnum());
-        memberEntity.setMemberEmail(memberDTO.getMemberEmail());
-        memberEntity.setMemberBirth(memberDTO.getMemberBirth());
-        memberEntity.setMemberGender(memberDTO.getMemberGender());
-        memberEntity.setMemberAuth(memberDTO.getMemberAuth());
-        memberEntity.setIsDeleted(memberDTO.getIsDeleted());
-
-        return memberEntity;
+    @PreUpdate
+    public void preUpdate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        this.updateDate = LocalDate.now().format(formatter);
     }
 }
