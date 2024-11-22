@@ -23,19 +23,19 @@ public class MemberDTO {
     private String createUser;      //등록자
     private String updateUser;      //수정자
 
-    public static MemberDTO toMemberDTO(MemberEntity memberEntity){
-        MemberDTO memberDTO = new MemberDTO();
-
-        memberDTO.setMemberId(memberEntity.getMemberId());
-        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
-        memberDTO.setMemberName(memberEntity.getMemberName());
-        memberDTO.setMemberPnum(memberEntity.getMemberPnum());
-        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
-        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
-        memberDTO.setMemberGender(memberEntity.getMemberGender());
-        memberDTO.setMemberAuth(memberEntity.getMemberAuth());
-        memberDTO.setIsDeleted(memberEntity.getIsDeleted());
-
-        return memberDTO;
-    }
+//    public static MemberDTO toMemberDTO(MemberEntity memberEntity){
+//        MemberDTO memberDTO = new MemberDTO();
+//
+//        memberDTO.setMemberId(memberEntity.getMemberId());
+//        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
+//        memberDTO.setMemberName(memberEntity.getMemberName());
+//        memberDTO.setMemberPnum(memberEntity.getMemberPnum());
+//        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
+//        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
+//        memberDTO.setMemberGender(memberEntity.getMemberGender());
+//        memberDTO.setMemberAuth(memberEntity.getMemberAuth());
+//        memberDTO.setIsDeleted(memberEntity.getIsDeleted());
+//
+//        return memberDTO;
+//    }
 }
