@@ -105,18 +105,21 @@
                 <th><span>*아이디</span></th>
                 <td>
                     <input type="text" class="ip_text" id="memberId" name="memberId" placeholder="아이디" maxlength="500" />
+                    <div id="memberIdMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*비밀번호</span></th>
                 <td>
-                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" />
+                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" onblur="checkPassword(this)" />
+                    <div id="passMsg"></div>
                 </td>
             </tr>
             <tr>
                 <th><span>*비밀번호 재입력</span></th>
                 <td>
-                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" />
+                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 재입력" maxlength="30" onblur="checkPassword(this)" />
+                    <div id="cpassMsg"></div>
                 </td>
             </tr>
             <tr>
@@ -172,6 +175,7 @@
                     <input type="text" id="isDeleted" name="isDeleted" value="N" />
                 </td>
             </tr>
+            <input type = "hidden" id = "memberIdCheck">
             </tbody>
         </table>
     </form>

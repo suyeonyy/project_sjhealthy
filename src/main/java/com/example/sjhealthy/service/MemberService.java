@@ -42,7 +42,11 @@ public class MemberService {
     }
 
     public int memberIdCheck(String memberId) {
-        return MemberMapper.memberIdCheck(memberId);
+        // memberId로 회원을 조회
+        Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
+
+        // 회원이 존재하면 1, 존재하지 않으면 0을 반환
+        return memberEntity.isPresent() ? 1 : 0;
     }
 
     public MemberDTO findMemberId(MemberDTO memberDTO){ // 아이디 찾기에서 사용

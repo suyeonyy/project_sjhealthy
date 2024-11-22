@@ -1,3 +1,84 @@
+   /* 아이디 중복체크 */
+   $("#memberId").blur(function() {
+       console.log("아이디 중복체크 진입");
+       //let check = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,12}$/;
+       var memberId = $('#memberId').val();
+
+       $.ajax({
+           url : '../member/idCheck.do',
+           type : 'post',
+           data:{memberId:memberId},
+           success : function(data) {
+               console.log("success");
+               if (data == 1) {
+                       // 1 : 아이디가 중복되는 문구
+                       $("#memberIdMsg").text("사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.");
+                       $("#memberIdMsg").css("color","red");
+                       $("#memberIdCheck").val("N");
+               } else {
+                   if( memberId == ""){
+                       $("#memberIdMsg").text("아이디를 입력해주세요.");
+                       $("#memberIdMsg").css("color","red");
+                       $("#memberIdCheck").val("N");
+                   /*
+                   }else if(!check.test(id)){
+                       $("#memberIdMsg").text("6~12자 영문, 숫자를 조합하세요");
+                       $("#memberIdMsg").css("color","red");
+                       $("#memberIdCheck").val("N");
+                   */
+                   }else{
+                       $("#memberIdMsg").text("");
+                       $("#memberIdCheck").val("Y");
+                   }
+
+               }
+
+           }, error : function() {
+                   console.log("fail");
+           }
+       });
+    });
+
+    /* 비밀번호, 비밀번호 확인 */
+    //비밀번호
+    function checkPassword(obj) {
+        var passMsg = document.querySelector("#passMsg");
+        var pass = document.getElementById("pass");
+        var cpass = document.getElementById("cpass");
+        var cpassMsg = document.getElementById("cpassMsg");
+
+        //비밀번호 정규식 : 8~16자 영문, 숫자, 특수문자
+        var check = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+
+        if (obj.value == "") {
+            passMsg.innerHTML = "비밀번호를 입력해주세요";
+            passMsg.style.color = "red";
+            return false;
+        } else if (!check.test(obj.value)) {
+            passMsg.innerHTML = "8~16자 영문, 숫자, 특수문자를 사용하세요";
+            passMsg.style.color = "red";
+            return false;
+        } else {
+            passMsg.innerHTML = "";
+            return true;
+        }
+
+        if (pass.value != "" && cpass.value != "") {
+            if (pass.value != cpass.value) {
+                cpassmsg.innerHTML = "비밀번호가 다릅니다";
+                cpassmsg.style.color = "red";
+                return false;
+            } else {
+                cpassmsg.innerHTML = "";
+                return true;
+            }
+        }
+
+    }
+
+
+
+
     function saveMember() {
         var form = document.getElementById('joinForm');
 
@@ -50,48 +131,3 @@
         // 폼 데이터를 서버로 전송
         form.submit();
     }
-
-
-
-
-
-
-/*  아이디 유효성 검사(1 = 중복 / 0 != 중복)  */
-    $("#memberId").blur(function() {
-        //let check = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,12}$/;
-        let memberId = $('#memberId').val();
-        $.ajax({
-            url : '/member/idcheck.do',
-            type : 'post',
-            data:{memberId:memberId},
-            success : function(data) {
-                console.log("1 = 아이디중복o / 0 = 중복x : "+ data);
-                   return;
-                if (data == 1) {
-                        // 1 : 아이디가 중복되는 문구
-                        $("#idmsg").text("사용중인 아이디입니다");
-                        $("#idmsg").css("color","red");
-                        $("#idcheck").val("N");
-
-                } else {
-
-                    if( id == ""){
-                        $("#idmsg").text("아이디를 입력해주세요");
-                        $("#idmsg").css("color","red");
-                        $("#idcheck").val("N");
-                    }else if(!check.test(id)){
-                        $("#idmsg").text("6~12자 영문, 숫자를 조합하세요");
-                        $("#idmsg").css("color","red");
-                        $("#idcheck").val("N");
-                    }else{
-                        $("#idmsg").text("");
-                        $("#idcheck").val("Y");
-                    }
-
-                }
-
-            }, error : function() {
-                    console.log("실패");
-                }
-        });
-    });
