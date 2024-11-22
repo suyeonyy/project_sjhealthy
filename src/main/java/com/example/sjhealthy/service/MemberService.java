@@ -37,7 +37,7 @@ public class MemberService {
     }
 
     public void join(MemberDTO memberDTO) {
-        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
+        MemberEntity memberEntity = MemberMapper.toMemberEntity(memberDTO);
         memberRepository.save(memberEntity);
     }
 
