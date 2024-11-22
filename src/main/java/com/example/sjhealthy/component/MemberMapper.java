@@ -1,8 +1,6 @@
 package com.example.sjhealthy.component;
 
-import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.MemberDTO;
-import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +36,7 @@ public class MemberMapper {
         memberDTO.setIsDeleted(memberEntity.getIsDeleted());
 
         return memberDTO;
+
     }
 
     public static int memberIdCheck(String memberId) {
