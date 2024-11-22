@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/sjhealthy/")
 @Controller
@@ -95,7 +96,7 @@ public class LoginController {
                 if (mailCode.equals(inputCode)){
                     System.out.println("입력 코드: " + inputCode);
                     System.out.println("인증 코드: " + mailCode);
-                    return "setNewPassword.html";
+                    return "setNewPassword";
                 } else {
                     System.out.println("코드가 일치하지 않습니다.");
                 }
@@ -106,7 +107,38 @@ public class LoginController {
             System.out.println("시스템 오류");
         }
         return "redirect:/sjhealthy/member/login";
+    }
 
+
+    @PostMapping("/member/set-new-password")
+    public String setNewPassword(@RequestParam("password")String password, RedirectAttributes ra,
+//                                 @RequestParam("passwordCheck")String passwordCheck,
+                                 @SessionAttribute(name = "memberId", required = false) String memberId){
+        System.out.println(password);
+
+        try {
+            MemberDTO beforeUpdate = memberService.findMemberIdAtPassFind(memberId);
+            System.out.println("beforeUpdate = " + beforeUpdate);
+            // 뷰에서 일치 검사
+            if (!password.equals(beforeUpdate.getMemberPassword())){
+                System.out.println(beforeUpdate);
+                beforeUpdate.setMemberPassword(password);
+                System.out.println("AfterUpdate = " + beforeUpdate);
+                memberService.join(beforeUpdate); // 바꾼 비밀번호로 정보 수정(JPA 에선 save로 등록과 수정을 한다)
+                System.out.println(memberService.findMemberIdAtPassFind(memberId));
+                ra.addAttribute("비밀번호를 변경하였습니다.");
+                return "redirect:/sjhealthy/member/login";
+            } else {
+                // 기존 비밀번호와 동일하면 돌려보냄
+                System.out.println("기존 비밀번호와 동일한 비밀번호입니다.");
+                ra.addAttribute("기존 비밀번호와 동일한 비밀번호입니다.");
+                return "redirect:/sjhealthy/member/login";
+            }
+        } catch (Exception e){
+            System.out.println("시스템 오류");
+            e.printStackTrace();
+            return "redirect:/sjhealthy/member/login";
+        }
     }
 }
 
