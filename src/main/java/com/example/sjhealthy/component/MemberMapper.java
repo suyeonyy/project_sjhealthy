@@ -47,7 +47,9 @@ public class MemberMapper {
 
     }
 
+    /*
     public static int memberIdCheck(String memberId) {
         return 0;
     }
+    */
 }
