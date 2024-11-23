@@ -35,6 +35,7 @@ public class JoinController {
     public int joinIdCheck(@RequestParam String memberId) {
         System.out.println("중복체크");
         System.out.println(memberId);
+
         return memberService.memberIdCheck(memberId);
     }
 }
