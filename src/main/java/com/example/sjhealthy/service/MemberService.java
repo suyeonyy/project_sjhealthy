@@ -41,6 +41,7 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
+    /* 회원가입 아이디 중복체크 */
     public int memberIdCheck(String memberId) {
         if (memberId == null || memberId.trim().isEmpty()) {
             return 1;
@@ -54,10 +55,12 @@ public class MemberService {
     }
 
     public MemberDTO findMemberId(MemberDTO memberDTO){ // 아이디 찾기에서 사용
+        //jpa에서 optional 타입으로 받는다
         Optional<MemberEntity> byMemberId =
             memberRepository.findByMemberNameAndMemberBirth(memberDTO.getMemberName(), memberDTO.getMemberBirth());
 
         if (byMemberId.isPresent()){
+            //Optional 타입을 Entity타입으로 바꾸기 위해 .get()을 붙임
             MemberEntity memberEntity = byMemberId.get();
             return MemberMapper.toMemberDTO(memberEntity);
         } else return null;
