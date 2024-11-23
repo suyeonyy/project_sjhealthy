@@ -8,6 +8,8 @@ import org.aspectj.weaver.loadtime.definition.Definition;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,6 +50,11 @@ public class BoardEntity {
 
     @Column(columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false) // 형식, 기본값 지정
     private String isDeleted = "N"; // columnDefinition이 적용이 안 될 수 있어 이중으로 기본값 설정 -> 그래도 null이 뜸..
+
+    /* Board:Comment = 1:N */
+    //게시글이 삭제되면 댓글도 함께 삭제된다
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CommentEntity> commentEntityList = new ArrayList<>();
 
     @PrePersist // 날짜 기본 형식 지정하여 DB로
     public void prePersist(){
