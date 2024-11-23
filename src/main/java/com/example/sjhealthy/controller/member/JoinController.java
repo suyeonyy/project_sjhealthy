@@ -2,14 +2,9 @@ package com.example.sjhealthy.controller.member;
 
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.HashMap;
 
 @RequestMapping("/sjhealthy/")
 @Controller
@@ -30,7 +25,7 @@ public class JoinController {
         System.out.println(memberDTO);
         memberService.join(memberDTO);
 
-        return "join";
+        return "login";
     }
 
     /********** 중복 체크 ********************************/
