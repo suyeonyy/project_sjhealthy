@@ -42,6 +42,10 @@ public class MemberService {
     }
 
     public int memberIdCheck(String memberId) {
+        if (memberId == null || memberId.trim().isEmpty()) {
+            return 1;
+        }
+
         // memberId로 회원을 조회
         Optional<MemberEntity> memberEntity = memberRepository.findByMemberId(memberId);
 
