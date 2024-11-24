@@ -11,6 +11,7 @@
     <input type="hidden" id="boardId" value="${boardDTO.boardId}">
     <hr>
     <p th:text="${boardDTO.boardContent}"></p>
+    <hr>
     <a href="../board/list">
         <button>목록</button>
     </a>
@@ -23,13 +24,48 @@
         <button id="deleteButton">삭제</button>
     </a>
 
-    <script>
+    <!-- 댓글 작성 부분 -->
+    <div id="comment-write">
+        <input type="text" id="commentWriter" placeholder="작성자" >
+        <input type="text" id="commentContents" placeholder="내용" >
+        <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+    </div>
+
+    <!-- 댓글 출력 부분 -->
+    <div id="comment-list">
+    </div>
+
+    <!--
+    <div class="card">
+        <div class="header">
+            <h4 class="comment-write">댓글 작성</h4>
+        </div>
+
+        <div class="body">
+            <form>
+                <div class="form-group">
+                    <span th:text="${boardDTO.memberId}" id="commentId" style="display:block;"></span>
+
+                    <textarea rows="4" th:placeholder="'작성할 댓글 내용을 입력해주세요'" id="commentContent"></textarea>
+
+                    <button type="button" th:onclick="insertComment([[ ${boardDTO.boardId} ]], [[ ${boardDTO.memberId} ]] )">댓글등록</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    -->
+    <!-- 댓글 출력 부분 -->
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
+    <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", ()=> {
         const deleteBtn = document.getElementById("deleteButton");
 
         if (deleteBtn){
             deleteBtn.addEventListener("click", (e)=> {
-                
+
                     if (!window.confirm('정말로 삭제하시겠습니까?')){
                         event.preventDefault(); // 취소시 이벤트 발생 없음
                         return false;
@@ -37,7 +73,55 @@
                 }
             );
         }});
+
+
+        /* 댓글 작성 */
+        const commentWrite = () => {
+            const writer = document.getElementById("commentWriter").value;
+            const contents = document.getElementById("commentContents").value;
+
+            const id = [[${boardDTO.boardId}]]; //게시글 번호
+
+            $.ajax({
+                //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
+                type: "post",
+                url: "../comment/save",
+                data: {
+                    "commentWriter": writer,
+                    "commentContents": contents,
+                    "boardId": id
+                },
+                success: function(res){
+                    //console.log("요청성공", res);
+
+                    /* 댓글 목록을 표현하는 테이블 */
+                    var output = "<table class='table'>";
+                    output += "<tr><th>댓글번호</th>";
+                    output += "<th>작성자</th>";
+                    output += "<th>내용</th>";
+                    output += "<th>작성시간</th>";
+
+                    for(var i in res){
+                        output += "<tr>";
+                        output += "<td>" + res[i].id + "</td>";
+                        output += "<td>" + res[i].commentWriter + "</td>";
+                        output += "<td>" + res[i].commentContents + "</td>";
+                        output += "<td>" + res[i].commentCreatedTime + "</td>";
+                        output += "</tr>";
+                    }
+                    output += "</table>";
+                    
+                    document.getElementById('comment-list').innerHTML = output;
+                    document.getElementById('commentWriter').value = '';
+                    document.getElementById('commentContents').value = '';
+                },
+                error: function(err){
+                    //console.log("요청실패", err);
+                }
+            });
+        }
     </script>
+
     <!-- 이거 나머지는 댓글 삭제에 쓰자
 <script>
     document.addEventListener("DOMContentLoaded", ()=> {
