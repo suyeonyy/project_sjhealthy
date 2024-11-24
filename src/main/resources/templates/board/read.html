@@ -10,6 +10,10 @@
     작성일: <p th:text="${boardDTO.createDate}"></p><br>
     <input type="hidden" id="boardId" value="${boardDTO.boardId}">
     <hr>
+
+<!-- 첨부파일 -->
+    <input th:if="${attachedFile}" type="image" th:src="${attachedFile}">
+
     <p th:text="${boardDTO.boardContent}"></p>
     <hr>
     <a href="../board/list">
@@ -110,7 +114,7 @@
                         output += "</tr>";
                     }
                     output += "</table>";
-                    
+
                     document.getElementById('comment-list').innerHTML = output;
                     document.getElementById('commentWriter').value = '';
                     document.getElementById('commentContents').value = '';
@@ -134,7 +138,7 @@
                         event.preventDefault(); // 취소시 이벤트 발생 없음
                         return false;
                     }
-                    
+
                     // 삭제하려는 게시물 ID 가져오기
                     const boardId = document.getElementById("boardId").value;
 
