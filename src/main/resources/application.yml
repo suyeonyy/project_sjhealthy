@@ -17,6 +17,9 @@ spring:
     password: 1234
   resources:
     static-locations: classpath:/static/
+  servlet:
+    multipart:
+      enabled: true #첨부파일
 
   jpa:
     hibernate:
