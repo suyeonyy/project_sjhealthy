@@ -7,7 +7,10 @@
 <body>
     <h1>메인</h1>
     <a href="/sjhealthy/member/join"><button>회원가입</button></a>
-    <a href="/sjhealthy/member/login"><button>로그인</button></a>
+
+    <a href="/sjhealthy/member/login" th:if="${loginId == null}"><button>로그인</button></a>
+    <a href="/sjhealthy/member/logout" th:if="${loginId != null}"><button>로그아웃</button></a>
+
     <a href="/sjhealthy/board/write"><button>글 작성</button></a>
     <a href="/sjhealthy/board/list"><button>글 목록</button></a>
 </body>
