@@ -37,15 +37,15 @@ public class LoginController {
 //                로그인 성공
                 session.setAttribute("loginId", loginResult.getMemberId());
                 System.out.println("로그인 성공");
-                return "main";
+                return "redirect:/sjhealthy";
             } else {
 //                로그인 실패
                 System.out.println("로그인 실패");
-                return "login";
+                return "redirect:/sjhealthy/member/login";
             }
         } catch (Exception e){
             System.out.println("시스템 오류");
-            return "main";
+            return "redirect:/sjhealthy";
         }
     }
 
@@ -80,6 +80,8 @@ public class LoginController {
         return "findPassword";
     }
 
+//    @GetMapping("/member/find-password")
+//    인증메일을 입력한 아이디를 조회해서 해당 계정의 이메일인지 확인하는 과정 필요
     @PostMapping("/member/find-password")
     public String findPasswordAfterPost(@ModelAttribute MemberDTO memberDTO, Model model,
                                         @SessionAttribute(name = "mailCode", required = false) String mailCode,
@@ -118,14 +120,10 @@ public class LoginController {
 
         try {
             MemberDTO beforeUpdate = memberService.findMemberIdAtPassFind(memberId);
-            System.out.println("beforeUpdate = " + beforeUpdate);
             // 뷰에서 일치 검사
             if (!password.equals(beforeUpdate.getMemberPassword())){
-                System.out.println(beforeUpdate);
                 beforeUpdate.setMemberPassword(password);
-                System.out.println("AfterUpdate = " + beforeUpdate);
                 memberService.join(beforeUpdate); // 바꾼 비밀번호로 정보 수정(JPA 에선 save로 등록과 수정을 한다)
-                System.out.println(memberService.findMemberIdAtPassFind(memberId));
                 ra.addAttribute("비밀번호를 변경하였습니다.");
                 return "redirect:/sjhealthy/member/login";
             } else {
@@ -139,6 +137,17 @@ public class LoginController {
             e.printStackTrace();
             return "redirect:/sjhealthy/member/login";
         }
+    }
+
+    @RequestMapping("/member/logout")
+    public String logout(@SessionAttribute(name = "loginId", required = false) String loginId, Model model,
+                         HttpSession session){
+        model.addAttribute("loginId", loginId);
+
+        if (loginId != null){
+            session.invalidate(); // 세션 무효화
+        }
+        return "redirect:/sjhealthy";
     }
 }
 

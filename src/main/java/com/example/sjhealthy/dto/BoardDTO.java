@@ -15,7 +15,8 @@ public class BoardDTO {
     private String memberId;
     private int boardViews;
     private String boardContent;
-    private String boardFile;
+    private String boardFileName;
+    private String boardFilePath;
     private String createDate;
     private String updateDate;
     private String createUser;
