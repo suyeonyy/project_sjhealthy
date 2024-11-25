@@ -14,7 +14,8 @@ public class BoardMapper {
         boardEntity.setMemberId(boardDTO.getMemberId());
         boardEntity.setBoardViews(boardDTO.getBoardViews());
         boardEntity.setBoardContent(boardDTO.getBoardContent());
-        boardEntity.setBoardFile(boardDTO.getBoardFile());
+        boardEntity.setBoardFileName(boardDTO.getBoardFileName());
+        boardEntity.setBoardFilePath(boardDTO.getBoardFilePath());
         boardEntity.setCreateDate(boardDTO.getCreateDate());
         boardEntity.setUpdateDate(boardDTO.getUpdateDate());
         boardEntity.setCreateUser(boardDTO.getCreateUser());
@@ -32,7 +33,8 @@ public class BoardMapper {
         boardDTO.setMemberId(boardEntity.getMemberId());
         boardDTO.setBoardViews(boardEntity.getBoardViews());
         boardDTO.setBoardContent(boardEntity.getBoardContent());
-        boardDTO.setBoardFile(boardEntity.getBoardFile());
+        boardDTO.setBoardFileName(boardEntity.getBoardFileName());
+        boardDTO.setBoardFilePath(boardEntity.getBoardFilePath());
         boardDTO.setCreateDate(boardEntity.getCreateDate());
         boardDTO.setUpdateDate(boardEntity.getUpdateDate());
         boardDTO.setCreateUser(boardEntity.getCreateUser());
