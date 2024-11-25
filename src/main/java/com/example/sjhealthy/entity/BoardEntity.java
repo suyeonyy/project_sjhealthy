@@ -33,8 +33,11 @@ public class BoardEntity {
     @Column(columnDefinition = "VARCHAR(2000)", nullable = false)
     private String boardContent;
 
-    @Column(columnDefinition = "VARCHAR(50)")
-    private String boardFile;
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String boardFileName;
+
+    @Column(columnDefinition = "VARCHAR(200)")
+    private String boardFilePath;
 
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
     private String createDate;
@@ -87,6 +90,11 @@ public class BoardEntity {
         if (this.isDeleted == null){
             this.isDeleted = "N"; // 그냥 여기에 해주는 게 제일 확실하다
         }
+    }
+    @PreUpdate
+    public void preUpdate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        this.updateDate = LocalDate.now().format(formatter);
     }
 
 }
