@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.stream.events.Comment;
 import java.util.List;
 
 @Controller
@@ -22,6 +23,7 @@ public class CommentConroller {
     public ResponseEntity save(@ModelAttribute CommentDTO commentDTO){
         System.out.println("commentDTO="+commentDTO);
         Long saveResult = commentService.save(commentDTO);
+
         if(saveResult != null){
             //작성 성공
             //다시 댓글 전체를 가지고 와서 보여주기(리턴)
