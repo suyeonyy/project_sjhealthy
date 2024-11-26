@@ -82,12 +82,21 @@ public class LoginController {
                 googleAccount.setMemberId(profile.getEmail().split("@")[0]); // 이메일의 @ 앞부분을 가져와 memberId로 설정
                 googleAccount.setMemberEmail(profile.getEmail());
                 googleAccount.setMemberName(profile.getName());
+
+                String email = profile.getEmail();
+                String emailFirst = email.split("@")[0]; // 이메일의 @ 앞부분
+                String emailLast = email.split("@")[1]; // 이메일의 @ 뒷부분
+
+                googleAccount.setMemberEmailFirst(emailFirst);
+                googleAccount.setMemberEmailLast(emailLast);
+
                 model.addAttribute("memberDTO", googleAccount); // 이 3가지 정보를 회원가입 창에 채워서 뷰 출력
                 return "join";
             }
 
         } catch (Exception e){
             System.out.println("시스템 오류");
+            //redirect 혈식으로 return 시, 이전에 설정된 model값은 사라짐
             return "redirect:/sjhealthy/member/login";
         }
     }
