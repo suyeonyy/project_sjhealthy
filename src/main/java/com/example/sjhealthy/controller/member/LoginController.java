@@ -72,9 +72,10 @@ public class LoginController {
         try {
             MemberDTO isExist = memberService.findMemberEmail(profile.getEmail());
             if (isExist != null){
-                // 기존 회원이라면 로그인으로 연결
-                ra.addFlashAttribute("memberDTO", isExist);
-                return "redirect:/sjhealthy/member/login";
+                // 기존 회원이라면 로그인 처리 후 메인으로 넘김
+                HttpSession session = request.getSession();
+                session.setAttribute("loginId", isExist.getMemberId());
+                return "redirect:/sjhealthy";
             } else {
                 // 비회원은 가입창으로 연결
                 // 회원정보를 가져와 회원가입 뷰로 보냄
@@ -96,6 +97,7 @@ public class LoginController {
 
         } catch (Exception e){
             System.out.println("시스템 오류");
+            e.printStackTrace();
             //redirect 혈식으로 return 시, 이전에 설정된 model값은 사라짐
             return "redirect:/sjhealthy/member/login";
         }
