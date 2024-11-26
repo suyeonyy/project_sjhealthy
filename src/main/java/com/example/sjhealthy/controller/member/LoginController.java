@@ -1,13 +1,26 @@
 package com.example.sjhealthy.controller.member;
 
+import com.example.sjhealthy.dto.GoogleProfile;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.dto.OAuthToken;
 import com.example.sjhealthy.service.MailServiceImpl;
 import com.example.sjhealthy.service.MemberService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/sjhealthy/")
@@ -47,6 +60,109 @@ public class LoginController {
             System.out.println("시스템 오류");
             return "redirect:/sjhealthy";
         }
+    }
+
+    @GetMapping("/member/login/oauth/google")
+    public String OAuthGoogle(String code, HttpServletRequest request, RedirectAttributes ra, Model model) throws JsonProcessingException {
+        OAuthToken token = getAccessTokenWithGoogle(code, request);
+        System.out.println("토큰 " + token);
+        GoogleProfile profile = requestGoogleAccountProfile(token);
+        System.out.println(profile);
+
+        try {
+            MemberDTO isExist = memberService.findMemberEmail(profile.getEmail());
+            if (isExist != null){
+                // 기존 회원이라면 로그인으로 연결
+                ra.addFlashAttribute("memberDTO", isExist);
+                return "redirect:/sjhealthy/member/login";
+            } else {
+                // 비회원은 가입창으로 연결
+                // 회원정보를 가져와 회원가입 뷰로 보냄
+                MemberDTO googleAccount = new MemberDTO();
+                googleAccount.setMemberId(profile.getEmail().split("@")[0]); // 이메일의 @ 앞부분을 가져와 memberId로 설정
+                googleAccount.setMemberEmail(profile.getEmail());
+                googleAccount.setMemberName(profile.getName());
+                model.addAttribute("memberDTO", googleAccount); // 이 3가지 정보를 회원가입 창에 채워서 뷰 출력
+                return "join";
+            }
+
+        } catch (Exception e){
+            System.out.println("시스템 오류");
+            return "redirect:/sjhealthy/member/login";
+        }
+    }
+
+    public OAuthToken getAccessTokenWithGoogle(String code, HttpServletRequest request){
+        System.out.println(code);
+        // 받아온 인가 코드로 액세스 토큰 요청
+        // POST 방식으로 key-value 데이터를 요청하고 액세스 토큰 받아옴
+        RestTemplate rt = new RestTemplate();
+
+        // Headers
+        org.springframework.http.HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        // Body
+        String client_id = "***REMOVED***";
+        String client_secret = "***REMOVED***";
+        String redirect_uri = "***REMOVED***";
+        String grant_type = "authorization_code";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("code", code);
+        params.add("client_id", client_id);
+        params.add("client_secret", client_secret);
+        params.add("redirect_uri", redirect_uri);
+        params.add("grant_type", grant_type);
+
+        // 한 곳에 담는다
+        HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(params, headers);
+
+        ResponseEntity<String> response = rt.exchange(
+            "https://oauth2.googleapis.com/token",
+            HttpMethod.POST,
+            googleTokenRequest,
+            String.class
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        OAuthToken token = new OAuthToken();
+
+        try {
+            token = mapper.readValue(response.getBody(), OAuthToken.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 토큰을 세션에 저장
+        HttpSession session = request.getSession();
+        session.setAttribute("accessToken_google", token.getAccess_token());
+        System.out.println("token: " + token);
+
+        return token;
+    }
+
+    public GoogleProfile requestGoogleAccountProfile(OAuthToken token) throws JsonProcessingException {
+        // 토큰을 담아 정보 요청
+        RestTemplate rt2 = new RestTemplate();
+
+        HttpHeaders headers1 = new HttpHeaders();
+        // 토큰은 헤더에 숨겨 보낸다
+        headers1.add(HttpHeaders.AUTHORIZATION, "Bearer " + token.getAccess_token());
+
+        HttpEntity<MultiValueMap<String,String>> googleAccountRequest = new HttpEntity<>(headers1);
+        ResponseEntity<String> response = rt2.exchange(
+            "https://www.googleapis.com/userinfo/v2/me",
+            HttpMethod.GET,
+            googleAccountRequest,
+            String.class
+        );
+
+        ObjectMapper mapper = new ObjectMapper();
+        System.out.println(response);
+
+        GoogleProfile profile = mapper.readValue(response.getBody(), GoogleProfile.class);
+        return profile;
     }
 
     @GetMapping("/member/find-id")

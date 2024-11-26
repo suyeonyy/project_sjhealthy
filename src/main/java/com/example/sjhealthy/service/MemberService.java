@@ -75,4 +75,12 @@ public class MemberService {
         } else return null;
     }
 
+    public MemberDTO findMemberEmail(String memberEmail){
+        Optional<MemberEntity> byMemberEmail = memberRepository.findByMemberEmail(memberEmail);
+
+        if (byMemberEmail.isPresent()){
+            MemberEntity memberEntity = byMemberEmail.get();
+            return MemberMapper.toMemberDTO(memberEntity);
+        } else return null;
+    }
 }
