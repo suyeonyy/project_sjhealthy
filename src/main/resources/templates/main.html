@@ -6,9 +6,11 @@
 </head>
 <body>
     <h1>메인</h1>
-    <a href="/sjhealthy/member/join"><button>회원가입</button></a>
-
+    <a href="/sjhealthy/member/join" th:if="${loginId == null}"><button>회원가입</button></a>
     <a href="/sjhealthy/member/login" th:if="${loginId == null}"><button>로그인</button></a>
+
+    <!-- 내 정보는 아직 안 만듦 -->
+    <a href="/sjhealthy/member/mypage" th:if="${loginId != null}"><button>내 정보</button></a>
     <a href="/sjhealthy/member/logout" th:if="${loginId != null}"><button>로그아웃</button></a>
 
     <a href="/sjhealthy/board/write"><button>글 작성</button></a>
