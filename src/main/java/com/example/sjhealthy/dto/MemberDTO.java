@@ -14,6 +14,11 @@ public class MemberDTO {
     private String memberName;      //사용자 명
     private String memberPnum;      //전화번호
     private String memberEmail;     //이메일
+
+    private String memberEmailFirst;     //이메일
+    private String memberEmailLast;     //이메일
+
+
     private String memberBirth;     //생년월일
     private String memberGender;    //성별
     private String memberAuth;      //권한
