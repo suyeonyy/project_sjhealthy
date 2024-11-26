@@ -237,6 +237,17 @@ function saveMember() {
     var memberEmailMerge = ((memberEmailFirst != "" && memberEmailLast != "") ? memberEmailFirst + "@" + memberEmailLast : " ");
     form.elements['memberEmail'].value = memberEmailMerge;
 
+    /*
+    console.log("데이터 비교");
+    console.log( $("#memberId").val() );
+    console.log( $("#memberPassword").val() );
+    console.log( $("#memberName").val() );
+    console.log( $("#memberPnum").val() );
+    console.log( $("#memberEmail").val() );
+    console.log( $("#memberBirth").val() );
+    console.log( $("input[name='memberGender']:checked").val() );
+    */
+
     if (memberIdPass == 'N') {
         alert("아이디를 확인해주세요.");
         $("#memberId").focus();
