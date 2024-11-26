@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>LoginForm</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>로그인</h1>
@@ -11,7 +12,25 @@
         비밀번호: <input type="password" name="memberPassword">
         <input type="submit" name="submit" value="로그인">
     </form>
+    <button id="googleOAuth">구글 로그인</button>
     <a href="../member/find-id"><button>아이디 찾기</button></a>
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", ()=> {
+        const google = document.getElementById("googleOAuth");
+        const client_id = "175299406832-n5iv92o1fdmg2b7nfqvb4qrh44p7hni8.apps.googleusercontent.com";
+        const redirect_uri = "http://localhost:8081/sjhealthy/member/login/oauth/google";
+
+        google.addEventListener("click", async (e)=>{
+            e.preventDefault();
+
+            const url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + client_id
+                + "&redirect_uri=" + redirect_uri
+                + "&response_type=code&scope=email+profile"; // scope 에 요청 정보
+            window.location.href = url; // 로그인 페이지로 리다이렉트
+    });
+});
+</script>
 </body>
 </html>
