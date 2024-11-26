@@ -94,7 +94,8 @@
          # autocomplete
          자동완성 끄기
      -->
-    <form id="joinForm" action="../member/join" method="POST" onsubmit="return saveMember();" autocomplete="off">
+    <!-- action="../member/join"은 상대경로 여서, 구글 로그인 회원가입 시 에러 발생하여 아래의 절대경로로 변경함  -->
+    <form id="joinForm" action="/sjhealthy/member/join" method="POST" onsubmit="return saveMember();" autocomplete="off">
         <table>
             <colgroup>
                 <col style="width:30%;" />
@@ -104,7 +105,8 @@
             <tr>
                 <th><span>*아이디</span></th>
                 <td>
-                    <input type="text" class="ip_text" id="memberId" name="memberId" placeholder="아이디" maxlength="500" />
+                    <input type="text" class="ip_text" id="memberId" name="memberId" placeholder="아이디" maxlength="500" th:value="${memberDTO != null ? memberDTO.memberId : ''}" th:readonly="${memberDTO != null}"  />
+
                     <div id="memberIdMsg"></div>
                 </td>
             </tr>
@@ -125,7 +127,7 @@
             <tr>
                 <th><span>*이름</span></th>
                 <td>
-                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" />
+                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" th:value="${memberDTO != null ? memberDTO.memberName : ''}" th:readonly="${memberDTO != null}"/>
                     <div id="nameMsg"></div>
                 </td>
             </tr>
@@ -139,8 +141,8 @@
             <tr>
                 <th><span>*이메일</span></th>
                 <td>
-                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" onblur="memberEmailCheck(this)" /> @
-                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" onblur="memberEmailCheck(this)" />
+                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" onblur="memberEmailCheck(this)" th:value="${memberDTO != null ? memberDTO.memberEmailFirst : ''}" th:readonly="${memberDTO != null}"/> @
+                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" onblur="memberEmailCheck(this)" th:value="${memberDTO != null ? memberDTO.memberEmailLast : ''}" th:readonly="${memberDTO != null}"/>
                     <input type="hidden" id="memberEmail" name="memberEmail" />
                     <div id="emailMsg"></div>
                 </td>
@@ -179,12 +181,12 @@
                     <input type="text" id="isDeleted" name="isDeleted" value="N" />
                 </td>
             </tr>
-            <input type="hidden" id="memberIdPass" value="N">
+            <input type="hidden" id="memberIdPass" th:value="${memberDTO != null ? 'Y' : 'N'}">
             <input type="hidden" id="memberPasswordPass" value="N">
             <input type="hidden" id="memberPasswordCheckPass" value="N">
-            <input type="hidden" id="memberNamePass" value="N">
+            <input type="hidden" id="memberNamePass" th:value="${memberDTO != null ? 'Y' : 'N'}">
             <input type="hidden" id="memberPnumPass" value="N">
-            <input type="hidden" id="memberEmailPass" value="N">
+            <input type="hidden" id="memberEmailPass" th:value="${memberDTO != null ? 'Y' : 'N'}">
             <input type="hidden" id="memberBirthPass" value="N">
             </tbody>
         </table>
