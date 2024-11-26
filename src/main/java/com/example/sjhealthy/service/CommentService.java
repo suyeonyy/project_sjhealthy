@@ -37,7 +37,7 @@ public class CommentService {
     }
 
     public List<CommentDTO> findAll(Long boardId) {
-        // select * from comment_table where 1 = 1  and board_id=? order by id desc;
+        // select from comment_table where 1 = 1  and board_id=? order by id desc;
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
         List<CommentEntity> commentEntityList = commentRepository.findAllByBoardEntityOrderByIdDesc(boardEntity);
         /* EntityList -> DTOList */
