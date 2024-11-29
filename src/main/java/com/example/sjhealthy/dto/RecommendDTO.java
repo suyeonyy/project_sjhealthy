@@ -8,8 +8,8 @@ public class RecommendDTO {
     private String memberId;
     private String recStore;
     private String recMenu;
-    private Long recY;
-    private Long recN;
+    private Long recY; // 좋아요 수
+    private Long recN; // 싫어요 수
     private Long recViews;
     private String isDeleted;
     private String createDate;
