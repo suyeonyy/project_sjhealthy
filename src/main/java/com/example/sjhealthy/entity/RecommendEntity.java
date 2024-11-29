@@ -52,6 +52,9 @@ public class RecommendEntity {
 
     @PrePersist
     public void prePersist(){
+        if (recY == null){ this.recY = 0L; }
+        if (recN == null){ this.recN = 0L; }
+
         if (this.createDate == null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
             this.createDate = LocalDate.now().format(formatter);
