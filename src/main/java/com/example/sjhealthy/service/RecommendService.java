@@ -7,8 +7,10 @@ import com.example.sjhealthy.repository.RecommendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,4 +27,20 @@ public class RecommendService {
         return dtoList;
     }
 
+    public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
+        RecommendEntity entity = recommendRepository.save(RecommendMapper.toRecommendEntity(recommendDTO));
+
+        return RecommendMapper.toRecommendDTO(entity);
+    }
+
+    public RecommendEntity readRecommendationById(Long recId){
+        Optional<RecommendEntity> entity = recommendRepository.findById(recId);
+
+        RecommendEntity byRecId;
+        if (entity.isPresent()){
+            byRecId = entity.get();
+            return byRecId;
+        }
+        return null;
+    }
 }
