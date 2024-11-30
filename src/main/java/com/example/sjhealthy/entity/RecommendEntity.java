@@ -74,6 +74,10 @@ public class RecommendEntity {
         if (this.isDeleted == null){
             this.isDeleted = "N";
         }
+
+        if (this.recViews == null){
+            this.recViews = 0L;
+        }
     }
 
     @PreUpdate
