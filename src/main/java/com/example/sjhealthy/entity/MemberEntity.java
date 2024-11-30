@@ -66,6 +66,7 @@ public class MemberEntity {
         // 수정시 날짜 저장 형식 지정하여 현재 날짜 저장
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         this.updateDate = LocalDate.now().format(formatter);   // 수정일 저장
+//        this.updateDate = this.createDate; 이렇게 해도 됨
 
 
         // memberId 넣어줌 (memberId null 값 확인 후, defaultUser 설정)
