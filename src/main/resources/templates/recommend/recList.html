@@ -12,23 +12,30 @@
         <thead>
         <tr>
             <th>글 번호</th>
-            <th>제목</th>
+            <th>가게 이름</th>
+            <th>추천 메뉴</th>
             <th>작성자</th>
             <th>작성일</th>
             <th>조회수</th>
+            <th>좋아요</th>
+            <th>싫어요</th>
         </tr>
         </thead>
 
         <tbody>
-        <tr th:each="board : ${list}">
-            <td th:text="${board.recId}"></td>
-            <td th:text="${board.recStore}"></td>
-            <td th:text="${board.recMenu}"></td>
-            <td th:text="${board.memberId}"></td>
-            <td th:text="${board.createDate}"></td>
-            <td th:text="${board.recY}"></td>
-            <td th:text="${board.recN}"></td>
-        </tr>
+        <a id="detail">
+            <tr th:each="board : ${list}">
+                <td th:text="${board.recId}" th:value="${board.recId}" id="recId"></td>
+                <td th:text="${board.recStore}"></td>
+                <td th:text="${board.recMenu}"></td>
+                <td th:text="${board.memberId}"></td>
+                <td th:text="${board.createDate}"></td>
+                <td th:text="${board.recViews}"></td>
+                <td><input type="button" th:value="${board.recY}" id="recY"></td>
+                <td><input type="button" th:value="${board.recN}" id="recN"></td>
+            <!-- 바 형태로 표현했으면 좋겠다. -->
+            </tr>
+        </a>
         </tbody>
     </table>
     <input type="hidden" th:value="${loginId}" id="loginId"> 
@@ -57,6 +64,43 @@
                 }
             });
         }
+
+        const recY = document.getElementById("recY").value;
+        const recId = document.getElementById("recId").value;
+        document.getElementById("recY").addEventListener("click", async (e)=> {
+            e.preventDefault();
+
+            // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
+            if (!loginId){
+                e.preventDefault();
+                alert('회원 전용 기능입니다.');
+                return false;
+            }
+
+            try {
+                const response = await fetch("/recommend/like", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recY: recY + 1,
+                        recId: recId,
+                        memberId: loginId
+                    })
+                });
+                if (response.ok){ // HTTP 상태코드가 2xx일 때 true 반환
+                    alert('좋아요가 반영되었습니다.');
+                } else {
+                    alert('이미 투표하셨습니다.');
+                }
+    
+            } catch (error){
+                console.log('오류 발생: ', error);
+            }
+    });
+
+
     });
 </script>
 </body>
