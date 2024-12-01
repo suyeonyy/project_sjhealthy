@@ -4,6 +4,7 @@ import com.example.sjhealthy.component.RecommendMapper;
 import com.example.sjhealthy.dto.RecommendDTO;
 import com.example.sjhealthy.entity.RecommendEntity;
 import com.example.sjhealthy.repository.RecommendRepository;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +43,59 @@ public class RecommendService {
             return byRecId;
         }
         return null;
+    }
+
+    public boolean handleLikeOrDislike(Long recId, String memberId, String type){
+        // 처리가 제대로 되었는지 여부를 반환
+        Optional<RecommendEntity> recommend = recommendRepository.findById(recId);
+
+        if (recommend.isEmpty()){ //  = (!recommend.isPresent())
+            throw new RuntimeException("추천글이 존재하지 않습니다.");
+        }
+
+        RecommendEntity recommendEntity = recommend.get();
+
+        // 좋아요를 눌렀을 때
+        if ("like".equals(type)){
+            // 이전에 싫어요를 누른 상태일 땐 싫어요에서 memberId를 제거
+            if (recommendEntity.getRecN().contains(memberId)){
+                // 'memberId_'를 지움
+                recommendEntity.setRecN(recommendEntity.getRecN().replace(memberId + "_", ""));
+            }
+
+            // 좋아요 처리
+            if (!recommendEntity.getRecY().contains(memberId)){
+                // 좋아요를 누른 적 없을 때
+                recommendEntity.setRecY(memberId + "_");
+            } else {
+                // 좋아요를 이미 눌렀을 때
+                return false;
+            }
+        } else if ("dislike".equals(type)){
+            // 싫어요를 눌렀을 때
+            // 이전에 좋아요를 누른 상태일 땐 좋아요에서 memeberId를 제거
+            if (recommendEntity.getRecY().contains(memberId)){
+                recommendEntity.setRecY(recommendEntity.getRecY().replace(memberId + "_", ""));
+            }
+
+            // 싫어요 처리
+            if (!recommendEntity.getRecN().contains(memberId)){
+                // 싫어요를 누른 적 없을 때
+                recommendEntity.setRecN(memberId + "_");
+            } else {
+                // 싫어요를 이미 눌렀을 때
+                return false;
+            }
+        }
+
+        // 수정한 데이터를 DB에 업로드
+        recommendRepository.save(recommendEntity);
+        System.out.println("좋/싫 수정 = " + recommendEntity);
+        return true;
+    }
+
+    public List<Tuple> countLikeAndDislike(Long recId){
+        // 출력용 좋아요, 싫어요 개수 구하기
+        return recommendRepository.getLikeDislikeCount(recId);
     }
 }

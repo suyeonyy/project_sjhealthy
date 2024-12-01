@@ -25,14 +25,18 @@
         <tbody>
         <a id="detail">
             <tr th:each="board : ${list}">
-                <td th:text="${board.recId}" th:value="${board.recId}" id="recId"></td>
+                <!-- <td th:text="${board.recId}" th:value="${board.recId}" id="recId"></td> -->
+                 <!-- td에는 value가 없다. 그래서 js에서 읽지 못하고 서버로 보내 null로 보내지는 오류가 있었다.
+                  td는 value가 아니라 textContent 나 innerText로 읽어야 한다. 
+                  아니면 input 태그를 넣어 value로 읽는다-->
+                <td><input type="text" th:value="${board.recId}" id="recId" readonly></td>
                 <td th:text="${board.recStore}"></td>
                 <td th:text="${board.recMenu}"></td>
                 <td th:text="${board.memberId}"></td>
                 <td th:text="${board.createDate}"></td>
                 <td th:text="${board.recViews}"></td>
-                <td><input type="button" th:value="${board.recY}" id="recY"></td>
-                <td><input type="button" th:value="${board.recN}" id="recN"></td>
+                <td><input type="button" id="recY"><span id="like"></span></td>
+                <td><input type="button" id="recN"><span id="dislike"></span></td>
             <!-- 바 형태로 표현했으면 좋겠다. -->
             </tr>
         </a>
@@ -66,6 +70,7 @@
         }
 
         const recY = document.getElementById("recY").value;
+        const recN = document.getElementById("recN").value;
         const recId = document.getElementById("recId").value;
         document.getElementById("recY").addEventListener("click", async (e)=> {
             e.preventDefault();
@@ -78,28 +83,63 @@
             }
 
             try {
-                const response = await fetch("/recommend/like", {
+                const response = await fetch("/sjhealthy/recommend/like", {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        recY: recY + 1,
                         recId: recId,
-                        memberId: loginId
+                        action: "like"
+                        // memberId: loginId 세션에서 꺼내 씀
                     })
                 });
-                if (response.ok){ // HTTP 상태코드가 2xx일 때 true 반환
-                    alert('좋아요가 반영되었습니다.');
-                } else {
-                    alert('이미 투표하셨습니다.');
-                }
-    
+                const data = await response.json();
+                alert(data.message);
+
+                // 좋아요 싫어요 개수 출력
+                const like = document.getElementById("like");
+                like.textContent = data.likeCount;
+                dislike.textContent = data.dislikeCount;
             } catch (error){
                 console.log('오류 발생: ', error);
             }
-    });
+        });
 
+        document.getElementById("recN").addEventListener("click", async (e)=> {
+                e.preventDefault();
+
+                // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
+                if (!loginId){
+                    e.preventDefault();
+                    alert('회원 전용 기능입니다.');
+                    return false;
+                }
+
+                try {
+                const response = await fetch("/sjhealthy/recommend/dislike", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        recId: recId,
+                        action: "dislike"
+                        // memberId: loginId 세션에서 꺼내 씀
+                    })
+                });
+                const data = await response.json();
+                alert(data.message);
+
+                // 좋아요 싫어요 개수 출력
+                const like = document.getElementById("like");
+                like.textContent = data.likeCount;
+                dislike.textContent = data.dislikeCount;
+            } catch (error){
+                console.log('오류 발생: ', error);
+            }
+
+            });
 
     });
 </script>
