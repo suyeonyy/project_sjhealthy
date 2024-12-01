@@ -26,11 +26,11 @@ public class RecommendEntity {
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     private String recMenu;
 
-    @Column(columnDefinition = "NUMERIC(18,0) DEFAULT 0", nullable = false)
-    private Long recY;
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    private String recY;
 
-    @Column(columnDefinition = "NUMERIC(18,0) DEFAULT 0", nullable = false)
-    private Long recN;
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    private String recN;
 
     @Column(columnDefinition = "NUMERIC(18,0) DEFAULT 0", nullable = false)
     private Long recViews;
@@ -52,8 +52,8 @@ public class RecommendEntity {
 
     @PrePersist
     public void prePersist(){
-        if (recY == null){ this.recY = 0L; }
-        if (recN == null){ this.recN = 0L; }
+        if (recY == null){ this.recY = ""; }
+        if (recN == null){ this.recN = ""; }
 
         if (this.createDate == null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
