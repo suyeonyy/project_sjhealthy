@@ -1,6 +1,8 @@
 package com.example.sjhealthy.controller.member;
 
+import com.example.sjhealthy.controller.SignInService;
 import com.example.sjhealthy.dto.GoogleProfile;
+import com.example.sjhealthy.dto.KakaoApiClient;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.OAuthToken;
 import com.example.sjhealthy.service.MailServiceImpl;
@@ -15,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.method.AuthorizeReturnObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -39,6 +42,12 @@ public class LoginController {
         return "login";
     }
 
+    @Autowired
+    private KakaoApiClient kakaoApiClient;
+
+    @Autowired
+    private SignInService signInService;
+
     @PostMapping("/member/login")
     public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session){
         System.out.println("login");
@@ -60,6 +69,25 @@ public class LoginController {
             System.out.println("시스템 오류");
             return "redirect:/sjhealthy";
         }
+    }
+
+    /* 카카오 로그인 */
+    //@GetMapping
+    @GetMapping("/member/login/oauth/kakao")
+    public String signin(Model model){
+
+        System.out.println("진입하나요??");
+        //Model : view로 데이터를 전달하는 객체
+        model.addAttribute("REST_API_KEY", kakaoApiClient.getClientId());
+        model.addAttribute("REDIRECT_URI", kakaoApiClient.getRedirectUrl());
+
+        return "signinForm";
+    }
+
+    @GetMapping("kakao")
+    public String signinKakao(@RequestParam("code") String code) {
+        String accessToken = signInService.getKakaoAccessToken(code);
+        return "redirect:/home";
     }
 
     @GetMapping("/member/login/oauth/google")
