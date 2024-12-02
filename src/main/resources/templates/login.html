@@ -12,6 +12,21 @@
         비밀번호: <input type="password" name="memberPassword">
         <input type="submit" name="submit" value="로그인">
     </form>
+
+    <!---->
+    <a th:href="@{/sjhealthy/member/login/oauth/kakao}">
+        <img th:src="@{/kakao_login_medium_narrow.png}" style="width:150px; height:40px;">
+    </a>
+
+    <!--
+    <div>
+        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}">
+            <img th:src="@{/kakao_login_medium_narrow.png}">
+        </a>
+    </div>
+    -->
+
+
     <button id="googleOAuth">구글 로그인</button>
     <a href="../member/find-id"><button>아이디 찾기</button></a>
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
