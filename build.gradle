@@ -41,8 +41,20 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.springframework.boot:spring-boot-starter-mail' // 인증 메일
+	implementation 'org.springframework.boot:spring-boot-starter-mail' // 인증 메일
 
+
+	//Webflux
+	//카카오 로그인 의존성 추가
+	//Spring Framework에서 비동기 및 반응형(reactive) 프로그래밍을 지원하는 모듈.
+	//카카오 로그인 과정에서 비동기 방식으로 요청을 처리할 수 있음
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+/*
+	implementation 'org.slf4j:slf4j-api:1.7.32'        // SLF4J API
+	implementation 'ch.qos.logback:logback-classic:1.2.11'  // Logback Classic 버전
+*/
 }
 
 tasks.named('test') {
