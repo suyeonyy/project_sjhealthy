@@ -2,10 +2,17 @@ package com.example.sjhealthy.controller;
 
 import com.example.sjhealthy.component.RecommendMapper;
 import com.example.sjhealthy.dto.BoardDTO;
+import com.example.sjhealthy.dto.LikeRequest;
 import com.example.sjhealthy.dto.RecommendDTO;
+import com.example.sjhealthy.dto.ResponseMessage;
 import com.example.sjhealthy.entity.RecommendEntity;
 import com.example.sjhealthy.service.RecommendService;
+import jakarta.persistence.Tuple;
+import lombok.Data;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +32,7 @@ public class RecommendController {
 
         List<RecommendDTO> list = recommendService.getList();
         model.addAttribute("list", list);
+
 
         return "recommend/recList";
     }
@@ -60,7 +68,10 @@ public class RecommendController {
     }
 
     @GetMapping("/recommend/read")
-    public RecommendEntity readRecommendation(@RequestParam(name = "recId")Long recId){
+    public RecommendEntity readRecommendation(@RequestParam(name = "recId")Long recId,
+                                              @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        model.addAttribute("loginId", loginId);
+
         RecommendEntity result = recommendService.readRecommendationById(recId);
 
         if (result == null){
@@ -69,15 +80,67 @@ public class RecommendController {
         } else return result;
     }
 
+    // 좋아요
     @ResponseBody
-    @GetMapping("/recommend/like")
-    public RecommendEntity addLike(@RequestBody Long recY, @RequestBody Long recId){
-        RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId));
-//        좋아요 누르면 싫어요 눌렀던 거 사라짐(반대도 동일), ID당 1번 선택 가능
-        // 아직 못 만듦. 내일 다시
-        dto.setRecY(recY);
+    @PostMapping("/recommend/like")
+    public ResponseEntity<?> addLike(@RequestBody LikeRequest likeRequest,
+                                   @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        model.addAttribute("loginId", loginId);
 
-        RecommendEntity entity = RecommendMapper.toRecommendEntity(recommendService.addRecommendation(dto));
-        return entity;
+        if (likeRequest == null || likeRequest.getRecId() == null || likeRequest.getAction() == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
+                "필드가 일치하지 않습니다.", null, null));
+        }
+        Long recId = likeRequest.getRecId();
+        System.out.println("likeRequest = " + likeRequest);
+
+//        좋아요 누르면 싫어요 눌렀던 거 사라짐(반대도 동일), ID당 1번 선택 가능
+        boolean result = recommendService.handleLikeOrDislike(recId, loginId, "like");
+
+        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
+
+        List<Tuple> list = recommendService.countLikeAndDislike(recId);
+        Tuple tuple = list.get(0);
+        Integer like = tuple.get("likeCount", Integer.class);
+        Long likeCount = like.longValue();
+        Integer dislike = tuple.get("dislikeCount", Integer.class);
+        Long dislikeCount = dislike.longValue();
+
+
+        if (result){
+            return ResponseEntity.ok(new ResponseMessage("좋아요가 반영되었습니다.", likeCount, dislikeCount));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
+                "이미 좋아요를 누르셨습니다.", likeCount, dislikeCount));
+        }
+    }
+
+    // 싫어요
+    @ResponseBody
+    @PostMapping("/recommend/dislike")
+    public ResponseEntity<?> addDislike(@RequestBody LikeRequest likeRequest,
+                                        @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        model.addAttribute("loginId", loginId);
+
+        Long recId = likeRequest.getRecId();
+
+        boolean result = recommendService.handleLikeOrDislike(recId, loginId, "dislike");
+
+        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
+
+        List<Tuple> list = recommendService.countLikeAndDislike(recId);
+        Tuple tuple = list.get(0);
+        Integer like = tuple.get("likeCount", Integer.class);
+        Long likeCount = like.longValue();
+        Integer dislike = tuple.get("dislikeCount", Integer.class);
+        Long dislikeCount = dislike.longValue();
+
+
+        if (result){
+            return ResponseEntity.ok(new ResponseMessage("싫어요가 반영되었습니다.", likeCount, dislikeCount));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
+                "이미 싫어요를 누르셨습니다.", likeCount, dislikeCount));
+        }
     }
 }
