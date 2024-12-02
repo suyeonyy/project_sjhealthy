@@ -21,6 +21,8 @@ spring:
     multipart:
       enabled: true #첨부파일
 
+
+
   jpa:
     hibernate:
       ddl-auto: update #엔티티와 테이블이 정상 매핑되었는지만 확인, 정상매핑 시 실행 비정상 매핑 시 에러발생 validate
@@ -41,3 +43,8 @@ spring:
           type:
             descriptor:
               sql: trace
+
+
+  kakao:
+    client_id: ***REMOVED*** #{REST API KEY}
+    redirect_uri: http://localhost:8081/oauth/kakao/callback
