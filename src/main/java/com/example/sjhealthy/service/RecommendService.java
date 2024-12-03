@@ -101,7 +101,7 @@ public class RecommendService {
     }
 
     // 지도에서 주변 가게 정보 띄울 때 추천 게시판에 존재하는 정보는 같이 띄우려고
-    public Set<RecommendEntity> getListByStoreIdOrPlaceName(Long recStoreId, String recStore) {
+    public List<RecommendEntity> getListByStoreIdOrPlaceName(String recStoreId, String recStore) {
         return recommendRepository.getRecommendationByStoreNameOrStoreId(recStoreId, recStore);
     }
 }

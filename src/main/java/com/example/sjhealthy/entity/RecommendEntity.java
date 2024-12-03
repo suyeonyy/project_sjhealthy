@@ -21,6 +21,9 @@ public class RecommendEntity {
     private String memberId;
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String recStoreId;
+
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String recStore;
 
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
