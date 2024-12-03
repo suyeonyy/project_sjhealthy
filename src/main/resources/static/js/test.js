@@ -1,29 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>추천글 작성</title>
-</head>
-<body>
-<h1>추천글 작성</h1>
-<ul>
-    <li>
-        <span class = "option-title">장소</span>
-    </li>
-    <li class = "hide">
-        <input type = "text" id ="keyword" class = "input-textbox" placeholder = "장소를 검색해주세요.">
-        <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
-    </li>
-    <li>
-        추천 메뉴: <input type="text" name="recMenu" id="recMenu"><br>
-    </li>
-</ul>
-<ul id = "placesList"></ul>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=***REMOVED***&libraries=services"></script>
-
-<script>
-    //해당 키워드 검색
+//해당 키워드 검색
     $('#keyword').change(function(){
         searchPlaces();
     });
@@ -35,6 +10,7 @@
 
     //keyword의 값을 가져와서 값이 있는지 확인하고, 있으면 ps 객체의 keywordSearch함수의 인자로 keyword를 전달
     function searchPlaces() {
+        console.log("11");
         var keyword = document.getElementById('keyword').value;
 
         if (!keyword.replace(/^\s+|\s+$/g, '')) {
@@ -48,6 +24,7 @@
     //장소 검색이 완료되었을 때 호출되는 콜백함수
     //정상적으로 검색이 완료되었을 경우 displayPlaces함수에 리턴받은 data를 전달
     function placesSearchCB(data, status, pagination) {
+        console.log("22");
         if (status === kakao.maps.services.Status.OK) {
 
             displayPlaces(data);
@@ -67,6 +44,7 @@
 
     //검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
     function displayPlaces(places) {
+        console.log("33");
         var fragment = document.createDocumentFragment();
 
         removeAllChildNods(listEl);
@@ -93,6 +71,10 @@
 
     //HTML 코드를 생성
     function getListItem(index, places) {
+        console.log("44 진입");
+        console.log("place_name",places.place_name);
+        console.log("id",places.id);
+        console.log("category_group_code",places.category_group_code);
         //place_name 장소명, 업체명
         //id 장소 ID
         //category_group_code 중요 카테고리만 그룹핑한 카테고리 그룹 코드
@@ -153,23 +135,15 @@
 
     // 데이터를 서버로 전송하는 함수
     function sendDataToServer(place_name, place_id, place_category_group_code) {
-        console.log("엥");
-
-        var loginId = $("#loginId").val();
-        var recMenu = $("#recMenu").val();
-
-        console.log("place_name",place_name);
-
         $.ajax({
            url : '../recommend/write',
            type : 'post',
-           data: {
-                memberId: loginId,
-                recMenu: recMenu,
-                recStore: place_name,
-                recStoreId: place_id,
-                rec_store_group_code: place_category_group_code
-           },
+           body: JSON.stringify({
+                           place_name: place_name,
+                           place_id: place_id,
+                           place_category_group_code: place_category_group_code
+                       })
+           //data:{place_name:place_name, place_id:place_id, place_category_group_code:place_category_group_code},
            success : function(data) {
                 console.log("성공");
                 console.log(data);
@@ -177,8 +151,32 @@
                    //console.log("fail");
            }
        });
+
+
+
+
+
+
+
+
+        /*
+        fetch('/your-server-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                place_name: place_name,
+                place_id: place_id,
+                place_category_group_code: place_category_group_code
+            })
+        })
+        .then(response => response.json())  // 서버에서 응답을 JSON 형식으로 받는다고 가정
+        .then(data => {
+            console.log('서버 응답:', data);
+        })
+        .catch(error => {
+            console.error('오류 발생:', error);
+        });
+        */
     }
-</script>
-<!-- 참고링크: https://developlsb2dwb.tistory.com/28-->
-</body>
-</html>
