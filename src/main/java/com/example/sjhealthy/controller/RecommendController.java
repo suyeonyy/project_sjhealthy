@@ -36,6 +36,8 @@ public class RecommendController {
 
         return "recommend/recList";
     }
+    
+
     @GetMapping("/recommend/write")
     public String getRecommendForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
@@ -46,7 +48,7 @@ public class RecommendController {
 //        }
         return "recommend/writeRec";
     }
-
+/* 사용안함
     @PostMapping("/recommend/write")
     public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
                                         @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
@@ -67,7 +69,7 @@ public class RecommendController {
         }
         return "redirect:/sjhealthy/recommend";
     }
-
+*/
     @GetMapping("/recommend/read")
     public RecommendEntity readRecommendation(@RequestParam(name = "recId")Long recId,
                                               @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
@@ -147,4 +149,25 @@ public class RecommendController {
         }
     }
 
+
+
+
+    /*sy 작업*/
+    @PostMapping("/recommend/write")
+    public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
+                                        @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        try {
+            RecommendDTO result = recommendService.addRecommendation(recommendDTO);
+
+            if (result == null){
+                System.out.println("추천글 등록에 실패하였습니다.");
+            } else {
+                System.out.println("추천글을 등록하였습니다.");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("시스템 오류");
+        }
+        return "redirect:/sjhealthy/recommend";
+    }
 }
