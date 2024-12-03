@@ -36,7 +36,7 @@ public class RecommendController {
 
         return "recommend/recList";
     }
-    
+
 
     @GetMapping("/recommend/write")
     public String getRecommendForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
