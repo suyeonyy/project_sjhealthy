@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>추천글 작성</title>
+</head>
+<body>
+<h1>추천글 작성</h1>
+
+<form action="../recommend/write" method="POST">
+    가게 이름: <input type="text" name="recStore" id="recStore"><br>
+    <!--  지도 연결해서 가게 불러오기로 위치랑 같이 선택할 수 있도록  -->
+    추천 메뉴: <input type="text" name="recMenu" id="recMenu"><br>
+    <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
+    <input type="submit" name="submit" id= "submit" value="등록">
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+        const submit = document.getElementById("submit");
+        
+        submit.addEventListener("click", async (e)=>{
+            const loginID = document.getElementById("loginId").value;
+            const recStore = document.getElementById("recStore").value;
+            const recMenu = document.getElementById("recMenu").value;
+            // submit 이벤트 후에 가져와야 입력된 값을 제대로 읽어온다.
+            if (!loginID){
+                e.preventDefault();
+                alert('글 작성은 회원 전용 기능입니다.');
+                window.location.href="/sjhealthy/recommend";
+                return false;
+            }
+
+            if (!recStore){
+                e.preventDefault();
+                alert('추천하시는 가게 이름을 입력해 주세요.');
+                return false;
+            }
+
+            if (!recMenu){
+                e.preventDefault();
+                alert('추천하시는 메뉴 이름을 입력해 주세요.');
+                return false;
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

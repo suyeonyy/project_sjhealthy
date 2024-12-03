@@ -14,9 +14,18 @@
     </form>
 
     <!---->
-    <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=7cddfea0ec0190490569dbcc959a263e&redirect_uri=http://localhost:8081/sjhealthy/member/login/oauth/kakao">
+    <a th:href="@{/sjhealthy/member/login/oauth/kakao}">
         <img th:src="@{/kakao_login_medium_narrow.png}" style="width:150px; height:40px;">
     </a>
+
+    <!--
+    <div>
+        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}">
+            <img th:src="@{/kakao_login_medium_narrow.png}">
+        </a>
+    </div>
+    -->
+
 
     <button id="googleOAuth">구글 로그인</button>
     <a href="../member/find-id"><button>아이디 찾기</button></a>
