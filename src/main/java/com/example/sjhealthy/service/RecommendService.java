@@ -99,9 +99,10 @@ public class RecommendService {
         // 출력용 좋아요, 싫어요 개수 구하기
         return recommendRepository.getLikeDislikeCount(recId);
     }
-
+/*
     // 지도에서 주변 가게 정보 띄울 때 추천 게시판에 존재하는 정보는 같이 띄우려고
     public Set<RecommendEntity> getListByStoreIdOrPlaceName(Long recStoreId, String recStore) {
         return recommendRepository.getRecommendationByStoreNameOrStoreId(recStoreId, recStore);
     }
+ */
 }
