@@ -21,10 +21,10 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
             //이때 FROM 뒤엔 테이블 명이 아니라 엔티티 클래스 명을 사용한다.
     List<Tuple> getLikeDislikeCount(@Param("recId")Long recId);
 
-    @Query("SELECT *" +
-        "FROM RecommendEntity r" +
-        "WHERE r.recStoreId = :recStoreId" +
-        "   OR r.recStore = :recStore ") // 고유번호가 같거나 가게 이름이 같을 때(가게이름은 프랜차이즈 때문에 같이 검사)
-    Set<RecommendEntity> getRecommendationByStoreNameOrStoreId(@Param("recStoreId") Long recStoreId,
+    @Query("SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
+        "FROM RecommendEntity r " +
+        "WHERE r.recStoreId = :recStoreId " + // 여기 끝에 공백 필요함
+        "   OR r.recStore LIKE %:recStore%") // 고유번호가 같거나 가게 이름이 같을 때(가게이름은 프랜차이즈 때문에 같이 검사)
+    List<RecommendEntity> getRecommendationByStoreNameOrStoreId(@Param("recStoreId") String recStoreId,
                                                                @Param("recStore") String recStore);
 }
