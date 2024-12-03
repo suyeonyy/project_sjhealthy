@@ -27,6 +27,7 @@ public class MapController {
      * @param request 요청 데이터
      * @return ResponseEntity
      */
+    /*
     @PostMapping("/map")
     private ResponseEntity<String> searchMap(HttpServletRequest request){
         String longitude = request.getParameter("longitude"); //경도
@@ -35,6 +36,7 @@ public class MapController {
 
         return mapService.getSearchMapList(longitude, latitude, page, "1");
     }
+     */
 
 
 }
