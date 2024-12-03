@@ -28,7 +28,7 @@ public class MapController {
         return "map";
     }
 
-
+/*
     @ResponseBody
     @PostMapping("/map/getrecommend")
     public ResponseEntity<Set<RecommendEntity>> getRecommendList(@RequestBody PlaceRequest placeRequest){
@@ -41,4 +41,5 @@ public class MapController {
         return ResponseEntity.ok(recommendDTOList);
 
     }
+ */
 }
