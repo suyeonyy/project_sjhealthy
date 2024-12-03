@@ -19,7 +19,7 @@ $("#memberId").blur(function() {
                if( memberId == ""){
                    $("#memberIdMsg").text("아이디를 입력해주세요.");
                    $("#memberIdMsg").css("color","red");
-                   $("#memberIdPass").val("N");
+                  val("N");
                /*
                }else if(!check.test(id)){
                    $("#memberIdMsg").text("6~12자 영문, 숫자를 조합하세요");
