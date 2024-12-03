@@ -56,6 +56,7 @@ public class RecommendController {
 
         try {
             RecommendDTO result = recommendService.addRecommendation(recommendDTO);
+            System.out.println("추천 글작성 = " + recommendDTO);
 
             if (result == null){
                 System.out.println("추천글 등록에 실패하였습니다.");
