@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>추천 게시판</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=8c57bbff1563405102f175c86b44b6d0&autoload=false"></script> 
+
 </head>
 <body>
 <h1>추천 게시판</h1>
@@ -29,15 +31,16 @@
                  <!-- td에는 value가 없다. 그래서 js에서 읽지 못하고 서버로 보내 null로 보내지는 오류가 있었다.
                   td는 value가 아니라 textContent 나 innerText로 읽어야 한다. 
                   아니면 input 태그를 넣어 value로 읽는다-->
-                <td><input type="text" th:value="${board.recId}" id="recId" readonly></td>
+                <td><input type="text" th:value="${board.recId}" class="recId" readonly></td>
                 <td th:text="${board.recStore}"></td>
                 <td th:text="${board.recMenu}"></td>
                 <td th:text="${board.memberId}"></td>
                 <td th:text="${board.createDate}"></td>
                 <td th:text="${board.recViews}"></td>
-                <td><input type="button" id="recY"><span id="like"></span></td>
-                <td><input type="button" id="recN"><span id="dislike"></span></td>
+                <td><input type="button" class="recY"><span id="like"></span></td>
+                <td><input type="button" class="recN"><span id="dislike"></span></td>
             <!-- 바 형태로 표현했으면 좋겠다. -->
+             <!-- 선택한 글만 열려서 좋아요싫어요 개수 보이게 만들기(그때 개수 서버에서 구해서 전달) -->
             </tr>
         </a>
         </tbody>
@@ -46,6 +49,9 @@
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
     <a href="/sjhealthy"><button>메인</button></a>
     <a href="/sjhealthy/recommend/write" id="writeButton"><button>추천글 작성</button></a>
+
+
+    <div id="map"></div>
 
 <script>
     document.addEventListener("DOMContentLoaded", ()=>{
@@ -69,79 +75,119 @@
             });
         }
 
-        const recY = document.getElementById("recY").value;
-        const recN = document.getElementById("recN").value;
-        const recId = document.getElementById("recId").value;
-        document.getElementById("recY").addEventListener("click", async (e)=> {
-            e.preventDefault();
+        // const recY = document.getElementById("recY").value;
+        // 버튼이 1개가 아니라 글마다 존재하니까 querySelectorAll()을 이용해야 한다.
+        const recY = document.querySelectorAll(".recY");
+        const recN = document.querySelectorAll(".recN");
+        const recIds = document.querySelectorAll(".recId");
 
-            // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
-            if (!loginId){
+        recY.forEach((Y, index) => { // index는 Y가 recY에서 몇 번째 요소인지를 나타내는 인덱스
+            Y.addEventListener("click", async (e)=> {
                 e.preventDefault();
-                alert('회원 전용 기능입니다.');
-                return false;
-            }
-
-            try {
-                const response = await fetch("/sjhealthy/recommend/like", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        recId: recId,
-                        action: "like"
-                        // memberId: loginId 세션에서 꺼내 씀
-                    })
-                });
-                const data = await response.json();
-                alert(data.message);
-
-                // 좋아요 싫어요 개수 출력
-                const like = document.getElementById("like");
-                like.textContent = data.likeCount;
-                dislike.textContent = data.dislikeCount;
-            } catch (error){
-                console.log('오류 발생: ', error);
-            }
-        });
-
-        document.getElementById("recN").addEventListener("click", async (e)=> {
-                e.preventDefault();
-
+                // 쿼리셀렉터로는 value를 가져올 수 있으나 All일 때는 이렇게 해서 가져와야 한다.
+                const recId = recIds[index].value; // 각 value를 가져옴
+                console.log("recId = " + recId);
+    
                 // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
                 if (!loginId){
                     e.preventDefault();
                     alert('회원 전용 기능입니다.');
                     return false;
                 }
-
+    
                 try {
-                const response = await fetch("/sjhealthy/recommend/dislike", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        recId: recId,
-                        action: "dislike"
-                        // memberId: loginId 세션에서 꺼내 씀
-                    })
-                });
-                const data = await response.json();
-                alert(data.message);
-
-                // 좋아요 싫어요 개수 출력
-                const like = document.getElementById("like");
-                like.textContent = data.likeCount;
-                dislike.textContent = data.dislikeCount;
-            } catch (error){
-                console.log('오류 발생: ', error);
-            }
-
+                    const response = await fetch("/sjhealthy/recommend/like", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            recId: recId,
+                            action: "like"
+                            // memberId: loginId 세션에서 꺼내 씀
+                        })
+                    });
+                    const data = await response.json();
+                    alert(data.message);
+    
+                    // 좋아요 싫어요 개수 출력
+                    const like = document.getElementById("like");
+                    like.textContent = data.likeCount;
+                    dislike.textContent = data.dislikeCount;
+                } catch (error){
+                    console.log('오류 발생: ', error);
+                }
             });
 
+        });
+
+        recN.forEach((N, index) => {
+            N.addEventListener("click", async (e)=> {
+                    e.preventDefault();
+
+                    const recId = recIds[index].value;
+    
+                    // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
+                    if (!loginId){
+                        e.preventDefault();
+                        alert('회원 전용 기능입니다.');
+                        return false;
+                    }
+    
+                    try {
+                    const response = await fetch("/sjhealthy/recommend/dislike", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            recId: recId,
+                            action: "dislike"
+                            // memberId: loginId 세션에서 꺼내 씀
+                        })
+                    });
+                    const data = await response.json();
+                    alert(data.message);
+    
+                    // 좋아요 싫어요 개수 출력
+                    const like = document.getElementById("like");
+                    like.textContent = data.likeCount;
+                    dislike.textContent = data.dislikeCount;
+                } catch (error){
+                    console.log('오류 발생: ', error);
+                }
+    
+                });
+        });
+
     });
+</script>
+
+<script>
+
+
+    // document.addEventListener("DOMContentLoaded", ()=>{
+    //     const button = document.getElementById("button");
+    //     const search = document.getElementById("search").value;
+
+    //     button.addEventListener("click", async (e) => {
+    //         e.preventDefault();
+
+    //         try {
+    //             const response = await fetch("https://map.kakao.com/link/search/${search}");
+
+    //             if (response.ok){
+    //                 const data = await response.json();
+    //                 console.log('data = ' + data);
+    //             } else {
+    //                 throw new Error('error ' + response.status);
+    //             }
+    //         } catch (error){
+    //             console.log('error = ' + error);
+    //         }
+    //     });
+    // });
+
 </script>
 </body>
 </html>

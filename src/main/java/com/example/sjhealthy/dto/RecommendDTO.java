@@ -6,6 +6,7 @@ import lombok.Data;
 public class RecommendDTO {
     private Long recId;
     private String memberId;
+    private Long recStoreId; // 가게 고유 번호
     private String recStore;
     private String recMenu;
     private String recY; // 좋아요 수
