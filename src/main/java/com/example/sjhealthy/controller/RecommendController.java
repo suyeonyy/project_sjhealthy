@@ -97,6 +97,7 @@ public class RecommendController {
 //        좋아요 누르면 싫어요 눌렀던 거 사라짐(반대도 동일), ID당 1번 선택 가능
         boolean result = recommendService.handleLikeOrDislike(recId, loginId, "like");
 
+        // 확인용
         System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
 
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
@@ -126,6 +127,7 @@ public class RecommendController {
 
         boolean result = recommendService.handleLikeOrDislike(recId, loginId, "dislike");
 
+        //확인용
         System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
 
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
@@ -143,4 +145,5 @@ public class RecommendController {
                 "이미 싫어요를 누르셨습니다.", likeCount, dislikeCount));
         }
     }
+
 }
