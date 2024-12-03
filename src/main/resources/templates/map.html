@@ -7,7 +7,7 @@
         .map_wrap, .map_wrap * {margin:0; padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
         .map_wrap {position:relative;width:100%;height:350px;}
         #category {position:absolute;top:10px;left:10px;border-radius: 5px; border:1px solid #909090;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);background: #fff;overflow: hidden;z-index: 2;}
-        #category li {float:left;list-style: none;width:50px;px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
+        #category li {float:left;list-style: none;width:50px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
         #category li.on {background: #eee;}
         #category li:hover {background: #ffe6e6;border-left:1px solid #acacac;margin-left: -1px;}
         #category li:last-child{margin-right:0;border-right:0;}
@@ -33,7 +33,6 @@
     </style>
 </head>
 <body>
-검색: <input type="text" id="searchName" />
 
 <div class="map_wrap">
     <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
@@ -55,8 +54,9 @@
 <!-- javascript key -->
 <!-- services와 clusterer, drawing 라이브러리 불러오기 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=키넣는곳&libraries=services,clusterer,drawing"></script>
-<script>
+
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=***REMOVED***&libraries=services,clusterer,drawing"></script>
+<script type="text/javascript">
     /*
     * 현재 위치 중심으로 지도 이동
     */
@@ -70,8 +70,8 @@
             latitude = position.coords.latitude;
             longitude = position.coords.longitude;
 
-            console.log('경도' + latitude);
-            console.log('위도' + longitude);
+            console.log('경도' + longitude);
+            console.log('위도' + latitude);
 
             //아래 코드를 해당 함수에 넣은 이유: function은 비동기라 안 기다리고 바로 다음으로 넘어가는데 다른 것들은 동기라서 1 -> 3 -> 2 순서로 찍히는 것이다. 그래서 if문 밖으로 위도, 경도 변수를 선언하면 undefined가 찍힌다.
 
@@ -209,13 +209,40 @@
                 markers = [];
             }
 
+            
+
             // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
             function displayPlaceInfo (place) {
                 console.log("진입????");
                 console.log(place);
                 //데이터 가져와.
+                // 맨 위에서 recommendDTOList에 서버에서 보낸 리스트를 담아놨다.
+                // 서버에서 보낸 리스트에서 가게 이름만 리스트로 가져와 가게 이름 배열로 만듦(비교에 사용)
+                var storeId = place.storeId;
+                var placeName = place.place_name;
+            
+                $.ajax({
+                    url : '/sjhealthy/map/getrecommned',
+                    type : 'post',
+                    data : {
+                        storeId: storeId,
+                        placeName: placeName
+                    },
+                    success : function(data) {
+                        console.log('data = ' + data); // 데이터 확인
+                        
+                        if (!data){
+                            // 존재하지 않을 땐 아무것도 안 함
+                            return false;
+                        }
 
+                        // data.forEach(function){
+                            
+                        // }
+                    }, error : function(){
 
+                    }
+                });
 
                 var content = '<div class="placeinfo">' +
                                 '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';
@@ -225,6 +252,20 @@
                                 '  <span class="jibun" title="' + place.address_name + '">(지번 : ' + place.address_name + ')</span>';
                 }  else {
                     content += '    <span title="' + place.address_name + '">' + place.address_name + '</span>';
+
+                        for (let i = 0; i < recommendDTO.length; i++){
+                            if (recommendDTO[i].storeName === place.place_name){
+                                storeMenu.push(...recommendDTO[i].storeMenu); 
+                                // ... 스프레드연산자로 배열을 펼쳐 각 항목을 개별적으로 추가, 추천 메뉴가 여러 개(배열)일 수도 있으니
+                                break;
+                            }
+                        }
+                    
+                        console.log('추천 메뉴 = ' + storeMenu);
+
+                        for (let i = 0; i < storeMenu.length; i++){
+                            content += '    <span class="after">추천 메뉴:' + storeNames[i] +'</span>';
+                        }                    
                 }
 
                 content += '    <span class="tel">' + place.phone + '</span>' +
@@ -239,6 +280,7 @@
 
             // 각 카테고리에 클릭 이벤트를 등록합니다
             function addCategoryClickEvent() {
+                console.log('addCategory');
                 var category = document.getElementById('category'),
                     children = category.children;
 
@@ -249,6 +291,8 @@
 
             // 카테고리를 클릭했을 때 호출되는 함수입니다
             function onClickCategory() {
+                console.log('onClickCategory');
+
                 var id = this.id,
                     className = this.className;
 
@@ -279,8 +323,8 @@
                     el.className = 'on';
                 }
             }
-                });
-            }
+    });
+            };
 </script>
 </body>
 </html>
