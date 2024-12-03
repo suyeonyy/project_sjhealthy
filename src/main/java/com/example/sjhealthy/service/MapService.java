@@ -18,11 +18,12 @@ public class MapService {
      * @param size 페이지당 조회 수 15
      * @return ResponseEntity
      */
+    /*
     public ResponseEntity<String> getSearchMapList(String longitude, String latitude, String page, String size) {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON)); //포맷 JSON
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "KakaoAK 키넣는곳");
+        headers.set("Authorization", "KakaoAK fccc633fbf224f6e9fd25528eee2a160");
 
         HttpEntity<String> entity = new HttpEntity<>("", headers);
 
@@ -39,4 +40,5 @@ public class MapService {
         //exchange 메서드로 템플릿 전달
         return restTemplate.exchange(baseUrl, HttpMethod.GET, entity, String.class);
     }
+     */
 }
