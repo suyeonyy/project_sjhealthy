@@ -26,6 +26,9 @@ public class RecommendEntity {
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String recStore;
 
+    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+    private String recStoreGroupCode;
+
     @Column(columnDefinition = "VARCHAR(30)", nullable = false)
     private String recMenu;
 
