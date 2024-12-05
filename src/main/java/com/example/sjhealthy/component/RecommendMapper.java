@@ -12,7 +12,9 @@ public class RecommendMapper {
 
         recommendDTO.setRecId(recommendEntity.getRecId());
         recommendDTO.setMemberId(recommendEntity.getMemberId());
+        recommendDTO.setRecStoreId(recommendEntity.getRecStoreId());
         recommendDTO.setRecStore(recommendEntity.getRecStore());
+        recommendDTO.setRecStoreGroupCode(recommendEntity.getRecStoreGroupCode());
         recommendDTO.setRecMenu(recommendEntity.getRecMenu());
         recommendDTO.setRecY(recommendEntity.getRecY());
         recommendDTO.setRecN(recommendEntity.getRecN());
@@ -31,7 +33,9 @@ public class RecommendMapper {
 
         recommendEntity.setRecId(recommendDTO.getRecId());
         recommendEntity.setMemberId(recommendDTO.getMemberId());
+        recommendEntity.setRecStoreId(recommendDTO.getRecStoreId());
         recommendEntity.setRecStore(recommendDTO.getRecStore());
+        recommendEntity.setRecStoreGroupCode(recommendDTO.getRecStoreGroupCode());
         recommendEntity.setRecMenu(recommendDTO.getRecMenu());
         recommendEntity.setRecY(recommendDTO.getRecY());
         recommendEntity.setRecN(recommendDTO.getRecN());
