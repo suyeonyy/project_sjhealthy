@@ -100,9 +100,10 @@ public class RecommendService {
         return recommendRepository.getLikeDislikeCount(recId);
     }
 
-    // 지도에서 주변 가게 정보 띄울 때 추천 게시판에 존재하는 정보는 같이 띄우려고
+    // 지도에서 주변 가게 정보 띄울 때 추천 게시판에 존재하는 정보는 같이 띄우려고, 가게 이름별로 정렬
     public List<RecommendEntity> getListByStoreIdOrPlaceName(String recStoreId, String recStore) {
         return recommendRepository.getRecommendationByStoreNameOrStoreId(recStoreId, recStore);
     }
+
 
 }

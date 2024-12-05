@@ -7,6 +7,7 @@ import com.example.sjhealthy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Member;
 import java.util.Optional;
 
@@ -82,5 +83,12 @@ public class MemberService {
             MemberEntity memberEntity = byMemberEmail.get();
             return MemberMapper.toMemberDTO(memberEntity);
         } else return null;
+    }
+
+    public void delete(String memberId) {
+        Optional<MemberEntity> result = memberRepository.findByMemberId(memberId);
+        if (result.isPresent()) { // 아이디가 존재하면 지움
+            memberRepository.deleteById(memberId);
+        }
     }
 }
