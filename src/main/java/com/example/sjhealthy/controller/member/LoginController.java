@@ -10,10 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -283,6 +280,35 @@ public class LoginController {
             session.invalidate(); // 세션 무효화
         }
         return "redirect:/sjhealthy";
+    }
+
+    @GetMapping("/member/delete")
+    public String getDeleteForm(@SessionAttribute(name = "loginId", required = false) String loginId, Model model){
+        model.addAttribute("loginId", loginId);
+
+        return "deleteMember";
+    }
+    // 구글 연동 회원 탈퇴
+    @ResponseBody
+    @GetMapping("/member/delete/google/{memberId}")
+    public ResponseEntity<?> deleteGoogleMember(@PathVariable String memberId, HttpServletRequest request,
+                                                @SessionAttribute(name = "accessToken_google", required = false)String accessToken){
+        if (memberId == null || memberId.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        // 연동 해제를 위한 액세스 토큰 보냄
+        // 회원 정보로 조회해서 확인하고 그런 과정 있으면 좋은데 나중에 해야지
+
+        // 제대로 받았으면 삭제 처리
+        System.out.println("토큰 = " + accessToken);
+        memberService.delete(memberId);
+        // 탈퇴하면 deleted 를 Y로 바꿔서 재가입 막든지 그런 세부사항은 의논
+        System.out.println("탈퇴 완료");
+        // 세션 무효화
+        HttpSession session = request.getSession();
+        session.invalidate();
+
+        return ResponseEntity.ok(accessToken);
     }
 }
 
