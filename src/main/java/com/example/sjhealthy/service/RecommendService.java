@@ -1,7 +1,13 @@
 package com.example.sjhealthy.service;
 
+import com.example.sjhealthy.component.BoardMapper;
+import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.component.RecommendMapper;
+import com.example.sjhealthy.dto.BoardDTO;
+import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.RecommendDTO;
+import com.example.sjhealthy.entity.BoardEntity;
+import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.entity.RecommendEntity;
 import com.example.sjhealthy.repository.RecommendRepository;
 import jakarta.persistence.Tuple;
@@ -30,9 +36,14 @@ public class RecommendService {
     }
 
     public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
-        RecommendEntity entity = recommendRepository.save(RecommendMapper.toRecommendEntity(recommendDTO));
+        //dto를 entity로 변환
+        RecommendEntity entity = RecommendMapper.toRecommendEntity(recommendDTO);
 
-        return RecommendMapper.toRecommendDTO(entity);
+        //저장
+        RecommendEntity savedEntity = recommendRepository.save(entity);
+
+        //다시 dto로 변환하여 반환
+        return RecommendMapper.toRecommendDTO(savedEntity);
     }
 
     public RecommendEntity readRecommendationById(Long recId){
