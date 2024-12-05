@@ -36,7 +36,7 @@ public class RecommendService {
     }
 
     public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
-        //dro를 entity로 변환
+        //dto를 entity로 변환
         RecommendEntity entity = RecommendMapper.toRecommendEntity(recommendDTO);
 
         //저장
