@@ -153,9 +153,12 @@ public class RecommendController {
 
 
     /*sy 작업*/
+    @ResponseBody
     @PostMapping("/recommend/write")
     public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
                                         @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        model.addAttribute("loginId", loginId);
+
         try {
             RecommendDTO result = recommendService.addRecommendation(recommendDTO);
 
