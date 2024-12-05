@@ -150,8 +150,6 @@ public class RecommendController {
     }
 
 
-
-
     /*sy 작업*/
     @PostMapping("/recommend/write")
     public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
@@ -169,5 +167,17 @@ public class RecommendController {
             System.out.println("시스템 오류");
         }
         return "redirect:/sjhealthy/recommend";
+    }
+
+    @ResponseBody
+    @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
+    public ResponseEntity<List<RecommendEntity>> SearchByStoreName(@PathVariable String storeName){
+
+        if (storeName == null || storeName.isEmpty()){
+            return ResponseEntity.badRequest().build();
+            // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
+        }
+        List<RecommendEntity> bySearch = recommendService.getListByStoreIdOrPlaceName(null, storeName);
+        return ResponseEntity.ok(bySearch);
     }
 }
