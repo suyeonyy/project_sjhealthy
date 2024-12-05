@@ -26,5 +26,6 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
         "WHERE r.recStoreId = :recStoreId " + // 여기 끝에 공백 필요함
         "   OR r.recStore LIKE %:recStore%") // 고유번호가 같거나 가게 이름이 같을 때(가게이름은 프랜차이즈 때문에 같이 검사)
     List<RecommendEntity> getRecommendationByStoreNameOrStoreId(@Param("recStoreId") String recStoreId,
+                                                                @Param("recStore") String recStore);
 
 }
