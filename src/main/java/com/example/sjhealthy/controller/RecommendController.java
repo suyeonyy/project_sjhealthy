@@ -11,6 +11,7 @@ import jakarta.persistence.Tuple;
 import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,12 +27,16 @@ public class RecommendController {
     @Autowired
     private RecommendService recommendService;
 
+    @Value("${JS_APPKEY}")
+    private String js_appKey;
+
     @GetMapping({"/recommend", "/recommend/"})
     public String getRecommendList(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
 
         List<RecommendDTO> list = recommendService.getList();
         model.addAttribute("list", list);
+        model.addAttribute("js_appKey", js_appKey);
 
         return "recommend/recList";
     }
@@ -40,11 +45,8 @@ public class RecommendController {
     @GetMapping("/recommend/write")
     public String getRecommendForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
+        model.addAttribute("js_appKey", js_appKey);
 
-//        // 회원 전용 - 뷰에서 함.
-//        if (loginId == null){
-//            return "redirect:/sjhealthy/recommend";
-//        }
         return "recommend/writeRec";
     }
 /* 사용안함
