@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### AppKey & code ###
+/src/main/resources/properties/env.properties
