@@ -33,7 +33,6 @@ public class RecommendController {
         List<RecommendDTO> list = recommendService.getList();
         model.addAttribute("list", list);
 
-
         return "recommend/recList";
     }
 
@@ -91,8 +90,7 @@ public class RecommendController {
         model.addAttribute("loginId", loginId);
 
         if (likeRequest == null || likeRequest.getRecId() == null || likeRequest.getAction() == null){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-                "필드가 일치하지 않습니다.", null, null));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("필드가 일치하지 않습니다."));
         }
         Long recId = likeRequest.getRecId();
         System.out.println("likeRequest = " + likeRequest);
@@ -103,19 +101,20 @@ public class RecommendController {
         // 확인용
         System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
 
+        // 집계
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
         Tuple tuple = list.get(0);
         Integer like = tuple.get("likeCount", Integer.class);
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-
+        System.out.println("like = " + likeCount);
+        System.out.println("dislike = " + dislikeCount);
 
         if (result){
             return ResponseEntity.ok(new ResponseMessage("좋아요가 반영되었습니다.", likeCount, dislikeCount));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-                "이미 좋아요를 누르셨습니다.", likeCount, dislikeCount));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("이미 좋아요를 누르셨습니다."));
         }
     }
 
@@ -133,22 +132,43 @@ public class RecommendController {
         //확인용
         System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
 
+        // 집계
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
         Tuple tuple = list.get(0);
         Integer like = tuple.get("likeCount", Integer.class);
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-
+        System.out.println("like = " + likeCount);
+        System.out.println("dislike = " + dislikeCount);
 
         if (result){
             return ResponseEntity.ok(new ResponseMessage("싫어요가 반영되었습니다.", likeCount, dislikeCount));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-                "이미 싫어요를 누르셨습니다.", likeCount, dislikeCount));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("이미 싫어요를 누르셨습니다."));
         }
     }
 
+    @ResponseBody
+    @GetMapping("/recommend/count/{recId}")
+    public ResponseEntity<?> getLikeDislikeCount(@PathVariable Long recId){
+        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도
+        List<Tuple> list = recommendService.countLikeAndDislike(recId);
+        Tuple tuple = list.get(0);
+        Integer like = tuple.get("likeCount", Integer.class);
+        Long likeCount = like.longValue();
+        Integer dislike = tuple.get("dislikeCount", Integer.class);
+        Long dislikeCount = dislike.longValue();
+        System.out.println("like = " + likeCount);
+        System.out.println("dislike = " + dislikeCount);
+
+        if (!list.isEmpty()){
+            return ResponseEntity.ok(new ResponseMessage("집계 완료", likeCount, dislikeCount));
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
+                "집계 오류", likeCount, dislikeCount));
+        }
+    }
 
     /*sy 작업*/
     @ResponseBody
