@@ -1,5 +1,6 @@
 package com.example.sjhealthy.controller.member;
 
+import com.example.sjhealthy.controller.KakaoAPI;
 import com.example.sjhealthy.dto.GoogleProfile;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.OAuthToken;
@@ -18,7 +19,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
 
 
 @RequestMapping("/sjhealthy/")
@@ -30,6 +34,8 @@ public class LoginController {
 
     @Autowired
     private MailServiceImpl mailService;
+
+    KakaoAPI kakaoAPI = new KakaoAPI();
 
     @Value("${CLIENT_ID}") // 이렇게 환경변수로 선언한 값을 불러와 사용
     private String client_id;
@@ -71,12 +77,24 @@ public class LoginController {
     }
 
     /* 카카오 로그인 */
-    //@GetMapping
+    /*
     @GetMapping("/member/login/oauth/kakao")
     public String signin(Model model){
         System.out.println("진입하나요??");
 
         return "signinForm";
+    }
+    */
+
+    @GetMapping("/member/login/oauth/kakao")
+    public ModelAndView signin(@RequestParam("code") String code, HttpSession session){
+        ModelAndView mav = new ModelAndView();
+        //1번 인증코드 요청 전달
+        String access_token = kakaoAPI.getAccessToken(code);
+        //2번 인증코드로 토큰 전달
+        HashMap<String, Object> userInfo = kakaoAPI.getUserInfo(access_token);
+
+        return mav;
     }
 
     @GetMapping("/member/login/oauth/google")
