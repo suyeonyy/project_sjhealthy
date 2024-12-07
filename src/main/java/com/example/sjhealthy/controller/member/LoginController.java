@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @RequestMapping("/sjhealthy/")
 @Controller
@@ -29,9 +31,19 @@ public class LoginController {
     @Autowired
     private MailServiceImpl mailService;
 
+    @Value("${CLIENT_ID}") // 이렇게 환경변수로 선언한 값을 불러와 사용
+    private String client_id;
+
+    @Value("${REDIRECT_URI}")
+    private String redirect_uri;
+
     @GetMapping("/member/login")
-    public String showLoginPage(){
+    public String showLoginPage(Model model){
         System.out.println("loginForm");
+
+        System.out.println(client_id);
+        model.addAttribute("client_id", client_id);
+        model.addAttribute("redirect_uri", redirect_uri);
         return "login";
     }
 
