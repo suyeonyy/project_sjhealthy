@@ -26,18 +26,19 @@
     var script = document.createElement('script');
     script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsAppKey + '&libraries=services&autoload=false';
     script.onload = function(){
-        console.log("카카오 지도 SDK 로드 완료");
+        //console.log("카카오 지도 SDK 로드 완료");
         map();
     };
     script.onerror = function() {
-            console.error("카카오 지도 SDK 로드 실패");
+        //console.error("카카오 지도 SDK 로드 실패");
     };
     // <head>에 스크립트 추가
     document.head.appendChild(script);
 
+    var selectedPlace;
+
     function map(){
         window.kakao.maps.load(()=>{
-
             //해당 키워드 검색
             $('#keyword').change(function(){
                 searchPlaces();
@@ -51,6 +52,7 @@
             
             //keyword의 값을 가져와서 값이 있는지 확인하고, 있으면 ps 객체의 keywordSearch함수의 인자로 keyword를 전달
             function searchPlaces() {
+
                 var keyword = document.getElementById('keyword').value;
             
                 if (!keyword.replace(/^\s+|\s+$/g, '')) {
@@ -159,57 +161,59 @@
                     el.removeChild (el.lastChild);
                 }
             }
-            
-            //등록버튼 클릭
-            function dataSubmit() {
-                var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
-                var recMenu = $("#recMenu").val();
-            
-                if(!selectedPlace){
-                    alert("업체 명을 선택해주세요.");
-                    $("#keyword").focus();
-                    return;
-                }
-            
-                if(recMenu.trim() == ''){
-                    alert("추천 메뉴를 입력해주세요.");
-                    $("#recMenu").focus();
-                    return;
-                }
-            
-                sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
-            }
-            
-            // 데이터를 서버로 전송하는 함수
-            function sendDataToServer(place_name, place_id, place_category_group_code) {
-                var loginId = $("#loginId").val();
-                var recMenu = $("#recMenu").val();
-                var place_name = place_name;
-                var place_id = place_id;
-                var place_category_group_code = place_category_group_code;
-            
-                if(place_id != null){
-                    $.ajax({
-                       url : '../recommend/write',
-                       type : 'post',
-                       data: {
-                            memberId: loginId,
-                            recMenu: recMenu,
-                            recStore: place_name,
-                            recStoreId: place_id,
-                            recStoreGroupCode: place_category_group_code
-                       },
-                       success : function(data) {
-                            //console.log("success");
-                       }, error : function() {
-                            //console.log("fail");
-                       }
-                   });
-                }
-        } // 카카오에서 제공하는, 스크립트가 완전히 로드되기 전에 map 관련 메소드를 실행하려 하는 오류에 대한 해결 함수
         });
-
     };
+
+
+
+    //등록버튼 클릭
+    function dataSubmit() {
+
+        var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
+        var recMenu = $("#recMenu").val();
+
+        if(!selectedPlace){
+            alert("업체 명을 선택해주세요.");
+            $("#keyword").focus();
+            return;
+        }
+
+        if(recMenu.trim() == ''){
+            alert("추천 메뉴를 입력해주세요.");
+            $("#recMenu").focus();
+            return;
+        }
+
+        sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
+    }
+
+    // 데이터를 서버로 전송하는 함수
+    function sendDataToServer(place_name, place_id, place_category_group_code) {
+        var loginId = $("#loginId").val();
+        var recMenu = $("#recMenu").val();
+        var place_name = place_name;
+        var place_id = place_id;
+        var place_category_group_code = place_category_group_code;
+
+        if(place_id != null){
+            $.ajax({
+               url : '../recommend/write',
+               type : 'post',
+               data: {
+                    memberId: loginId,
+                    recMenu: recMenu,
+                    recStore: place_name,
+                    recStoreId: place_id,
+                    recStoreGroupCode: place_category_group_code
+               },
+               success : function(data) {
+                    //console.log("success");
+               }, error : function() {
+                    //console.log("fail");
+               }
+           });
+        }
+    } // 카카오에서 제공하는, 스크립트가 완전히 로드되기 전에 map 관련 메소드를 실행하려 하는 오류에 대한 해결 함수
 
 </script>
 <!-- 참고링크: https://developlsb2dwb.tistory.com/28-->
