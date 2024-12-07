@@ -111,7 +111,7 @@
                 </td>
             </tr>
             <tr>
-                <th><span>*비밀번호</span></th> $("#memberIdPass").
+                <th><span>*비밀번호</span></th>
                 <td>
                     <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" onblur="passwordCheck(this)" />
                     <div id="passMsg"></div>
@@ -127,7 +127,7 @@
             <tr>
                 <th><span>*이름</span></th>
                 <td>
-                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" th:value="${memberDTO != null ? memberDTO.memberName : ''}" th:readonly="${memberDTO != null}"/>
+                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" th:value="${memberDTO != null ? memberDTO.memberName : ''}"/>
                     <div id="nameMsg"></div>
                 </td>
             </tr>
