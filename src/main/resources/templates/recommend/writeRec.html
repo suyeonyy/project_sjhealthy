@@ -160,26 +160,7 @@
                 }
             }
             
-            //등록버튼 클릭
-            function dataSubmit() {
-                var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
-                var recMenu = $("#recMenu").val();
-            
-                if(!selectedPlace){
-                    alert("업체 명을 선택해주세요.");
-                    $("#keyword").focus();
-                    return;
-                }
-            
-                if(recMenu.trim() == ''){
-                    alert("추천 메뉴를 입력해주세요.");
-                    $("#recMenu").focus();
-                    return;
-                }
-            
-                sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
-            }
-            
+
             // 데이터를 서버로 전송하는 함수
             function sendDataToServer(place_name, place_id, place_category_group_code) {
                 var loginId = $("#loginId").val();
@@ -210,6 +191,26 @@
         });
 
     };
+    //등록버튼 클릭
+    function dataSubmit() {
+                var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
+                var recMenu = $("#recMenu").val();
+            
+                if(!selectedPlace){
+                    alert("업체 명을 선택해주세요.");
+                    $("#keyword").focus();
+                    return;
+                }
+            
+                if(recMenu.trim() == ''){
+                    alert("추천 메뉴를 입력해주세요.");
+                    $("#recMenu").focus();
+                    return;
+                }
+            
+                sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
+            }
+            
 
 </script>
 <!-- 참고링크: https://developlsb2dwb.tistory.com/28-->
