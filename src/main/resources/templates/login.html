@@ -28,14 +28,17 @@
 
 
     <button id="googleOAuth">구글 로그인</button>
+
     <a href="../member/find-id"><button>아이디 찾기</button></a>
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
 
-<script>
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", ()=> {
         const google = document.getElementById("googleOAuth");
-        const client_id = "***REMOVED***";
-        const redirect_uri = "***REMOVED***";
+        const client_id = /*[[${client_id}]]*/'';
+        const redirect_uri = /*[[${redirect_uri}]]*/'';
+        console.log("client_id" + client_id);
+        console.log("redirect_uri" + redirect_uri);
 
         google.addEventListener("click", async (e)=>{
             e.preventDefault();

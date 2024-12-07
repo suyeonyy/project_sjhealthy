@@ -10,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class ResponseMessage {
     private String message;
-    private Long countRecY;
-    private Long countRecN;
+    private Long likeCount;
+    private Long dislikeCount;
+
+    public ResponseMessage(String message){
+        this(message, null, null);
+    }
 
 }
