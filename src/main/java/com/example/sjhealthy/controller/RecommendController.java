@@ -41,7 +41,6 @@ public class RecommendController {
         return "recommend/recList";
     }
 
-
     @GetMapping("/recommend/write")
     public String getRecommendForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
@@ -173,7 +172,7 @@ public class RecommendController {
     }
 
     /*sy 작업*/
-    @ResponseBody
+    //@ResponseBody
     @PostMapping("/recommend/write")
     public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
                                         @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
@@ -191,6 +190,10 @@ public class RecommendController {
             e.printStackTrace();
             System.out.println("시스템 오류");
         }
+
+        //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
+        ra.addFlashAttribute("loginId", loginId);
+
         return "redirect:/sjhealthy/recommend";
     }
 
