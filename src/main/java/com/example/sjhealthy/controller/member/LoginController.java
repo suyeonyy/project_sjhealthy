@@ -1,12 +1,12 @@
 package com.example.sjhealthy.controller.member;
 
-import com.example.sjhealthy.controller.KakaoAPI;
 import com.example.sjhealthy.dto.GoogleProfile;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.OAuthToken;
 import com.example.sjhealthy.service.MailServiceImpl;
 import com.example.sjhealthy.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,9 +18,11 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 
@@ -35,13 +37,18 @@ public class LoginController {
     @Autowired
     private MailServiceImpl mailService;
 
-    KakaoAPI kakaoAPI = new KakaoAPI();
-
     @Value("${CLIENT_ID}") // 이렇게 환경변수로 선언한 값을 불러와 사용
     private String client_id;
 
     @Value("${REDIRECT_URI}")
     private String redirect_uri;
+
+    /*카카오 로그인*/
+    @Value("${REST_API_KEY}")
+    private String kakaoApiKey;
+
+    @Value("${REDIRECT_KAKAO_URI}")
+    private String kakaoRedirectUri;
 
     @GetMapping("/member/login")
     public String showLoginPage(Model model){
@@ -77,24 +84,116 @@ public class LoginController {
     }
 
     /* 카카오 로그인 */
-    /*
     @GetMapping("/member/login/oauth/kakao")
-    public String signin(Model model){
-        System.out.println("진입하나요??");
+    public String signin(@RequestParam("code") String code, HttpServletRequest request, RedirectAttributes ra, Model model) throws JsonProcessingException {
+        System.out.println("카카오 인증 코드: " + code);
 
-        return "signinForm";
+        // 1. 카카오 토큰 API에 인증 코드로 액세스 토큰 요청
+        String accessToken = getAccessToken(code);
+
+        // 2. 액세스 토큰을 사용하여 사용자 정보 요청
+        String userInfo = getKakaoUserInfo(accessToken);
+
+        // ObjectMapper 인스턴스를 생성하여 JSON을 파싱
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(userInfo);  // JSON 문자열을 JsonNode로 파싱
+
+        // kakao_account에서 이메일을 추출
+        JsonNode kakaoAccountNode = rootNode.path("kakao_account");  // "kakao_account" 필드 추출
+        String email = kakaoAccountNode.path("email").asText();  // 이메일 추출
+
+        MemberDTO isExist = memberService.findMemberEmail(email);
+        if (isExist != null){
+            // 기존 회원이라면 로그인 처리 후 메인으로 넘김
+            HttpSession session = request.getSession();
+            session.setAttribute("loginId", isExist.getMemberId());
+
+            return "redirect:/sjhealthy";
+        } else {
+            // 비회원은 가입창으로 연결
+            // 회원정보를 가져와 회원가입 뷰로 보냄
+            MemberDTO kakaoAccount = new MemberDTO();
+            kakaoAccount.setMemberId(email.split("@")[0]); // 이메일의 @ 앞부분을 가져와 memberId로 설정
+            kakaoAccount.setMemberEmail(email);
+
+            String emailFirst = email.split("@")[0]; // 이메일의 @ 앞부분
+            String emailLast = email.split("@")[1]; // 이메일의 @ 뒷부분
+
+            kakaoAccount.setMemberEmailFirst(emailFirst);
+            kakaoAccount.setMemberEmailLast(emailLast);
+
+            model.addAttribute("memberDTO", kakaoAccount); // 이 3가지 정보를 회원가입 창에 채워서 뷰 출력
+            return "join";
+        }
     }
-    */
 
-    @GetMapping("/member/login/oauth/kakao")
-    public ModelAndView signin(@RequestParam("code") String code, HttpSession session){
-        ModelAndView mav = new ModelAndView();
-        //1번 인증코드 요청 전달
-        String access_token = kakaoAPI.getAccessToken(code);
-        //2번 인증코드로 토큰 전달
-        HashMap<String, Object> userInfo = kakaoAPI.getUserInfo(access_token);
+    private String getAccessToken(String code) {
+        String tokenUrl = "https://kauth.kakao.com/oauth/token";
+        String clientId = kakaoApiKey;  // 카카오 REST API 키
+        String redirectUri = kakaoRedirectUri;  // 카카오 Redirect URI
 
-        return mav;
+        // 요청 파라미터 설정
+        String url = UriComponentsBuilder.fromHttpUrl(tokenUrl)
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("client_id", clientId)
+                .queryParam("redirect_uri", redirectUri)
+                .queryParam("code", code)
+                .toUriString();
+
+        // REST API 요청을 위한 RestTemplate
+        RestTemplate restTemplate = new RestTemplate();
+
+        // 카카오 API에 POST 요청 보내기
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, null, String.class);
+
+        // 응답에서 액세스 토큰 추출
+        String accessToken = extractAccessToken(response.getBody());
+        return accessToken;
+    }
+
+    private String getKakaoUserInfo(String accessToken) {
+        String userInfoUrl = "https://kapi.kakao.com/v2/user/me";  // 카카오 사용자 정보 API URL
+
+        // 액세스 토큰을 Authorization 헤더에 넣어 요청
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);  // "Bearer <access_token>"
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // RestTemplate을 이용해 카카오 사용자 정보 API에 GET 요청
+        RestTemplate restTemplate = new RestTemplate();
+
+        System.out.println("Access Token: " + accessToken); // 액세스 토큰 확인
+
+        try {
+            // 카카오 사용자 정보 요청
+            ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, String.class);
+            // 응답 결과 반환
+            return response.getBody();  // 응답 본문을 반환
+
+        } catch (HttpClientErrorException e) {
+            // HTTP 에러 발생 시 에러 메시지 출력
+            System.out.println("카카오 사용자 정보 요청 실패: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            // 기타 예외 처리
+            System.out.println("기타 에러 발생: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String extractAccessToken(String jsonResponse) {
+        try {
+            // JSON 응답을 파싱하여 access_token 추출
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+            return jsonNode.get("access_token").asText();  // access_token 값을 반환
+        } catch (Exception e) {
+            System.out.println("액세스 토큰 추출 실패: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @GetMapping("/member/login/oauth/google")
@@ -203,7 +302,7 @@ public class LoginController {
             googleAccountRequest,
             String.class
         );
-
+ 
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(response);
 
