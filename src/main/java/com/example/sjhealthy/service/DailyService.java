@@ -1,3 +1,4 @@
+/*
 package com.example.sjhealthy.service;
 
 import com.example.sjhealthy.repository.DailyRepository;
@@ -11,3 +12,5 @@ public class DailyService {
 
 
 }
+
+ */
