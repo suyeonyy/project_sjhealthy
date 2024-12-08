@@ -1,3 +1,4 @@
+/*
 package com.example.sjhealthy.repository;
 
 import com.example.sjhealthy.dto.DailyDTO;
@@ -27,3 +28,5 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                 "WHERE memberId = :memberId")
     List<Float> getWeightListByMemberId(String memberId);
 }
+
+ */
