@@ -19,11 +19,11 @@
     <a href="../board/list">
         <button>목록</button>
     </a>
-    <a th:if="${boardDTO.memberId == loginId}"
+    <a th:if="${boardDTO.memberId == loginId}" 
         th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}">
         <button>수정</button>
     </a>
-    <a th:if="${boardDTO.memberId == loginId}"
+    <a th:if="${boardDTO.memberId == loginId || admin}"
         th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}">
         <button id="deleteButton">삭제</button>
     </a>
@@ -84,7 +84,7 @@
             const writer = document.getElementById("commentWriter").value;
             const contents = document.getElementById("commentContents").value;
 
-            const id = [[${boardDTO.boardId}]]; //게시글 번호
+            const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
 
             $.ajax({
                 //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 페이지</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th>탈퇴처리</th>
+        <th>회원 아이디</th>
+        <th>가입일</th>
+        <th>이름</th>
+        <th>이메일</th>
+        <th>성별</th>
+        <th>생년월일</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="member : ${memberList}">
+        <td><a th:href="@{/sjhealthy/board/delete(memberId=${member.memberId})}"><button id="adminButton">X</button></a></td>
+        <td th:text="${member.memberId}" id="memberId"></td>0
+        <td th:text="${member.createDate}"></td>
+        <td th:text="${member.memberName}"></td>
+        <td th:text="${member.memberEmail}"></td>
+        <td th:text="${member.memberGender}"></td>
+        <td th:text="${member.memberBirth}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
