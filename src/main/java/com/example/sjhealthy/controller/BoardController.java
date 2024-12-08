@@ -1,8 +1,10 @@
 package com.example.sjhealthy.controller;
 
 import com.example.sjhealthy.dto.BoardDTO;
+import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.repository.BoardRepository;
 import com.example.sjhealthy.service.BoardService;
+import com.example.sjhealthy.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +28,9 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping("/board/list")
     public String getBoardList(@SessionAttribute(name = "loginId", required = false) String loginId,
                                Model model){
@@ -33,6 +38,11 @@ public class BoardController {
 
         List<BoardDTO> boardList = boardService.getList();
         model.addAttribute("boardList", boardList);
+
+        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+        if (dto.getMemberAuth().equals("admin")){ // 관리자
+            model.addAttribute("admin", dto);
+        }
 
         return "board/list";
     }
@@ -112,6 +122,12 @@ public class BoardController {
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
+            // 관리자
+            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+            if (dto.getMemberAuth().equals("admin")){ // 관리자
+                model.addAttribute("admin", dto);
+            }
+
             model.addAttribute("boardDTO", result);
             return "board/read";
         } catch (Exception e){

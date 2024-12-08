@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +18,18 @@ import java.util.Optional;
 public class MemberService {
     //레파지토리 호출
     private final MemberRepository memberRepository;
+
+
+    public List<MemberDTO> getMemberList(){
+        List<MemberEntity> memberList = memberRepository.findAll();
+
+        List<MemberDTO> dtoList = new ArrayList<>();
+        for (MemberEntity entity : memberList){
+            MemberDTO dto = MemberMapper.toMemberDTO(entity);
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
 
     public MemberDTO login(MemberDTO memberDTO) {
         //DB에 계정이 있는지 확인
