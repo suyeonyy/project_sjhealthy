@@ -57,6 +57,8 @@ public class LoginController {
         System.out.println(client_id);
         model.addAttribute("client_id", client_id);
         model.addAttribute("redirect_uri", redirect_uri);
+        model.addAttribute("kakaoApiKey", kakaoApiKey);
+        model.addAttribute("kakaoRedirectUri", kakaoRedirectUri);
         return "login";
     }
 
