@@ -13,18 +13,16 @@
         <input type="submit" name="submit" value="로그인">
     </form>
 
-    <!---->
+    <!--
     <a th:href="@{/sjhealthy/member/login/oauth/kakao}">
         <img th:src="@{/kakao_login_medium_narrow.png}" style="width:150px; height:40px;">
     </a>
-
-    <!--
+    -->
     <div>
-        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}">
+        <a href="https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=***REMOVED***&redirect_uri=***REMOVED***">
             <img th:src="@{/kakao_login_medium_narrow.png}">
         </a>
     </div>
-    -->
 
 
     <button id="googleOAuth">구글 로그인</button>
@@ -50,7 +48,5 @@
     });
 });
 </script>
-
-
 </body>
 </html>
