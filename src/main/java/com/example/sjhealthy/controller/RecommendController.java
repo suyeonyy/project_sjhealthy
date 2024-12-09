@@ -172,6 +172,7 @@ public class RecommendController {
     }
 
     /*sy 작업*/
+    /*
     //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
     @PostMapping("/recommend/write")
     public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
@@ -195,6 +196,35 @@ public class RecommendController {
         ra.addFlashAttribute("loginId", loginId);
 
         return "redirect:/sjhealthy/recommend";
+    }
+     */
+    //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
+    @PostMapping("/recommend/write")
+    public ResponseEntity<String> writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
+                                        @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+        model.addAttribute("loginId", loginId);
+
+        try {
+            RecommendDTO result = recommendService.addRecommendation(recommendDTO);
+
+            if (result == null){
+                System.out.println("추천글 등록에 실패하였습니다.");
+            } else {
+                System.out.println("추천글을 등록하였습니다.");
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("시스템 오류");
+        }
+
+        //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
+        ra.addFlashAttribute("loginId", loginId);
+
+        // 리다이렉트 URL을 JSON 형태로 응답
+        return ResponseEntity.ok("/sjhealthy/recommend");
+
+        /*참고: AJAX를 사용한 POST 요청 후 리다이렉트가 작동하지 않는 문제는 AJAX 요청 자체가 페이지 리다이렉트를 처리하지 않기 때문*/
+        //return "redirect:/sjhealthy/recommend";
     }
 
     @ResponseBody
