@@ -212,6 +212,12 @@
                },
                success : function(data) {
                     //console.log("success");
+
+                    // 서버가 리다이렉트 URL을 응답으로 받았을 때
+                    if (data) {
+                        // 응답으로 받은 URL로 리다이렉트
+                        window.location.href = data;
+                    }
                }, error : function() {
                     //console.log("fail");
                }
