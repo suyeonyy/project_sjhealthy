@@ -30,18 +30,20 @@ public class CommentService {
             CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
 
             //변환해온 것을 저장
-            return commentRepository.save(commentEntity).getId();
+            return commentRepository.save(commentEntity).getComId();
         }else{
             return null;
         }
     }
 
+    /*게시글 id로 전체 댓글 조회*/
     public List<CommentDTO> findAll(Long boardId) {
         // select from comment_table where 1 = 1  and board_id=? order by id desc;
         BoardEntity boardEntity = boardRepository.findById(boardId).get();
-        List<CommentEntity> commentEntityList = commentRepository.findAllByBoardEntityOrderByIdDesc(boardEntity);
+        //호출 결과를 EntityList로 받는다.
+        List<CommentEntity> commentEntityList = commentRepository.findAllByBoardEntityOrderByComIdDesc(boardEntity);
         /* EntityList -> DTOList */
-        List<CommentDTO> commentDTOList = new ArrayList<>();
+        List<CommentDTO> commentDTOList = new ArrayList<>(); //commentDTOList에 댓글을 하나씩 담는다.
         for(CommentEntity commentEntity: commentEntityList){
             CommentDTO commentDTO = CommentDTO.toCommentDTO(commentEntity, boardId);
             commentDTOList.add(commentDTO);
