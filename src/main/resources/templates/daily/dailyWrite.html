@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>일지 작성</title>
+    <style>
+    </style>
+</head>
+<body>
+  <table>
+    <tbody>
+    <tr>
+      <th><span>작성일</span></th>
+      <td>
+        <input type="text" id="dailyDate" name="dailyDate" placeholder="작성일" maxlength="8" readonly="readonly" />
+      </td>
+    </tr>
+    <tr>
+      <th><span>현재체중</span></th>
+      <td>
+        <input type="text" id="dailyCurWt" name="dailyCurWt" placeholder="현재체중" oninput="validateInput(this)"/>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표체중</span></th>
+      <td>
+        <input type="text" id="dailyGoalWt" name="dailyGoalWt" placeholder="목표체중" maxlength="5" oninput="validateInput(this)"/>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표만족도</span></th>
+      <td>
+        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도" maxlength="5" />
+      </td>
+    </tr>
+    <tr>
+      <th><span>메모</span></th>
+      <td>
+        <textarea id="dailyMemo" name="dailyMemo" maxlength="2000">
+        </textarea>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+  <button type="button" class="btn btn_st1" onclick="saveDailyWrite();">작성</button>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- datepickern 라이브러리 추가 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script th:inline="javascript">
+  /*datepicker 구현*/
+  $(function() {
+    //기본적으로 현재 날짜 선택됨
+    $('input[name="dailyDate"]').daterangepicker({
+      singleDatePicker: true, //날짜 선택기를 단일 날짜 선택 모드로 설정
+      showDropdowns: true,    //날짜 선택 시 월과 년을 드롭다운으로 보여주기 위한 설정
+      minYear: 1901,          //날짜 선택기에서 선택할 수 있는 최소 연도 설정
+      maxYear: parseInt(moment().format('YYYY'),10), //날짜 선택기에서 선택할 수 있는 최대 연도를 현재 연도로 설정
+      locale: {
+        format: 'YYYY/MM/DD'   // 날짜 형식을 yyyy/mm/dd로 설정
+      }
+    }, function(start, end, label) {
+      //var years = moment().diff(start, 'years');
+    });
+  });
+
+  /* 숫자와 소수점만 허용하고, 다른 문자는 삭제 */
+  var prev = "";
+  var regexp = /^\d*(\.\d{0,2})?$/;
+  function validateInput(obj) {
+      var id = obj.id;
+      var firstChar = obj.value.charAt(0);
+      if(firstChar == "."){
+        alert("첫 번째 값은 숫자로 입력해주세요.");
+        $("#" + id).val("");
+        return;
+      }
+
+      if(obj.value.search(regexp)==-1) {
+          obj.value = prev;
+      }
+      else {
+          prev = obj.value;
+      }
+  }
+
+  function saveDailyWrite(){
+    var memberId = $("#memberId").val();
+    var dailyDate = $("#dailyDate").val();
+    var dailyCurWt = $("#dailyCurWt").val();
+    var dailyGoalWt = $("#dailyGoalWt").val();
+    var dailyGoalSf = $("#dailyGoalSf").val();
+    var dailyMemo = $("#dailyMemo").val();
+
+    dailyDate = dailyDate.replaceAll("/","");
+    dailyMemo = dailyMemo.trim();
+
+    var dailyYear = dailyDate.substring(0,4);
+    var dailyMonth = dailyDate.substring(4,6);
+    /*
+    console.log("데이터");
+    console.log("memberId" + memberId);
+    console.log("dailyDate" + dailyDate);
+    console.log("dailyCurWt" + dailyCurWt);
+    console.log("dailyGoalWt" + dailyGoalWt);
+    console.log("dailyGoalSf" + dailyGoalSf);
+    console.log("dailyMemo" + dailyMemo);
+    console.log("dailyYear" + dailyYear);
+    console.log("dailyMonth" + dailyMonth);
+    console.log("끝");
+    */
+
+    $.ajax({
+       url : '../daily/dailyWrite',
+       type : 'post',
+       data: {
+            memberId: memberId,
+            dailyDate: dailyDate,
+            dailyCurWt: dailyCurWt,
+            dailyGoalWt: dailyGoalWt,
+            dailyGoalSf: dailyGoalSf,
+            dailyMemo: dailyMemo,
+            dailyYear: dailyYear,
+            dailyMonth: dailyMonth
+       },
+       success : function(data) {
+          //console.log("success");
+       }, error : function() {
+          //console.log("fail");
+       }
+   });
+  }
+</script>
+</html>

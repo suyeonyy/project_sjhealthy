@@ -1,4 +1,3 @@
-/*
 package com.example.sjhealthy.repository;
 
 import com.example.sjhealthy.dto.DailyDTO;
@@ -9,8 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
+    /*
     @Query("SELECT " + // 목표 달성도 계산
                 "((:goal - :weight) / :goal) * 100 " +
                 "FROM DailyEntity " +
@@ -27,6 +26,5 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                 "FROM DailyEntity " +
                 "WHERE memberId = :memberId")
     List<Float> getWeightListByMemberId(String memberId);
+    */
 }
-
- */
