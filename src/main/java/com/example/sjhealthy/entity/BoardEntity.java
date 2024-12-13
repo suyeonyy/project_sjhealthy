@@ -56,7 +56,7 @@ public class BoardEntity {
 
     /* Board:Comment = 1:N */
     //게시글이 삭제되면 댓글도 함께 삭제된다
-    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY) //게시판 기준
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
     @PrePersist // 날짜 기본 형식 지정하여 DB로
