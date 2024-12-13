@@ -1,13 +1,16 @@
 package com.example.sjhealthy.controller;
 
 import com.example.sjhealthy.dto.BoardDTO;
+import com.example.sjhealthy.dto.CommentDTO;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.repository.BoardRepository;
 import com.example.sjhealthy.service.BoardService;
+import com.example.sjhealthy.service.CommentService;
 import com.example.sjhealthy.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,14 +25,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/sjhealthy/")
 public class BoardController {
 
-    @Autowired
-    private BoardService boardService;
-
-    @Autowired
-    private MemberService memberService;
+    private final BoardService boardService;
+    private final MemberService memberService;
+    private final CommentService commentService;
 
     @GetMapping("/board/list")
     public String getBoardList(@SessionAttribute(name = "loginId", required = false) String loginId,
@@ -127,6 +129,10 @@ public class BoardController {
             if (dto.getMemberAuth().equals("admin")){ // 관리자
                 model.addAttribute("admin", dto);
             }
+
+            //댓글 목록 가져오기
+            List<CommentDTO> commentDTOList = commentService.findAll(boardId);
+            model.addAttribute("commentList", commentDTOList);
 
             model.addAttribute("boardDTO", result);
             return "board/read";

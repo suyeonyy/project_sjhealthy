@@ -20,15 +20,18 @@ public class CommentConroller {
     private final CommentService commentService;
 
     @PostMapping("/comment/save")
-    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO){
+    //public @ResponseBody save(@ModelAttribute CommentDTO commentDTO){ ajax사용 시 @ResponseBody 사용
+    public ResponseEntity save(@ModelAttribute CommentDTO commentDTO,
+                               @SessionAttribute(name = "loginId", required = false)String loginId){ //ResponseEntity: body와 header를 같이 다룰 수 있는 객체
         System.out.println("commentDTO="+commentDTO);
+
         Long saveResult = commentService.save(commentDTO);
 
         if(saveResult != null){
             //작성 성공
             //다시 댓글 전체를 가지고 와서 보여주기(리턴)
-            List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId());
-            return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
+            List<CommentDTO> commentDTOList = commentService.findAll(commentDTO.getBoardId()); //게시글 번호
+            return new ResponseEntity<>(commentDTOList, HttpStatus.OK); //body, 상태코드값
         }else{
             //작성 실패
             return new ResponseEntity<>( "해당 게시글이 존재하지 않습니다.", HttpStatus.NOT_FOUND);
