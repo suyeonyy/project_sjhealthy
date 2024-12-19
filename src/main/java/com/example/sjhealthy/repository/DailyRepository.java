@@ -49,7 +49,7 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                 "   SELECT MIN(daily_id) FROM daily_table WHERE member_id = m.member_id) " +
             "WHERE d.daily_id = (SELECT " + // 현재 체중은 멤버별 가장 최근 데이터 사용
                                     "MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = m.member_id) " +
-            "ORDER BY memberRank DESC", nativeQuery = true) // 내림차순으로 조회
+            "ORDER BY memberRank ASC", nativeQuery = true) // 내림차순으로 조회
     List<Tuple> getRankList();
 
     // DB에 맞게 쿼리 수정 필요
