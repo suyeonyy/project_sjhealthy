@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 @Setter
 @Table(name = "recommend_table")
 public class RecommendEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recId;
