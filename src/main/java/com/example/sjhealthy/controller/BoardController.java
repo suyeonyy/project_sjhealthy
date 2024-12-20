@@ -126,9 +126,14 @@ public class BoardController {
             }
             // 관리자
             MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+            if (dto.getMemberAuth().equals("A")){ // 관리자
+                model.addAttribute("admin", dto.getMemberAuth());
+            }
+            /*
             if (dto.getMemberAuth().equals("admin")){ // 관리자
                 model.addAttribute("admin", dto);
             }
+            */
 
             //댓글 목록 가져오기
             List<CommentDTO> commentDTOList = commentService.findAll(boardId);
