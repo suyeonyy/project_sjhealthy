@@ -23,8 +23,14 @@
 
     <a href="../member/find-id"><button>아이디 찾기</button></a>
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
+    <a href="../member/join"><button>회원가입</button></a>
 
 <script th:inline="javascript">
+    const alertMessage = [[${alertMessage}]];
+    if (alertMessage) {
+        alert(alertMessage);
+    }
+
     document.addEventListener("DOMContentLoaded", ()=> {
         const google = document.getElementById("googleOAuth");
         const client_id = /*[[${client_id}]]*/'';
