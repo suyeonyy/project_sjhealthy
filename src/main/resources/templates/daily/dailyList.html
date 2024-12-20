@@ -18,7 +18,7 @@
     <tbody>
     <tr th:each="daily : ${dailyList}">
         <td th:text="${daily.dailyId}" id="dailyId"></td>
-        <td th:text="${member.memberId}"></td>
+        <td th:text="${daily.member.memberId}"></td>
         <td th:text="${daily.createDate}"></td>
     </tr>
     </tbody>
