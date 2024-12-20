@@ -23,7 +23,7 @@
         th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}">
         <button>수정</button>
     </a>
-    <a th:if="${boardDTO.memberId == loginId || admin}"
+    <a th:if="${boardDTO.memberId == loginId || admin == 'A'}"
        th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}">
         <button id="deleteButton">삭제</button>
     </a>
