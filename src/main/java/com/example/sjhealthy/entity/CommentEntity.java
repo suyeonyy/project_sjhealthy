@@ -63,7 +63,7 @@ public class CommentEntity {
 
         return commentEntity;
     }
-    
+
     @PrePersist
     public void prePersist() {
         /*등록일, 수정일*/
@@ -77,7 +77,7 @@ public class CommentEntity {
             //등록일과 동일하게 저장
             this.updateDate = this.createDate;
         }
-        
+
         /*등록자, 수정자*/
         if (this.createUser == null) {
             this.createUser = this.memberId != null ? this.memberId : "defaultUser";

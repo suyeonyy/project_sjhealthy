@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>광장</title>
+</head>
+<body>
+    <div class="container">
+        <!-- 전체 -->
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>아이디</th>
+                    <th>목표 달성도</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="member : ${list}">
+                    <td th:text="${member.memberRank}"></td>
+                    <td th:text="${member.memberId}"></td>
+                    <td th:text="${member.memberAchievementPercentage} + ' %'"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 본인 -->
+        <table th:if="${statistics}" border="1">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>아이디</th>
+                    <th>목표 달성도</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td th:text="${statistics.memberRank}"></td>
+                    <td th:text="${statistics.memberId}"></td>
+                    <td th:text="${statistics.memberAchievementPercentage} + ' %'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <a href="/sjhealthy"><button>메인</button></a>
+
+
+</body>
+</html>
