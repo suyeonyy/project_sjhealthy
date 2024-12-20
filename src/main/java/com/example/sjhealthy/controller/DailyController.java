@@ -4,6 +4,8 @@ import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.DailyDTO;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.service.DailyService;
+import com.example.sjhealthy.service.MemberService;
+import com.sun.source.tree.MemberReferenceTree;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,11 +20,23 @@ import java.util.List;
 @RequestMapping("/sjhealthy/")
 public class DailyController {
     private final DailyService dailyService;
+    private final MemberService memberService;
 
     @GetMapping("/daily/dailyList")
     public String getDailyList(@SessionAttribute(name = "loginId", required = false) String loginId,
                                Model model){
         model.addAttribute("loginId", loginId);
+
+        List<DailyDTO> dailyList = dailyService.getList();
+        model.addAttribute("dailyList", dailyList);
+
+        //로그인 했을 때
+        if(loginId != null){
+            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+            if(dto.getMemberAuth().equals("A")){ //관리자
+                model.addAttribute("admin", dto.getMemberAuth());
+            }
+        }
 
         return "daily/dailyList";
     }
