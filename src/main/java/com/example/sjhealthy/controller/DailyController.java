@@ -28,6 +28,7 @@ public class DailyController {
         model.addAttribute("loginId", loginId);
 
         List<DailyDTO> dailyList = dailyService.getList();
+        System.out.println("dailyList = " + dailyList);
         model.addAttribute("dailyList", dailyList);
 
         //로그인 했을 때
