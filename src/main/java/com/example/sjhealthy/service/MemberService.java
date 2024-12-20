@@ -123,16 +123,5 @@ public class MemberService {
         Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(loginId);
         MemberEntity memberEntity = byMemberId.get();
         return memberEntity;
-        /*
-        //jpa에서 optional 타입으로 받는다
-        Optional<MemberEntity> byMemberId =
-                memberRepository.findByMemberNameAndMemberBirth(memberDTO.getMemberName(), memberDTO.getMemberBirth());
-
-        if (byMemberId.isPresent()){
-            //Optional 타입을 Entity타입으로 바꾸기 위해 .get()을 붙임
-            MemberEntity memberEntity = byMemberId.get();
-            return MemberMapper.toMemberDTO(memberEntity);
-        } else return null;
-         */
     }
 }
