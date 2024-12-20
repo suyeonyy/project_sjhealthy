@@ -1,5 +1,6 @@
 package com.example.sjhealthy.controller;
 
+import com.example.sjhealthy.component.MemberStatisticsMapper;
 import com.example.sjhealthy.dto.MemberStatisticsDTO;
 import com.example.sjhealthy.service.MemberStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,24 @@ public class MemberStatisticsController {
                                      Model model){
         model.addAttribute("loginId", loginId);
         System.out.println("openStatisticsForm");
-        if (loginId != null){ // 로그인 했을 땐 본인 순위, 목표달성도도 출력
-            MemberStatisticsDTO achievement = service.getTotalStatisticsByMemberId(loginId);
+        if (loginId != null){ // 로그인 했을 땐 memberId, 본인 순위, 목표달성도, BMI 출력
+            System.out.println("로그인 멤버");
+            MemberStatisticsDTO achievement = service.getStatisticsByMemberId(loginId);
+            System.out.println("통계 가져오기 성공");
+            System.out.println(achievement);
+            Double memberWeight = service.getMemberWeight(loginId); // 몸무게
+            System.out.println("몸무게 가져오기 성공");
+            System.out.println(memberWeight);
+
             model.addAttribute("statistics", achievement);
+            model.addAttribute("memberWeight", memberWeight);
         }
 
         List<MemberStatisticsDTO> list = service.getRankList();
         System.out.println("통계 리스트 받아옴");
         model.addAttribute("list", list);
         System.out.println("통계 " + list);
+
 
         return "statistics/statMain";
     }
