@@ -1,8 +1,11 @@
 package com.example.sjhealthy.entity;
 
+import com.example.sjhealthy.dto.DailyDTO;
+import com.example.sjhealthy.service.DailyService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,23 +13,23 @@ import java.time.format.DateTimeFormatter;
 @Entity
 @Getter
 @Setter
-@Table(name="daily_table")
+@Table(name = "daily_table")
 public class DailyEntity { // 일지
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dailyId;
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
-    private String memberId;
+//    private String memberId;
 
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
     private String dailyDate;
 
     @Column(columnDefinition = "NUMERIC(18,2) DEFAULT 0.00", nullable = false)
-    private int dailyCurWt;
+    private double dailyCurWt;
 
     @Column(columnDefinition = "NUMERIC(18,2) DEFAULT 0.00", nullable = false)
-    private int dailyGoalWt;
+    private double dailyGoalWt;
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String dailyGoalSf;
@@ -55,6 +58,10 @@ public class DailyEntity { // 일지
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "memberId")
+    private MemberEntity member; // 참조하여 memberHeight 를 사용
+
     @PrePersist
     public void prePersist() {
         /*등록일, 수정일*/
@@ -71,11 +78,11 @@ public class DailyEntity { // 일지
 
         /*등록자, 수정자*/
         if (this.createUser == null) {
-            this.createUser = this.memberId != null ? this.memberId : "defaultUser";
+            this.createUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         }
 
         //수정자는 무조건 업데이트
-        this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
+        this.createUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         /*
         if (this.updateUser == null) {
             this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
@@ -86,5 +93,6 @@ public class DailyEntity { // 일지
         if(this.isDeleted == null){
             this.isDeleted = "N";
         }
+
     }
 }
