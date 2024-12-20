@@ -5,6 +5,7 @@
     <title>관리자 페이지</title>
 </head>
 <body>
+<!-- 회원 리스트 -->
 <table border="1">
     <thead>
     <tr>
@@ -21,7 +22,7 @@
     <tbody>
     <tr th:each="member : ${memberList}">
         <td><a th:href="@{/sjhealthy/board/delete(memberId=${member.memberId})}"><button id="adminButton">X</button></a></td>
-        <td th:text="${member.memberId}" id="memberId"></td>0
+        <td th:text="${member.memberId}" id="memberId"></td>
         <td th:text="${member.createDate}"></td>
         <td th:text="${member.memberName}"></td>
         <td th:text="${member.memberEmail}"></td>
@@ -30,6 +31,12 @@
     </tr>
     </tbody>
 </table>
+
+<!-- 게시글 관리 -->
+<!-- 네비게이션 바에서 카테고리(회원, 게시글, 신고) 고를 수 있게 만들어야지 -->
+
+<!-- 신고 관리 -->
+
 
 </body>
 </html>
