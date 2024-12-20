@@ -56,4 +56,24 @@ public class MemberStatisticsMapper {
         }
         return dtoList;
     }
+
+    public static MemberStatisticsDTO statisticsDTOFromTuple(Tuple tuple) {
+        String memberId = tuple.get("memberId", String.class);
+
+        // nativeQuery로 AVG, SUM 등을 이용해 반환한 값은 BigDecimal로 설정된다. 소수점 계산을 정확하게 처리하기 위함.
+        // 따라서 추가로 변환하여 받아준다.
+        // 근데 내가 쓴 쿼리의 반환값은 퍼센트가 BigDecimal로 나오고 Rank()가 Long 으로 나옴..
+        BigDecimal mAP = tuple.get("memberAchievementPercentage", BigDecimal.class);
+        Double memberAchievementPercentage = mAP.doubleValue();
+
+        Long memberRankBefore = tuple.get("memberRank", Long.class);
+        int memberRank = memberRankBefore.intValue();
+
+        BigDecimal bmi = tuple.get("memberBmi", BigDecimal.class);
+        Double memberBmi = bmi.doubleValue();
+
+        System.out.println("변환 성공");
+
+        return new MemberStatisticsDTO(memberId, memberAchievementPercentage, memberBmi, memberRank);
+    }
 }
