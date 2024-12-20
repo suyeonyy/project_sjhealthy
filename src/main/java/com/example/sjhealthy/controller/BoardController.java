@@ -41,9 +41,12 @@ public class BoardController {
         List<BoardDTO> boardList = boardService.getList();
         model.addAttribute("boardList", boardList);
 
-        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
-        if (dto.getMemberAuth().equals("admin")){ // 관리자
-            model.addAttribute("admin", dto);
+        // 로그인 했을 때
+        if (loginId != null){
+            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+            if (dto.getMemberAuth().equals("admin")){ // 관리자
+                model.addAttribute("admin", dto);
+            }
         }
 
         return "board/list";
@@ -124,16 +127,20 @@ public class BoardController {
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-            // 관리자
-            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
-            if (dto.getMemberAuth().equals("A")){ // 관리자
-                model.addAttribute("admin", dto.getMemberAuth());
+
+            if (loginId != null){ // 로그인 한 상태라면
+                // 관리자
+                MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+
+                if (dto.getMemberAuth().equals("A")){ // 관리자
+                    model.addAttribute("admin", dto.getMemberAuth());
+                }
+                /*
+                if (dto.getMemberAuth().equals("admin")){ // 관리자
+                    model.addAttribute("admin", dto);
+                }
+                */
             }
-            /*
-            if (dto.getMemberAuth().equals("admin")){ // 관리자
-                model.addAttribute("admin", dto);
-            }
-            */
 
             //댓글 목록 가져오기
             List<CommentDTO> commentDTOList = commentService.findAll(boardId);
@@ -143,6 +150,7 @@ public class BoardController {
             return "board/read";
         } catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
+            e.printStackTrace();
             return "redirect:/sjhealthy/board/list";
         }
     }
