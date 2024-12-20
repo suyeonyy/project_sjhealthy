@@ -11,8 +11,8 @@ public class DailyDTO { // 일지
     private Long dailyId;       //글 고유번호
     private String memberId;    //아이디
     private String dailyDate;   //작성일
-    private int dailyCurWt;     //현재 체중
-    private int dailyGoalWt;    //목표 체중
+    private double dailyCurWt;     //현재 체중
+    private double dailyGoalWt;    //목표 체중
     private String dailyGoalSf; //목표 만족도
     private String dailyMemo;   //메모
     private String dailyYear;   //년도
