@@ -1,7 +1,9 @@
 package com.example.sjhealthy.component;
 
 import com.example.sjhealthy.dto.DailyDTO;
+import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.DailyEntity;
+import com.example.sjhealthy.entity.MemberEntity;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
