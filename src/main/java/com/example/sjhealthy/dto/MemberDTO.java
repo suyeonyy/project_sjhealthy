@@ -21,7 +21,9 @@ public class MemberDTO {
 
     private String memberBirth;     //생년월일
     private String memberGender;    //성별
+    private Double memberHeight;       //키
     private String memberAuth;      //권한
+
     private String isDeleted;       //삭제여부
     private String createDate;      //등록일
     private String updateDate;      //수정일
