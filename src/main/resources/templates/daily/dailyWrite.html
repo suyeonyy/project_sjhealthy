@@ -130,8 +130,17 @@
             dailyYear: dailyYear,
             dailyMonth: dailyMonth
        },
-       success : function(data) {
+       success : function(response) {
           //console.log("success");
+
+          // 서버에서 받은 alert 메시지와 리다이렉트 URL
+          var alertMessage = response.alertMessage;
+          var redirectUrl = response.redirectUrl;
+
+          // alert을 띄운 후 리다이렉트
+          alert(alertMessage);
+          window.location.href = redirectUrl;
+
        }, error : function() {
           //console.log("fail");
        }
