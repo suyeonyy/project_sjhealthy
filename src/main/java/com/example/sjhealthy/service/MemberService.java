@@ -4,7 +4,11 @@ import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.MemberRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -19,6 +23,7 @@ public class MemberService {
     //레파지토리 호출
     private final MemberRepository memberRepository;
 
+    private final PasswordEncoder pwEncoder;
 
     public List<MemberDTO> getMemberList(){
         List<MemberEntity> memberList = memberRepository.findAll();
@@ -38,7 +43,11 @@ public class MemberService {
         if (byMemberId.isPresent()){
             MemberEntity memberEntity = byMemberId.get(); //get: Optional 껍데기 벗기기
 
-            if (memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())){
+            String rawPw = ""; // 사용자가 제출한 비밀번호
+            String encodePw = memberEntity.getMemberPassword(); // DB에 저장된 암호화된 비밀번호
+            rawPw = memberDTO.getMemberPassword();
+
+            if(pwEncoder.matches(rawPw, encodePw)) {   //비밀번호 일치 여부 판단
                 // 비밀번호 일치
                 // entity -> dto 변환 후 리턴
                 MemberDTO dto = MemberMapper.toMemberDTO(memberEntity);
@@ -52,7 +61,15 @@ public class MemberService {
     }
 
     public void join(MemberDTO memberDTO) {
+        //비밀번호 암호화
+        String encryptedPassword = pwEncoder.encode(memberDTO.getMemberPassword());
+
+        // MemberDTO에서 MemberEntity로 변환
         MemberEntity memberEntity = MemberMapper.toMemberEntity(memberDTO);
+
+        // 암호화된 비밀번호를 Entity에 설정
+        memberEntity.setMemberPassword(encryptedPassword);
+
         memberRepository.save(memberEntity);
     }
 
