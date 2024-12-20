@@ -7,6 +7,7 @@ import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.entity.MemberStatisticsEntity;
 import com.example.sjhealthy.repository.DailyRepository;
 import com.example.sjhealthy.repository.MemberStatisticsRepository;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +24,8 @@ public class MemberStatisticsService {
     @Autowired
     private MemberStatisticsRepository memberStatisticsRepository;
 
-    public Double getAchievementPercentage(String memberId){
-        return dailyRepository.getAchievementPercentage(memberId);
-    }
-
-    public Double getBMI(String memberId){
-        return dailyRepository.getBMI(memberId);
+    public Double getMemberWeight(String memberId){
+        return dailyRepository.getMemberWeight(memberId);
     }
 
     public List<MemberStatisticsDTO> getRankList(){
@@ -46,11 +43,17 @@ public class MemberStatisticsService {
         return dtoList;
     }
 
-    public MemberStatisticsDTO getTotalStatisticsByMemberId(String memberId){
-        MemberStatisticsEntity byMemberId = dailyRepository.getTotalStatisticsByMemberId(memberId);
+    public MemberStatisticsDTO getStatisticsByMemberId(String memberId){
+        Tuple byMemberId = dailyRepository.getStatisticsByMemberId(memberId);
+//        memberStatisticsRepository.save(byMemberId);
 
-        memberStatisticsRepository.save(byMemberId);
-
-        return MemberStatisticsMapper.toMemberStatisticsDTO(byMemberId);
+        MemberStatisticsDTO dto = MemberStatisticsMapper.statisticsDTOFromTuple(byMemberId);
+        if (dto.getMemberAchievementPercentage() != null){
+            dto.setMemberAchievementPercentage(Math.round(dto.getMemberAchievementPercentage() * 100.00) / 100.00);
+        }
+        if (dto.getMemberBmi() != null){
+            dto.setMemberBmi(Math.round(dto.getMemberBmi() * 100.00) / 100.00);
+        }
+        return dto;
     }
 }

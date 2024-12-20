@@ -25,25 +25,19 @@
             </tbody>
         </table>
 
-        <!-- 본인 -->
-        <table th:if="${statistics}" border="1">
-            <thead>
-                <tr>
-                    <th>순위</th>
-                    <th>아이디</th>
-                    <th>목표 달성도</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr>
-                    <td th:text="${statistics.memberRank}"></td>
-                    <td th:text="${statistics.memberId}"></td>
-                    <td th:text="${statistics.memberAchievementPercentage} + ' %'"></td>
-                </tr>
-            </tbody>
-        </table>
     </div>
+    <br>
+    <hr>
+    <br>
+    <!-- 본인 -->
+    <div th:if="${statistics}">
+        <p><span th:text="'아이디: '"></span><strong th:text="${statistics.memberId}"></strong></p>
+        <p><span th:text="'현재 몸무게: '"></span><strong th:text="${memberWeight} + ' kg'"></strong></p>
+        <p><span th:text="'목표 달성도: '"></span><strong th:text="${statistics.memberAchievementPercentage} + ' %'"></strong></p>
+        <p><span th:text="'BMI: '"></span><strong th:text="${statistics.memberBmi}"></strong></p>
+        <p><span th:text="'순위: '"></span><strong th:text="${statistics.memberRank}"></strong></p>
+    </div>
+
     <a href="/sjhealthy"><button>메인</button></a>
 
 
