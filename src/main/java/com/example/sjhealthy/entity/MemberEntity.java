@@ -38,6 +38,9 @@ public class MemberEntity {
     @Column(columnDefinition = "VARCHAR(2)", nullable = false)
     private String memberGender;
 
+    @Column(columnDefinition = "NUMERIC(18, 1)")
+    private Double memberHeight;   // 키(통계에 사용, 가입 후 따로 받음)
+
     @Column(columnDefinition = "VARCHAR(2) DEFAULT 'U'", nullable = false)
     private String memberAuth;
 
@@ -87,6 +90,10 @@ public class MemberEntity {
 
         if (this.memberAuth == null){
             this.memberAuth = "U";
+        }
+
+        if (this.memberHeight == null){
+            this.memberHeight = 0.0;
         }
     }
     @PreUpdate
