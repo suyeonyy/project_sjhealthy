@@ -44,8 +44,8 @@ public class BoardController {
         // 로그인 했을 때
         if (loginId != null){
             MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
-            if (dto.getMemberAuth().equals("admin")){ // 관리자
-                model.addAttribute("admin", dto);
+            if (dto.getMemberAuth().equals("A")){ // 관리자
+                model.addAttribute("admin", dto.getMemberAuth());
             }
         }
 
@@ -135,11 +135,6 @@ public class BoardController {
                 if (dto.getMemberAuth().equals("A")){ // 관리자
                     model.addAttribute("admin", dto.getMemberAuth());
                 }
-                /*
-                if (dto.getMemberAuth().equals("admin")){ // 관리자
-                    model.addAttribute("admin", dto);
-                }
-                */
             }
 
             //댓글 목록 가져오기
