@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DailyDTO { // 일지
     private Long dailyId;       //글 고유번호
-    private String memberId;    //아이디
+//    private String memberId;    //아이디
+    private MemberDTO member;
     private String dailyDate;   //작성일
     private double dailyCurWt;     //현재 체중
     private double dailyGoalWt;    //목표 체중
