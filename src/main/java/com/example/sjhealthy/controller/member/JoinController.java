@@ -3,8 +3,10 @@ package com.example.sjhealthy.controller.member;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RequestMapping("/sjhealthy/")
 @Controller
@@ -20,12 +22,15 @@ public class JoinController {
     }
 
     @PostMapping("/member/join")
-    public String join(@ModelAttribute MemberDTO memberDTO){
+    public String join(@ModelAttribute MemberDTO memberDTO, RedirectAttributes redirectAttributes){
         System.out.println("회원가입");
         System.out.println(memberDTO);
         memberService.join(memberDTO);
 
-        return "login";
+        // 리다이렉트 시 전달할 메시지
+        redirectAttributes.addFlashAttribute("alertMessage", "회원가입이 완료되었습니다.\n로그인 후 이용해주세요.");
+
+        return "redirect:/sjhealthy/member/login";
     }
 
     /********** 중복 체크 ********************************/

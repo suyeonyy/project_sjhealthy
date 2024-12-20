@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -36,6 +37,9 @@ public class LoginController {
 
     @Autowired
     private MailServiceImpl mailService;
+
+    @Autowired
+    private PasswordEncoder pwEncoder;
 
     @Value("${CLIENT_ID}") // 이렇게 환경변수로 선언한 값을 불러와 사용
     private String client_id;

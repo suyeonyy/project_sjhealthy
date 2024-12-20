@@ -1,6 +1,6 @@
 package com.example.sjhealthy.controller;
 /*정보 정리*/
-public class InfoController {
+public class InfotestController {
 
     /* DTO.java
        [lombok 라이브러리 종류]
