@@ -4,15 +4,10 @@ import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.MemberRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -121,5 +116,23 @@ public class MemberService {
         if (result.isPresent()) { // 아이디가 존재하면 지움
             memberRepository.deleteById(memberId);
         }
+    }
+
+    public MemberEntity findMemberEntity(String loginId){ // 아이디 찾기에서 사용
+        // loginId를 이용하여 MemberEntity를 조회
+        Optional<MemberEntity> byMemberId = memberRepository.findByMemberId(loginId);
+        MemberEntity memberEntity = byMemberId.get();
+        return memberEntity;
+        /*
+        //jpa에서 optional 타입으로 받는다
+        Optional<MemberEntity> byMemberId =
+                memberRepository.findByMemberNameAndMemberBirth(memberDTO.getMemberName(), memberDTO.getMemberBirth());
+
+        if (byMemberId.isPresent()){
+            //Optional 타입을 Entity타입으로 바꾸기 위해 .get()을 붙임
+            MemberEntity memberEntity = byMemberId.get();
+            return MemberMapper.toMemberDTO(memberEntity);
+        } else return null;
+         */
     }
 }
