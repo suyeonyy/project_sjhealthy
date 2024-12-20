@@ -10,6 +10,9 @@ import com.example.sjhealthy.repository.DailyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DailyService {
@@ -23,5 +26,14 @@ public class DailyService {
         DailyEntity saveEntity = dailyRepository.save(postEntity);
         //다시 DTO로 변환하여 반환
         return DailyMapper.toDailyDTO(saveEntity);
+    }
+
+    public List<DailyDTO> getList() {
+        List<DailyEntity> dailyList = dailyRepository.findAll();
+        List<DailyDTO> list = new ArrayList<>();
+        for(DailyEntity post : dailyList){
+            list.add(DailyMapper.toDailyDTO(post));
+        }
+        return list;
     }
 }
