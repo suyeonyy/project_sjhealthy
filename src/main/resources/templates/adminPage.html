@@ -5,6 +5,13 @@
     <title>관리자 페이지</title>
 </head>
 <body>
+<nav>
+    <button id="memberNav"><div>회원 관리</div></button>
+    <button id="postNav"><div>게시물 관리</div></button>
+    <button id="reportNav"><div>신고 관리</div></button>
+</nav>
+
+<div id="content">
 <!-- 회원 리스트 -->
 <table border="1">
     <thead>
@@ -21,7 +28,7 @@
 
     <tbody>
     <tr th:each="member : ${memberList}">
-        <td><a th:href="@{/sjhealthy/board/delete(memberId=${member.memberId})}"><button id="adminButton">X</button></a></td>
+        <td><a th:href="@{/sjhealthy/board/delete(memberId=${member.memberId})}"><button class="adminButton">X</button></a></td>
         <td th:text="${member.memberId}" id="memberId"></td>
         <td th:text="${member.createDate}"></td>
         <td th:text="${member.memberName}"></td>
@@ -31,9 +38,40 @@
     </tr>
     </tbody>
 </table>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+        // 네비게이션바
+        const memberNav = document.getElementById("memberNav");
+        const postNav = document.getElementById("postNav");
+        const reportNav = document.getElementById("reportNav");
+        const content = document.getElementById("content");
+
+        // 회원 관리창
+        memberNav.addEventListener("click", async (e)=> {
+            content.innerHTML = ""; // 기존 내용 비움
+            
+        });
+
+        // 회원 탈퇴 버튼
+        const adminButtons = document.querySelectorAll(".adminButton");
+
+        
+        adminButtons.forEach((adminButton, index) => {
+            adminButton.addEventListener("click", async (e)=> {
+                if (!window.confirm("정말로 삭제하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+
+    });
+</script>
 
 <!-- 게시글 관리 -->
 <!-- 네비게이션 바에서 카테고리(회원, 게시글, 신고) 고를 수 있게 만들어야지 -->
+
 
 <!-- 신고 관리 -->
 
