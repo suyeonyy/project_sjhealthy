@@ -1,11 +1,8 @@
 package com.example.sjhealthy.entity;
 
-import com.example.sjhealthy.dto.DailyDTO;
-import com.example.sjhealthy.service.DailyService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -58,7 +55,7 @@ public class DailyEntity { // 일지
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //일지 기준
     @JoinColumn(name = "memberId")
     private MemberEntity member; // 참조하여 memberHeight 를 사용
 
@@ -82,7 +79,7 @@ public class DailyEntity { // 일지
         }
 
         //수정자는 무조건 업데이트
-        this.createUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
+        this.updateUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         /*
         if (this.updateUser == null) {
             this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
@@ -95,4 +92,5 @@ public class DailyEntity { // 일지
         }
 
     }
+
 }

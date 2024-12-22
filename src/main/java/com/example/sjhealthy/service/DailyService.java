@@ -1,11 +1,10 @@
 package com.example.sjhealthy.service;
 
-import com.example.sjhealthy.component.BoardMapper;
 import com.example.sjhealthy.component.DailyMapper;
-import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.DailyDTO;
-import com.example.sjhealthy.entity.BoardEntity;
+import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.entity.DailyEntity;
+import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.DailyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,22 +16,26 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DailyService {
     private final DailyRepository dailyRepository;
+    private final MemberService memberService;
 
-
-    public DailyDTO write(DailyDTO dailyDTO) {
+    public DailyDTO write(DailyDTO dailyDTO, MemberEntity memberEntity) {
         //DTO -> Entity
-        DailyEntity postEntity = DailyMapper.toDailyEntity(dailyDTO);
+        DailyEntity postEntity = DailyMapper.toDailyEntity(dailyDTO, memberEntity);
         //저장
         DailyEntity saveEntity = dailyRepository.save(postEntity);
         //다시 DTO로 변환하여 반환
-        return DailyMapper.toDailyDTO(saveEntity);
+        return DailyMapper.toDailyDTO(saveEntity, memberEntity.getMemberId());
     }
 
-    public List<DailyDTO> getList() {
+    public List<DailyDTO> getList(String loginId) {
+        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+
         List<DailyEntity> dailyList = dailyRepository.findAll();
         List<DailyDTO> list = new ArrayList<>();
         for(DailyEntity post : dailyList){
-            list.add(DailyMapper.toDailyDTO(post));
+            if(post.getMember().getMemberId().equals(loginId) || dto.getMemberAuth().equals("A")){
+                list.add(DailyMapper.toDailyDTO(post, post.getMember().getMemberId()));
+            }
         }
         return list;
     }
