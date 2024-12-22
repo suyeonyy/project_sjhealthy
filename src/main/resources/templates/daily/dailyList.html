@@ -18,15 +18,13 @@
     <tbody>
     <tr th:each="daily : ${dailyList}">
         <td th:text="${daily.dailyId}" id="dailyId"></td>
-        <td th:text="${daily.member.memberId}"></td>
+        <td th:text="${daily.memberId}"></td>
         <td th:text="${daily.createDate}"></td>
     </tr>
     </tbody>
 </table>
-
-
     <a href="/sjhealthy/daily/dailyWrite">일지 작성</a>
     <a href="/sjhealthy"><button>메인</button></a>
-    <a href="/sjhealthy/main"><button>목록</button></a>
+    <a href="/sjhealthy"><button>목록</button></a>
 </body>
 </html>
