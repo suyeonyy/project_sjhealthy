@@ -41,7 +41,6 @@ public class MemberStatisticsController {
         System.out.println("통계 리스트 받아옴");
         model.addAttribute("list", list);
 
-
         return "statistics/statMain";
     }
 }
