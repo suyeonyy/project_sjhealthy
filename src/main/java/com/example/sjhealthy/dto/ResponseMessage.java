@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseMessage {
+public class ResponseMessage { // 좋아요 싫어요
     private String message;
     private Long likeCount;
     private Long dislikeCount;
