@@ -56,7 +56,16 @@ public class DailyController {
         return "daily/dailyWrite";
     }
 
-    @PostMapping("/daily/dailyWrite")
+    @GetMapping("/daily/dailyWriteDetail")
+    public String getDailyWriteDetail(@SessionAttribute(name = "loginId", required = false) String loginId,
+                                Model model){
+        model.addAttribute("loginId", loginId);
+
+        return "daily/dailyWriteDetail";
+    }
+
+    /*
+    @PostMapping("/daily/dailyWriteDetail")
     public ResponseEntity<Map<String, String>> postDailyWrite(@SessionAttribute(name = "loginId", required = false) String loginId,
                                                               @ModelAttribute DailyDTO dailyDTO, Model model, RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
@@ -131,6 +140,14 @@ public class DailyController {
             e.printStackTrace();
             return "redirect:/sjhealthy/board/list";
         }
+    }
+
+    @GetMapping("/daily/daygrid-views")
+    public String getDayGridViews(@SessionAttribute(name = "loginId", required = false) String loginId,
+                                Model model){
+        model.addAttribute("loginId", loginId);
+
+        return "daily/daygrid-views";
     }
 
 }
