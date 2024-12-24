@@ -10,6 +10,12 @@
   <table>
     <tbody>
     <tr>
+      <th><span>제목</span></th>
+      <td>
+        <input type="text" id="dailyTitle" name="dailyTitle" placeholder="제목" maxlength="500" />
+      </td>
+    </tr>
+    <tr>
       <th><span>작성일</span></th>
       <td>
         <input type="text" id="dailyDate" name="dailyDate" placeholder="작성일" maxlength="8" readonly="readonly" />
@@ -93,6 +99,7 @@
 
   function saveDailyWrite(){
     var memberId = $("#memberId").val();
+    var dailyTitle = $("#dailyTitle").val();
     var dailyDate = $("#dailyDate").val();
     var dailyCurWt = $("#dailyCurWt").val();
     var dailyGoalWt = $("#dailyGoalWt").val();
@@ -107,6 +114,7 @@
     /*
     console.log("데이터");
     console.log("memberId" + memberId);
+    console.log("dailyTitle" + dailyTitle);
     console.log("dailyDate" + dailyDate);
     console.log("dailyCurWt" + dailyCurWt);
     console.log("dailyGoalWt" + dailyGoalWt);
@@ -122,6 +130,7 @@
        type : 'post',
        data: {
             memberId: memberId,
+            dailyTitle: dailyTitle,
             dailyDate: dailyDate,
             dailyCurWt: dailyCurWt,
             dailyGoalWt: dailyGoalWt,
