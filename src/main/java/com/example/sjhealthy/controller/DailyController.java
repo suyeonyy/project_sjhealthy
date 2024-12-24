@@ -116,7 +116,6 @@ public class DailyController {
             //return "redirect:/sjhealthy/daily/dailyList";
         }
     }
-    */
 
     @RequestMapping("/daily/dailyRead")
     public String readPost(@SessionAttribute(name="loginId", required = false) String loginId,
@@ -150,4 +149,5 @@ public class DailyController {
 
         return "daily/daygrid-views";
     }
+
 }
