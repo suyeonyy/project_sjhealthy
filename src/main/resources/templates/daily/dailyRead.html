@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>일지 상세내역</title>
+</head>
+<body>
+  <table>
+    <tbody>
+    <tr>
+      <th><span>제목</span></th>
+      <td>
+        <span th:text="${dailyDTO.dailyTitle}"></span>
+      </td>
+    </tr>
+    <tr>
+      <th><span>작성일</span></th>
+      <td>
+        <span th:text="${dailyDTO.dailyDate}"></span>
+      </td>
+    </tr>
+    <tr>
+      <th><span>현재체중</span></th>
+      <td>
+        <span th:text="${dailyDTO.dailyCurWt}"></span>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표체중</span></th>
+      <td>
+        <span th:text="${dailyDTO.dailyGoalWt}"></span>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표만족도</span></th>
+      <td>
+        <span th:text="${dailyDTO.dailyGoalSf}"></span>
+      </td>
+    </tr>
+    <tr>
+      <th><span>메모</span></th>
+      <td>
+          <span th:text="${dailyDTO.dailyMemo}"></span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</body>
+</html>
