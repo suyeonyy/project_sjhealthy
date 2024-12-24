@@ -25,6 +25,13 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             nativeQuery = true)
     Double getMemberWeight(String memberId);
 
+    @Query(value = "SELECT " +
+        "d.daily_cur_wt " +
+        "FROM daily_table d " +
+        "WHERE d.member_id = :memberId",
+        nativeQuery = true)
+    List<Double> getAllWeightByMemberId(String memberId);
+
 //    @Query(value = "SELECT " + // 목표 달성도 계산
 //            "((d.dailyGoalWt - d.dailyCurWt) / d.dailyGoalWt) * 100 " +
 //            "FROM DailyEntity d " +
