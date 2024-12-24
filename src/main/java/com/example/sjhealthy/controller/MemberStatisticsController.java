@@ -2,12 +2,16 @@ package com.example.sjhealthy.controller;
 
 import com.example.sjhealthy.component.MemberStatisticsMapper;
 import com.example.sjhealthy.dto.MemberStatisticsDTO;
+import com.example.sjhealthy.dto.Response;
 import com.example.sjhealthy.service.MemberStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
@@ -42,5 +46,24 @@ public class MemberStatisticsController {
         model.addAttribute("list", list);
 
         return "statistics/statMain";
+    }
+
+    @ResponseBody
+    @GetMapping("/statistics/graph")
+    public ResponseEntity<Response<Object>> createWeightChangeGraph(
+        @SessionAttribute(name = "loginId", required = false) String loginId,
+                                                                    Model model){
+        model.addAttribute("loginId", loginId);
+        try {
+            List<Double> weightList = service.getWeightListByMemberId(loginId);
+            System.out.println(weightList);
+            if (weightList.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "데이터가 존재하지 않습니다."));
+            }
+            return ResponseEntity.ok(new Response<>(weightList, null));
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류"));
+        }
     }
 }
