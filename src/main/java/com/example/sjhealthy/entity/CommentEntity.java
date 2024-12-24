@@ -18,7 +18,7 @@ public class CommentEntity {
     private Long comId;
 
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
-    private String memberId;
+    private String memberId; // 근데 사용은 입력해서 사용하는 걸로 함. 조인 안 함
 
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String commentWriter;
@@ -43,6 +43,7 @@ public class CommentEntity {
 
     /* Board:Comment = 1:N */
     //Comment는 Board를 참조하는 관계로 지정한다.
+//    cascade = CascadeType.ALL, orphanRemoval = true
     @ManyToOne(fetch = FetchType.LAZY) //댓글 기준
     @JoinColumn(name="boardId")
     private BoardEntity boardEntity;
