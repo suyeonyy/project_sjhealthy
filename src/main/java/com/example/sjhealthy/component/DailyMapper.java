@@ -48,7 +48,7 @@ public class DailyMapper { // 일지
         dailyDTO.setUpdateDate(dailyEntity.getUpdateDate());
         dailyDTO.setCreateUser(dailyEntity.getCreateUser());
         dailyDTO.setUpdateUser(dailyEntity.getUpdateUser());
-        dailyDTO.setMemberId(memberId);
+        dailyDTO.setMemberId(memberId); // member 객체 중 memberId만 필요해서 이것만 받아서 DTO로 보냄
 
         return dailyDTO;
     }

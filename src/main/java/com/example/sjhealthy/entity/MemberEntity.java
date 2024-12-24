@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Entity
 @Getter
@@ -58,6 +59,16 @@ public class MemberEntity {
 
     @Column(name="update_user", columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardEntity> board;  // 하나의 회원이 여러 게시글을 가짐
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DailyEntity> daily;  // 하나의 회원이 여러 일지글을 가짐
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<RecommendEntity> recommend;  // 하나의 회원이 여러 추천글을 가짐
+
 
     @PrePersist
     public void prePersist(){
