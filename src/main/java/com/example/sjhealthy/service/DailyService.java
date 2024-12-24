@@ -1,8 +1,11 @@
 package com.example.sjhealthy.service;
 
+import com.example.sjhealthy.component.BoardMapper;
 import com.example.sjhealthy.component.DailyMapper;
+import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.DailyDTO;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.entity.DailyEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.DailyRepository;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +42,16 @@ public class DailyService {
             }
         }
         return list;
+    }
+
+    public DailyDTO read(Long dailyId, MemberEntity memberEntity) {
+        Optional<DailyEntity> entity = dailyRepository.findById(dailyId);
+
+        if(entity.isPresent()){
+            DailyEntity readEntity = entity.get();
+            return DailyMapper.toDailyDTO(readEntity, memberEntity.getMemberId());
+        }else{
+            return null;
+        }
     }
 }
