@@ -14,6 +14,7 @@ public class DailyMapper { // 일지
 
         dailyEntity.setDailyId(dailyDTO.getDailyId());
 //        dailyEntity.setMemberId(dailyDTO.getMemberId());
+        dailyEntity.setDailyTitle(dailyDTO.getDailyTitle());
         dailyEntity.setDailyDate(dailyDTO.getDailyDate());
         dailyEntity.setDailyCurWt(dailyDTO.getDailyCurWt());
         dailyEntity.setDailyGoalWt(dailyDTO.getDailyGoalWt());
@@ -36,6 +37,7 @@ public class DailyMapper { // 일지
 
         dailyDTO.setDailyId(dailyEntity.getDailyId());
 //        dailyDTO.setMemberId(dailyEntity.getMemberId());
+        dailyDTO.setDailyTitle(dailyEntity.getDailyTitle());
         dailyDTO.setDailyDate(dailyEntity.getDailyDate());
         dailyDTO.setDailyCurWt(dailyEntity.getDailyCurWt());
         dailyDTO.setDailyGoalWt(dailyEntity.getDailyGoalWt());
