@@ -9,6 +9,7 @@ import com.example.sjhealthy.dto.RecommendDTO;
 import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.entity.RecommendEntity;
+import com.example.sjhealthy.repository.MemberRepository;
 import com.example.sjhealthy.repository.RecommendRepository;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
@@ -25,25 +26,32 @@ import java.util.Set;
 public class RecommendService {
     private final RecommendRepository recommendRepository;
 
+    private final MemberRepository memberRepository;
+
     public List<RecommendDTO> getList(){
         List<RecommendEntity> list = recommendRepository.findAll();
         List<RecommendDTO> dtoList = new ArrayList<>(); // dto로 변환하여 저장
 
         for (RecommendEntity entity : list){
-            dtoList.add(RecommendMapper.toRecommendDTO(entity));
+            dtoList.add(RecommendMapper.toRecommendDTO(entity, entity.getMember().getMemberId()));
         }
         return dtoList;
     }
 
     public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
-        //dto를 entity로 변환
-        RecommendEntity entity = RecommendMapper.toRecommendEntity(recommendDTO);
+        Optional<MemberEntity> entity = memberRepository.findByMemberId(recommendDTO.getMemberId());
 
-        //저장
-        RecommendEntity savedEntity = recommendRepository.save(entity);
+        if (entity.isPresent()){
+            MemberEntity memberEntity = entity.get();
+            //dto를 entity로 변환
+            RecommendEntity rEntity = RecommendMapper.toRecommendEntity(recommendDTO, memberEntity);
 
-        //다시 dto로 변환하여 반환
-        return RecommendMapper.toRecommendDTO(savedEntity);
+            //저장
+            RecommendEntity savedEntity = recommendRepository.save(rEntity);
+
+            //다시 dto로 변환하여 반환
+            return RecommendMapper.toRecommendDTO(savedEntity, savedEntity.getMember().getMemberId());
+        } else return null;
     }
 
     public RecommendEntity readRecommendationById(Long recId){

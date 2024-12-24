@@ -104,32 +104,10 @@ public class AdminController {
                 List<BoardDTO> dtoList = boardService.getList();
 
                 List<BoardEntity> boardList = new ArrayList<>();
-                for (BoardDTO entity : dtoList) {
-                    boardList.add(BoardMapper.toBoardEntity(entity));
+                for (BoardDTO boardDTO : dtoList) {
+                    boardList.add(BoardMapper.toBoardEntity(boardDTO, memberService.findMemberEntity(loginId)));
                 }
                 return ResponseEntity.ok(new Response<>(boardList, null));
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-                    "관리자만 접근 가능한 페이지입니다."));
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-                "관리자만 접근 가능한 페이지입니다."));
-        }
-    }
-
-    @GetMapping("/admin/report")
-    public ResponseEntity<Response<Object>> getReportedUsersList(Model model, @SessionAttribute(name = "loginId", required = false)String loginId) { // 신고 당한 유저 리스트 가져오기
-        model.addAttribute("loginId", loginId);
-        if (loginId != null) {
-            MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
-            System.out.println(loginMember);
-
-            if (loginMember.getMemberAuth().equals("A")) {
-                // 관리자인지 확인
-                // 신고 기능이 필요할까..? 귀찮으니 일단 보류
-                return null;
-
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
                     "관리자만 접근 가능한 페이지입니다."));
