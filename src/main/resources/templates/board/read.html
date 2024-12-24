@@ -119,6 +119,8 @@
                 },
                 success: function(res){
                     //console.log("요청성공", res);
+                    console.log(res);
+                    console.log(res.data);
 
                     /* 댓글 목록을 표현하는 테이블 */
                     let output = "<table class='table'>";
@@ -127,12 +129,12 @@
                     output += "<th>내용</th>";
                     output += "<th>작성일</th>";
 
-                    for(var i in res){
+                    for(var i in res.data){
                         output += "<tr>";
-                        output += "<td>" + res[i].comId + "</td>";
-                        output += "<td>" + res[i].commentWriter + "</td>";
-                        output += "<td>" + res[i].commentContent + "</td>";
-                        output += "<td>" + res[i].formattedCreateDate + "</td>";
+                        output += "<td>" + res.data[i].comId + "</td>";
+                        output += "<td>" + res.data[i].commentWriter + "</td>";
+                        output += "<td>" + res.data[i].commentContent + "</td>";
+                        output += "<td>" + res.data[i].formattedCreateDate + "</td>";
                         output += "</tr>";
                     }
                     output += "</table>";
