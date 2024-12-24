@@ -28,6 +28,7 @@ public class MemberStatisticsService {
         return dailyRepository.getMemberWeight(memberId);
     }
 
+    public List<Double> getWeightListByMemberId(String memberId) {return dailyRepository.getAllWeightByMemberId(memberId);}
     public List<MemberStatisticsDTO> getRankList(){
         List<MemberStatisticsDTO> dtoList = MemberStatisticsMapper.memberStatisticsDTOFromTuple(dailyRepository.getRankList());
 

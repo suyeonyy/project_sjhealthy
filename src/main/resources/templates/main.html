@@ -5,6 +5,7 @@
     <title>Main</title>
 </head>
 <body>
+
     <h1>메인</h1>
     <a href="/sjhealthy/member/join" th:if="${loginId == null}"><button>회원가입</button></a>
     <a href="/sjhealthy/member/login" th:if="${loginId == null}"><button>로그인</button></a>
@@ -20,5 +21,7 @@
     <a href="/sjhealthy/statistics"><button>광장</button></a>
     <a href="/sjhealthy/info/infoList"><button>정보</button></a>
     <a href="/sjhealthy/admin"><button>관리자 기능</button></a>
+
+
 </body>
 </html>
