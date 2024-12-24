@@ -3,6 +3,7 @@ package com.example.sjhealthy.controller.member;
 import com.example.sjhealthy.dto.GoogleProfile;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.OAuthToken;
+import com.example.sjhealthy.dto.Response;
 import com.example.sjhealthy.service.MailServiceImpl;
 import com.example.sjhealthy.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -300,7 +301,7 @@ public class LoginController {
             googleAccountRequest,
             String.class
         );
- 
+
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(response);
 
@@ -415,13 +416,30 @@ public class LoginController {
 
         return "deleteMember";
     }
+
+    @GetMapping("/member/delete/{memberId}")
+    public String deleteMember(@PathVariable String memberId, RedirectAttributes ra){
+        try {
+            if (memberId != null && memberService.findMemberEmail(memberId) != null){
+                memberService.delete(memberId);
+                ra.addAttribute("message", "탈퇴 완료되었습니다.");
+                return "redirect:/sjhealthy";
+            }
+            ra.addAttribute("message", "탈퇴하지 못했습니다.");
+            return "redirect:/sjhealthy";
+        } catch (Exception e){
+            e.printStackTrace();
+            return "redirect:/sjhealthy";
+        }
+    }
+
     // 구글 연동 회원 탈퇴
     @ResponseBody
     @GetMapping("/member/delete/google/{memberId}")
     public ResponseEntity<?> deleteGoogleMember(@PathVariable String memberId, HttpServletRequest request,
                                                 @SessionAttribute(name = "accessToken_google", required = false)String accessToken){
         if (memberId == null || memberId.isEmpty()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 존재하지 않습니다."));
         }
         // 연동 해제를 위한 액세스 토큰 보냄
         // 회원 정보로 조회해서 확인하고 그런 과정 있으면 좋은데 나중에 해야지
