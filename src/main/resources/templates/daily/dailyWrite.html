@@ -22,6 +22,54 @@
 <div id='calendar-container'>
   <div id='calendar'></div>
 </div>
+<body>
+  <table>
+    <tbody>
+    <tr>
+      <th><span>제목</span></th>
+      <td>
+        <input type="text" id="dailyTitle" name="dailyTitle" placeholder="제목" maxlength="500" />
+      </td>
+    </tr>
+    <tr>
+      <th><span>작성일</span></th>
+      <td>
+        <input type="text" id="dailyDate" name="dailyDate" placeholder="작성일" maxlength="8" readonly="readonly" />
+      </td>
+    </tr>
+    <tr>
+      <th><span>현재체중</span></th>
+      <td>
+        <input type="text" id="dailyCurWt" name="dailyCurWt" placeholder="현재체중" oninput="validateInput(this)"/>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표체중</span></th>
+      <td>
+        <input type="text" id="dailyGoalWt" name="dailyGoalWt" placeholder="목표체중" maxlength="5" oninput="validateInput(this)"/>
+      </td>
+    </tr>
+    <tr>
+      <th><span>목표만족도</span></th>
+      <td>
+        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도" maxlength="5" />
+      </td>
+    </tr>
+    <tr>
+      <th><span>메모</span></th>
+      <td>
+        <textarea id="dailyMemo" name="dailyMemo" maxlength="2000">
+        </textarea>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+  <button type="button" class="btn btn_st1" onclick="saveDailyWrite();">작성</button>
+  <a href="../daily/dailyList">
+    <button>목록</button>
+  </a>
+</body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script>
@@ -83,6 +131,14 @@
              }
           });
 
+  function saveDailyWrite(){
+    var memberId = $("#memberId").val();
+    var dailyTitle = $("#dailyTitle").val();
+    var dailyDate = $("#dailyDate").val();
+    var dailyCurWt = $("#dailyCurWt").val();
+    var dailyGoalWt = $("#dailyGoalWt").val();
+    var dailyGoalSf = $("#dailyGoalSf").val();
+    var dailyMemo = $("#dailyMemo").val();
 
 
           /*
@@ -99,6 +155,38 @@
           */
         }
 
+    var dailyYear = dailyDate.substring(0,4);
+    var dailyMonth = dailyDate.substring(4,6);
+    /*
+    console.log("데이터");
+    console.log("memberId" + memberId);
+    console.log("dailyTitle" + dailyTitle);
+    console.log("dailyDate" + dailyDate);
+    console.log("dailyCurWt" + dailyCurWt);
+    console.log("dailyGoalWt" + dailyGoalWt);
+    console.log("dailyGoalSf" + dailyGoalSf);
+    console.log("dailyMemo" + dailyMemo);
+    console.log("dailyYear" + dailyYear);
+    console.log("dailyMonth" + dailyMonth);
+    console.log("끝");
+    */
+
+    $.ajax({
+       url : '../daily/dailyWrite',
+       type : 'post',
+       data: {
+            memberId: memberId,
+            dailyTitle: dailyTitle,
+            dailyDate: dailyDate,
+            dailyCurWt: dailyCurWt,
+            dailyGoalWt: dailyGoalWt,
+            dailyGoalSf: dailyGoalSf,
+            dailyMemo: dailyMemo,
+            dailyYear: dailyYear,
+            dailyMonth: dailyMonth
+       },
+       success : function(response) {
+          //console.log("success");
 
         /*
         // 이벤트
