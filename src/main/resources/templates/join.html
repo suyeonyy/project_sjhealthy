@@ -81,6 +81,8 @@
     </style>
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+
 <h1>회원가입</h1>
 <div class="join_container">
     <!-- # onsubmit
@@ -195,6 +197,8 @@
         <button type="button" class="btn btn_st1" onclick="saveMember();">가입</button>
     </p>
 </div>
+
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript" th:src="@{/js/join.js}"></script>
