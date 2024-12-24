@@ -24,8 +24,8 @@ public class BoardEntity {
     @Column(columnDefinition = "VARCHAR(500)", nullable = false) // 형식과 NOTNULL (nullable은 기본값이 true)
     private String boardTitle;
 
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
-    private String memberId;
+//    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+//    private String memberId;
 
     @Column(columnDefinition = "NUMERIC(18,0) DEFAULT 0", nullable = false)
     private int boardViews;
@@ -59,6 +59,10 @@ public class BoardEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY) //게시판 기준
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private MemberEntity member;
+
     @PrePersist // 날짜 기본 형식 지정하여 DB로
     public void prePersist(){
         if (this.createDate == null){
@@ -75,17 +79,15 @@ public class BoardEntity {
         // creusr에 memberId 넣어줌
         // 이때 memberId가 null 일 수도 있어서 null인지 확인하고 default값도 설정해준다.
         if (this.createUser == null){
-            this.createUser = this.memberId != null ? this.memberId : "defaultUser";
+            this.createUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         }
 
         if (this.updateUser == null){
-            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
+            this.updateUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
+        } else if (!this.createUser.equals(this.member.getMemberId())){ // 생성자 수정자 다르면 수정자에 최근 작성자를 넣음
+            this.updateUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         }
 
-        // 생성자 수정자 다르면 수정자에 최근 작성자를 넣음
-        if (!this.createUser.equals(this.memberId)){
-            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
-        }
 
         if (this.isDeleted == null){
             this.isDeleted = "N"; // 그냥 여기에 해주는 게 제일 확실하다
