@@ -40,8 +40,6 @@ public class MemberStatisticsController {
         List<MemberStatisticsDTO> list = service.getRankList();
         System.out.println("통계 리스트 받아옴");
         model.addAttribute("list", list);
-        System.out.println("통계 " + list);
-
 
         return "statistics/statMain";
     }
