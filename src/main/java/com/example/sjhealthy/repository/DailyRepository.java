@@ -77,7 +77,7 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             "       SELECT MIN(daily_id) FROM daily_table WHERE member_id = :memberId) " +
             "JOIN ( " + // 순위 계산
             "       SELECT " +
-            "           d.member_id, " +
+            "           d.member_id AS member_id, " +
             "           DENSE_RANK() OVER (ORDER BY ((first.daily_cur_wt - d.daily_cur_wt) / (first.daily_cur_wt - d.daily_goal_wt)) DESC) AS memberRank " +
             "       FROM daily_table d " +
             "       JOIN member_table m ON m.member_id = d.member_id " +
