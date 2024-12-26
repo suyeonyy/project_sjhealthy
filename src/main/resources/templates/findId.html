@@ -5,7 +5,8 @@
     <title>LoginForm</title>
 </head>
 <body>
-<h1>아이디 찾기</h1>
+<div th:replace="~{fragment/header :: main-head}"></div>
+    <h1>아이디 찾기</h1>
 
 <form action="../member/find-id" method="POST" th:if="${memberDTO == null}">
     이름: <input type="text" name="memberName"><br>
@@ -19,5 +20,6 @@
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
 </p>
 
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
