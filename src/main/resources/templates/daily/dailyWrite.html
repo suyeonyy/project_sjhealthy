@@ -23,49 +23,6 @@
   <div id='calendar'></div>
 </div>
 <body>
-  <table>
-    <tbody>
-    <tr>
-      <th><span>제목</span></th>
-      <td>
-        <input type="text" id="dailyTitle" name="dailyTitle" placeholder="제목" maxlength="500" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>작성일</span></th>
-      <td>
-        <input type="text" id="dailyDate" name="dailyDate" placeholder="작성일" maxlength="8" readonly="readonly" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>현재체중</span></th>
-      <td>
-        <input type="text" id="dailyCurWt" name="dailyCurWt" placeholder="현재체중" oninput="validateInput(this)"/>
-      </td>
-    </tr>
-    <tr>
-      <th><span>목표체중</span></th>
-      <td>
-        <input type="text" id="dailyGoalWt" name="dailyGoalWt" placeholder="목표체중" maxlength="5" oninput="validateInput(this)"/>
-      </td>
-    </tr>
-    <tr>
-      <th><span>목표만족도</span></th>
-      <td>
-        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도" maxlength="5" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>메모</span></th>
-      <td>
-        <textarea id="dailyMemo" name="dailyMemo" maxlength="2000">
-        </textarea>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
-  <button type="button" class="btn btn_st1" onclick="saveDailyWrite();">작성</button>
   <a href="../daily/dailyList">
     <button>목록</button>
   </a>
@@ -130,6 +87,7 @@
                 console.log("fail");
              }
           });
+        }
 
   function saveDailyWrite(){
     var memberId = $("#memberId").val();
