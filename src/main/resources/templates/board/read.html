@@ -5,6 +5,8 @@
     <title>readForm</title>
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+
     <h1 th:text="${boardDTO.boardTitle}"></h1>
     작성자: <p th:text="${boardDTO.memberId}"></p><br>
     작성일: <p th:text="${boardDTO.createDate}"></p><br>
@@ -19,7 +21,7 @@
     <a href="../board/list">
         <button>목록</button>
     </a>
-    <a th:if="${boardDTO.memberId == loginId}" 
+    <a th:if="${boardDTO.memberId == loginId}"
         th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}">
         <button>수정</button>
     </a>
@@ -190,5 +192,7 @@
         }
     });
 </script> -->
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+
 </body>
 </html>
