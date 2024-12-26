@@ -6,6 +6,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
     <h1>로그인</h1>
     <form action="../member/login" method="POST">
         아이디: <input type="text" name="memberId" id="memberId"><br>
@@ -26,7 +27,7 @@
     <a href="../member/join"><button>회원가입</button></a>
 
 <script th:inline="javascript">
-    const alertMessage = [[${alertMessage}]];
+    const alertMessage = /*[[${alertMessage}]]*/'';
     if (alertMessage) {
         alert(alertMessage);
     }
@@ -48,5 +49,6 @@
     });
 });
 </script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
