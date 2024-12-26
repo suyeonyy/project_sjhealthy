@@ -31,14 +31,19 @@ public class MemberStatisticsController {
         if (loginId != null){ // 로그인 했을 땐 memberId, 본인 순위, 목표달성도, BMI 출력
             System.out.println("로그인 멤버");
             MemberStatisticsDTO achievement = service.getStatisticsByMemberId(loginId);
-            System.out.println("통계 가져오기 성공");
-            System.out.println(achievement);
-            Double memberWeight = service.getMemberWeight(loginId); // 몸무게
-            System.out.println("몸무게 가져오기 성공");
-            System.out.println(memberWeight);
+            if (achievement == null){
+                System.out.println("데이터가 존재하지 않습니다.");
+                model.addAttribute("statistics", null);
+            } else {
+                System.out.println("통계 가져오기 성공");
+                System.out.println(achievement);
+                Double memberWeight = service.getMemberWeight(loginId); // 몸무게
+                System.out.println("몸무게 가져오기 성공");
+                System.out.println(memberWeight);
 
-            model.addAttribute("statistics", achievement);
-            model.addAttribute("memberWeight", memberWeight);
+                model.addAttribute("statistics", achievement);
+                model.addAttribute("memberWeight", memberWeight);
+            }
         }
 
         List<MemberStatisticsDTO> list = service.getRankList();
