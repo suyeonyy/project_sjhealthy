@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>광장</title>
+    <!-- 그래프 작성 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+</head>
+<body>
+    <h2>체중 변화 그래프</h2>
+    <!-- 주, 월, 연으로 볼 수 있게 버튼 추가 -->
+    <div class="container">
+        
+    <div>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async (e)=> {
+            // 서버에 요청하여 데이터 받아옴
+            const response = await fetch("/sjhealthy/statistics/graph");
+            const weightList = await response.json();
+
+            const labels = Utils.months({count: 12}); // 이거 수정해야 할 것 같은데.. 어떻게 뽑아야 하지
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: "몸무게",
+                    data: weightList,
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            };
+
+            // 그래프로 그림
+            const stackedLine = new Chart(ctx, {
+                type: "line",
+                data: data,
+                options: {
+                    scales: {
+                        y: {
+                            stacked: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+    <a href="/sjhealthy"><button>메인</button></a>
+
+
+</body>
+</html>

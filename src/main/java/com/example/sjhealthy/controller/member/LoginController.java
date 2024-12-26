@@ -453,6 +453,7 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.invalidate();
 
+
         return ResponseEntity.ok(accessToken);
     }
 }
