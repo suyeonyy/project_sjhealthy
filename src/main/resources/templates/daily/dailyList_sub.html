@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>일지</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>글 번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="daily : ${dailyList}">
+        <td th:text="${daily.dailyId}" id="dailyId"></td>
+        <td><a th:href="@{/sjhealthy/daily/dailyRead?dailyId={id}(id=${daily.dailyId})}" th:text="${daily.dailyTitle}"></a></td>
+        <td th:text="${daily.memberId}"></td>
+        <td th:text="${daily.createDate}"></td>
+    </tr>
+    </tbody>
+</table>
+    <a href="/sjhealthy/daily/dailyWrite">일지 작성</a>
+    <a href="/sjhealthy"><button>메인</button></a>
+    <a href="/sjhealthy"><button>목록</button></a>
+</body>
+</html>
