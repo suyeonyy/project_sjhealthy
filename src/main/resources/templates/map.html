@@ -33,6 +33,7 @@
     </style>
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
 
 <div class="map_wrap">
     <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
@@ -344,5 +345,6 @@
             };
         };
 </script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
