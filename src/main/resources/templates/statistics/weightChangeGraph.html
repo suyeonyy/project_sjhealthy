@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
     <h2>체중 변화 그래프</h2>
     <!-- 주, 월, 연으로 볼 수 있게 버튼 추가 -->
     <div class="container">
@@ -51,5 +52,6 @@
     <a href="/sjhealthy"><button>메인</button></a>
 
 
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>

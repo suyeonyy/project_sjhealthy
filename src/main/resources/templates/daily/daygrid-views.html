@@ -17,6 +17,7 @@
     }
   </style>
 </head>
+<div th:replace="~{fragment/header :: main-head}"></div>
 <body style="padding:30px;">
 <!-- calendar 태그 -->
 <div id='calendar-container'>
@@ -142,5 +143,6 @@
     });
   })();
 </script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
