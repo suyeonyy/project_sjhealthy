@@ -7,6 +7,8 @@ import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.service.DailyService;
 import com.example.sjhealthy.service.MemberService;
 import com.sun.source.tree.MemberReferenceTree;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +56,16 @@ public class DailyController {
         return "daily/dailyWrite";
     }
 
-    @PostMapping("/daily/dailyWrite")
+    @GetMapping("/daily/dailyWriteDetail")
+    public String getDailyWriteDetail(@SessionAttribute(name = "loginId", required = false) String loginId,
+                                Model model){
+        model.addAttribute("loginId", loginId);
+
+        return "daily/dailyWriteDetail";
+    }
+
+    /*
+    @PostMapping("/daily/dailyWriteDetail")
     public ResponseEntity<Map<String, String>> postDailyWrite(@SessionAttribute(name = "loginId", required = false) String loginId,
                                                               @ModelAttribute DailyDTO dailyDTO, Model model, RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
@@ -105,4 +116,38 @@ public class DailyController {
             //return "redirect:/sjhealthy/daily/dailyList";
         }
     }
+
+    @RequestMapping("/daily/dailyRead")
+    public String readPost(@SessionAttribute(name="loginId", required = false) String loginId,
+                           @RequestParam("dailyId") Long dailyId, Model model,
+                           HttpServletRequest request, HttpServletResponse response){
+        model.addAttribute("loginId", loginId);
+
+        System.out.println("진입하나요?>>?/**/");
+
+        MemberEntity memberEntity = memberService.findMemberEntity(loginId);
+
+        try{
+            DailyDTO result = dailyService.read(dailyId, memberEntity);
+
+            if(loginId != null){
+            }
+
+            model.addAttribute("dailyDTO", result);
+            return "daily/dailyRead";
+        }catch (Exception e){
+            System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
+            e.printStackTrace();
+            return "redirect:/sjhealthy/board/list";
+        }
+    }
+
+    @GetMapping("/daily/daygrid-views")
+    public String getDayGridViews(@SessionAttribute(name = "loginId", required = false) String loginId,
+                                Model model){
+        model.addAttribute("loginId", loginId);
+
+        return "daily/daygrid-views";
+    }
+
 }

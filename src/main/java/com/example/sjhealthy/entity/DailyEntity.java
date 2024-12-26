@@ -19,6 +19,9 @@ public class DailyEntity { // 일지
 
 //    private String memberId;
 
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    private String dailyTitle;
+
     @Column(columnDefinition = "VARCHAR(8)", nullable = false)
     private String dailyDate;
 
