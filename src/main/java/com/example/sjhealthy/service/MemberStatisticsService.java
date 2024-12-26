@@ -47,6 +47,9 @@ public class MemberStatisticsService {
     public MemberStatisticsDTO getStatisticsByMemberId(String memberId){
         Tuple byMemberId = dailyRepository.getStatisticsByMemberId(memberId);
 //        memberStatisticsRepository.save(byMemberId);
+        if (byMemberId == null){
+            return null;
+        }
 
         MemberStatisticsDTO dto = MemberStatisticsMapper.statisticsDTOFromTuple(byMemberId);
         if (dto.getMemberAchievementPercentage() != null){
