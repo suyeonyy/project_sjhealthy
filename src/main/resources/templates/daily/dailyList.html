@@ -5,7 +5,7 @@
     <title>일지</title>
 </head>
 <body>
-
+<div th:replace="~{fragment/header :: main-head}"></div>
 <table>
     <thead>
     <tr>
@@ -28,5 +28,6 @@
     <a href="/sjhealthy/daily/dailyWrite">일지 작성</a>
     <a href="/sjhealthy"><button>메인</button></a>
     <a href="/sjhealthy"><button>목록</button></a>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
