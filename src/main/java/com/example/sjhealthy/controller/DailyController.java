@@ -64,7 +64,6 @@ public class DailyController {
         return "daily/dailyWriteDetail";
     }
 
-    /*
     @PostMapping("/daily/dailyWriteDetail")
     public ResponseEntity<Map<String, String>> postDailyWrite(@SessionAttribute(name = "loginId", required = false) String loginId,
                                                               @ModelAttribute DailyDTO dailyDTO, Model model, RedirectAttributes ra){
