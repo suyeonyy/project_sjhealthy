@@ -5,7 +5,8 @@
     <title>관리자 페이지</title>
 </head>
 <body>
-<nav>
+<div th:replace="~{fragment/header :: main-head}"></div>
+    <nav>
     <button id="memberNav"><div>회원 관리</div></button>
     <button id="postNav"><div>게시물 관리</div></button>
     <button id="reportNav"><div>신고 관리</div></button>
@@ -42,5 +43,6 @@
 
 <script th:inline="javascript" th:src="@{/js/adminPage.js}"></script>
 
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
