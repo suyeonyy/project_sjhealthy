@@ -100,7 +100,7 @@ public class RecommendController {
         boolean result = recommendService.handleLikeOrDislike(recId, loginId, "like");
 
         // 확인용
-        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
+        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId));
 
         // 집계
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
@@ -131,7 +131,7 @@ public class RecommendController {
         boolean result = recommendService.handleLikeOrDislike(recId, loginId, "dislike");
 
         //확인용
-        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId)));
+        System.out.println("recY/N = " + RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId));
 
         // 집계
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
