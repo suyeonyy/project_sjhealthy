@@ -122,7 +122,7 @@ public class DailyController {
                            HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
 
-        System.out.println("진입하나요?>>?/**/");
+        System.out.println("진입하나요??");
 
         MemberEntity memberEntity = memberService.findMemberEntity(loginId);
 
