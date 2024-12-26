@@ -16,8 +16,8 @@ public class RecommendEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long recId;
 
-    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
-    private String memberId;
+//    @Column(columnDefinition = "VARCHAR(20)", nullable = false)
+//    private String memberId;
 
     @Column(columnDefinition = "VARCHAR(20)", nullable = false)
     private String recStoreId;
@@ -55,6 +55,11 @@ public class RecommendEntity {
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
+    @ManyToOne(fetch = FetchType.LAZY) // 지연
+    @JoinColumn(name = "member_id")
+    private MemberEntity member;
+
+
     @PrePersist
     public void prePersist(){
         if (recY == null){ this.recY = ""; }
@@ -68,12 +73,10 @@ public class RecommendEntity {
         if (this.updateDate == null) this.updateDate = this.createDate;
 
         if (this.createUser == null){
-            this.createUser = this.memberId != null ? this.memberId : "defaultUser";
-            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
-        }
-
-        if (!this.createUser.equals(this.memberId)){
-            this.updateUser = this.memberId != null ? this.memberId : "defaultUser";
+            this.createUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
+            this.updateUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
+        } else if (!this.createUser.equals(this.member.getMemberId())){
+            this.updateUser = this.member.getMemberId() != null ? this.member.getMemberId() : "defaultUser";
         }
 
         if (this.isDeleted == null){
