@@ -7,6 +7,7 @@
     </style>
 </head>
 <body>
+  <div th:replace="~{fragment/header :: main-head}"></div>
   <table>
     <tbody>
     <tr>
@@ -53,6 +54,7 @@
   <a href="../daily/dailyList">
     <button>목록</button>
   </a>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- datepickern 라이브러리 추가 -->
