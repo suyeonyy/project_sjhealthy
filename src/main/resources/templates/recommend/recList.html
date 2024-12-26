@@ -8,7 +8,8 @@
  <!-- th:inline="javascript"로 thymleaf가 js 안에서 변수를 제대로 처리하게 함. 근데 내부에서만 해당. 이거는 왜 되지?-->
 </head>
 <body>
-<h1>추천 게시판</h1>
+<div th:replace="~{fragment/header :: main-head}"></div>
+    <h1>추천 게시판</h1>
 
 <!--검색하여 정렬-->
 <input type="search" id="searchByStoreName">
@@ -75,5 +76,6 @@
 
 <script th:inline="javascript" th:src="@{/js/recList.js}"></script>
 
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
