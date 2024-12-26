@@ -5,6 +5,7 @@
     <title>연동 해제</title>
 </head>
 <body>
+<div th:replace="~{fragment/header :: main-head}"></div>
     <button id="deleteMember">회원 탈퇴</button>
     <button id="deleteGoogleOAuth">구글 연동 해제</button>
     <input type="hidden" id="memberId" th:value="${loginId}">
@@ -42,5 +43,6 @@
     });
 </script>
 
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
