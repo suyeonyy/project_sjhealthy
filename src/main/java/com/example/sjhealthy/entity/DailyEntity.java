@@ -59,7 +59,7 @@ public class DailyEntity { // 일지
     private String updateUser;
 
     @ManyToOne(fetch = FetchType.LAZY) //일지 기준
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private MemberEntity member; // 참조하여 memberHeight 를 사용
 
     @PrePersist

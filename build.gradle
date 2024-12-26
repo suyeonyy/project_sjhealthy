@@ -30,7 +30,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+//    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0' // 헤더 푸터 레이아웃 다이얼렉트
 
 //	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 	runtimeOnly 'com.mysql:mysql-connector-j'
