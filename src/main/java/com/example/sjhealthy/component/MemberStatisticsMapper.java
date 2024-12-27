@@ -64,13 +64,18 @@ public class MemberStatisticsMapper {
         // 따라서 추가로 변환하여 받아준다.
         // 근데 내가 쓴 쿼리의 반환값은 퍼센트가 BigDecimal로 나오고 Rank()가 Long 으로 나옴..
         BigDecimal mAP = tuple.get("memberAchievementPercentage", BigDecimal.class);
-        Double memberAchievementPercentage = mAP.doubleValue();
+        Double memberAchievementPercentage = null;
+        if (mAP != null){
+            memberAchievementPercentage = mAP.doubleValue();
+        }
 
         Long memberRankBefore = tuple.get("memberRank", Long.class);
         int memberRank = memberRankBefore.intValue();
-
         BigDecimal bmi = tuple.get("memberBmi", BigDecimal.class);
-        Double memberBmi = bmi.doubleValue();
+        Double memberBmi = null;
+        if (bmi != null){
+            memberBmi = bmi.doubleValue();
+        }
 
         System.out.println("변환 성공");
 
