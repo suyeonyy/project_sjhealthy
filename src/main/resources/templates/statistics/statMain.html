@@ -32,12 +32,18 @@
     <br>
     <!-- 본인 -->
     <div th:if="${statistics}">
+        <h2>내 기록</h2>
         <p><span th:text="'아이디: '"></span><strong th:text="${statistics.memberId}"></strong></p>
         <p><span th:text="'현재 몸무게: '"></span><strong th:text="${memberWeight} + ' kg'"></strong></p>
         <p><span th:text="'목표 달성도: '"></span><strong th:text="${statistics.memberAchievementPercentage} + ' %'"></strong></p>
         <p><span th:text="'BMI: '"></span><strong th:text="${statistics.memberBmi}"></strong></p>
         <p><span th:text="'순위: '"></span><strong th:text="${statistics.memberRank}"></strong></p>
     </div>
+    <div th:if="${statistics == null}">
+        <h2>내 기록</h2>
+        <p>데이터가 존재하지 않습니다.</p>
+    </div>
+
 
     <a href="/sjhealthy/statistics/graph"><button>몸무게 변화</button></a>
     <a href="/sjhealthy"><button>메인</button></a>
