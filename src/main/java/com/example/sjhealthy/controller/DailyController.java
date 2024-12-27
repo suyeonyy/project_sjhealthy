@@ -72,7 +72,7 @@ public class DailyController {
         MemberEntity memberEntity = memberService.findMemberEntity(loginId);
 
         try {
-            DailyDTO writeResult = dailyService.write(dailyDTO, memberEntity);
+            DailyDTO writeResult = dailyService.write(dailyDTO);
 
             if (writeResult != null) {
                 ra.addFlashAttribute("dailyDTO", writeResult);
@@ -127,7 +127,7 @@ public class DailyController {
         MemberEntity memberEntity = memberService.findMemberEntity(loginId);
 
         try{
-            DailyDTO result = dailyService.read(dailyId, memberEntity);
+            DailyDTO result = dailyService.read(dailyId);
 
             if(loginId != null){
             }
