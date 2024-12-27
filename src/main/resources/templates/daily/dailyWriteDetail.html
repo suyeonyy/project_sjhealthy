@@ -79,21 +79,7 @@
 
 
 
-  /*datepicker 구현*/
-  $(function() {
-    //기본적으로 현재 날짜 선택됨
-    $('input[name="dailyDate"]').daterangepicker({
-      singleDatePicker: true, //날짜 선택기를 단일 날짜 선택 모드로 설정
-      showDropdowns: true,    //날짜 선택 시 월과 년을 드롭다운으로 보여주기 위한 설정
-      minYear: 1901,          //날짜 선택기에서 선택할 수 있는 최소 연도 설정
-      maxYear: parseInt(moment().format('YYYY'),10), //날짜 선택기에서 선택할 수 있는 최대 연도를 현재 연도로 설정
-      locale: {
-        format: 'YYYY/MM/DD'   // 날짜 형식을 yyyy/mm/dd로 설정
-      }
-    }, function(start, end, label) {
-      //var years = moment().diff(start, 'years');
-    });
-  });
+
 
   /* 숫자와 소수점만 허용하고, 다른 문자는 삭제 */
   var prev = "";
@@ -144,7 +130,7 @@
     */
 
     $.ajax({
-       url : '../daily/dailyWrite',
+       url : '../daily/dailyWriteDetail',
        type : 'post',
        data: {
             memberId: memberId,
@@ -173,5 +159,26 @@
        }
    });
   }
+
+
+
+
+  /*datepicker 구현*/
+  /*
+  $(function() {
+    //기본적으로 현재 날짜 선택됨
+    $('input[name="dailyDate"]').daterangepicker({
+      singleDatePicker: true, //날짜 선택기를 단일 날짜 선택 모드로 설정
+      showDropdowns: true,    //날짜 선택 시 월과 년을 드롭다운으로 보여주기 위한 설정
+      minYear: 1901,          //날짜 선택기에서 선택할 수 있는 최소 연도 설정
+      maxYear: parseInt(moment().format('YYYY'),10), //날짜 선택기에서 선택할 수 있는 최대 연도를 현재 연도로 설정
+      locale: {
+        format: 'YYYY/MM/DD'   // 날짜 형식을 yyyy/mm/dd로 설정
+      }
+    }, function(start, end, label) {
+      //var years = moment().diff(start, 'years');
+    });
+  });
+  */
 </script>
 </html>
