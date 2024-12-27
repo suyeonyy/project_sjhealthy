@@ -89,4 +89,16 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             "                       MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = :memberId)"
             , nativeQuery = true)
     Tuple getStatisticsByMemberId(@Param("memberId") String memberId);
+
+
+    //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
+    @Query(value = "SELECT  DTBL.DAILY_DATE " +
+                     "FROM  daily_table DTBL " +
+                    "WHERE  1 = 1 " +
+                      "AND  DTBL.MEMBER_ID = :loginId " +
+                      "AND  DTBL.DAILY_YEAR = :year " +
+                      "AND  DTBL.DAILY_MONTH = :month " +
+                    "ORDER BY DTBL.DAILY_DATE",
+            nativeQuery = true)
+    List<String> getDateList(@Param("loginId") String loginId, @Param("year") String year, @Param("month") String month);
 }
