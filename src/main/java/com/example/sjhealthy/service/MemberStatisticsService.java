@@ -47,13 +47,21 @@ public class MemberStatisticsService {
     public MemberStatisticsDTO getStatisticsByMemberId(String memberId){
         Tuple byMemberId = dailyRepository.getStatisticsByMemberId(memberId);
 //        memberStatisticsRepository.save(byMemberId);
+        if (byMemberId == null){
+            return null;
+        }
 
         MemberStatisticsDTO dto = MemberStatisticsMapper.statisticsDTOFromTuple(byMemberId);
         if (dto.getMemberAchievementPercentage() != null){
             dto.setMemberAchievementPercentage(Math.round(dto.getMemberAchievementPercentage() * 100.00) / 100.00);
+        } else {
+            dto.setMemberAchievementPercentage(0.00);
         }
         if (dto.getMemberBmi() != null){
             dto.setMemberBmi(Math.round(dto.getMemberBmi() * 100.00) / 100.00);
+        } else {
+            dto.setMemberBmi(0.00);
+            System.out.println("bmi = " + dto.getMemberBmi());
         }
         return dto;
     }
