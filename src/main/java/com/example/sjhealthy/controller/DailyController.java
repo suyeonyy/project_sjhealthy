@@ -17,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,15 @@ public class DailyController {
                                Model model){
         model.addAttribute("loginId", loginId);
 
-        List<DailyDTO> dailyList = dailyService.getList(loginId);
+        //현재 날짜 가져오기
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Calendar c1 = Calendar.getInstance();
+        String strToday = sdf.format(c1.getTime());
+        String year = strToday.substring(0,4);
+        String month = strToday.substring(4,6);
+
+        //List<DailyDTO> dailyList = dailyService.getList(loginId);
+        List<String> dailyList = dailyService.getDateList(loginId, year, month);
         System.out.println("dailyList = " + dailyList);
         model.addAttribute("dailyList", dailyList);
 
@@ -48,6 +58,7 @@ public class DailyController {
         return "daily/dailyList";
     }
 
+    /*
     @GetMapping("/daily/dailyWrite")
     public String getDailyWrite(@SessionAttribute(name = "loginId", required = false) String loginId,
                                Model model){
@@ -55,6 +66,7 @@ public class DailyController {
 
         return "daily/dailyWrite";
     }
+    */
 
     @GetMapping("/daily/dailyWriteDetail")
     public String getDailyWriteDetail(@SessionAttribute(name = "loginId", required = false) String loginId,
