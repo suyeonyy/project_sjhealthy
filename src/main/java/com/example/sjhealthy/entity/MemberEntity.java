@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "member_table")
 public class MemberEntity {
     @Id
-    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    @Column(name="member_id", columnDefinition = "VARCHAR(500)", nullable = false)
     private String memberId;
 
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
