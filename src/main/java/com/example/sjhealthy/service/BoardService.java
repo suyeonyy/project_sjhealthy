@@ -45,7 +45,7 @@ public class BoardService {
             BoardEntity savedEntity = boardRepository.save(postEntity);
             // 다시 dto로 변환해 반환
             return BoardMapper.toBoardDTO(savedEntity, savedEntity.getMember().getMemberId());
-        } else return null; // 맞나 다시 확인하자..
+        } else return null;
     }
 
     public BoardDTO read(Long boardId){
