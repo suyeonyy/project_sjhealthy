@@ -48,7 +48,15 @@ public class DailyService {
         return list;
     }
 
-    public DailyDTO read(Long dailyId) {
+    public List<String> getDateList(String loginId, String year, String month) {
+        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+
+        List<String> dailyList = dailyRepository.getDateList(loginId, year, month);
+
+        return dailyList;
+    }
+
+    public DailyDTO read(Long dailyId, MemberEntity memberEntity) {
         Optional<DailyEntity> entity = dailyRepository.findById(dailyId);
 
         if(entity.isPresent()){
