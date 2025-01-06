@@ -5,47 +5,123 @@
     <title>광장</title>
     <!-- 그래프 작성 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <style>
+        #myChart {
+            width: 10%;
+            height: 10%;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
     <h2>체중 변화 그래프</h2>
-    <!-- 주, 월, 연으로 볼 수 있게 버튼 추가 -->
+    <h3 id="now"></h3>
+    <!-- 월, 연으로 볼 수 있게 버튼 추가 -->
     <div class="container">
         
     <div>
-
+        <button id="month" value="월"></button>
+        <button id="year" value="연"></button>
     </div>
+
+    <canvas id="myChart"></canvas>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", async (e)=> {
             // 서버에 요청하여 데이터 받아옴
-            const response = await fetch("/sjhealthy/statistics/graph");
-            const weightList = await response.json();
+            const sortByMonth = document.getElementById("month");
+            // sortByMonth.addEventListener("click", async () => {
 
-            const labels = Utils.months({count: 12}); // 이거 수정해야 할 것 같은데.. 어떻게 뽑아야 하지
-            const data = {
-                labels: labels,
-                datasets: [{
-                    label: "몸무게",
-                    data: weightList,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            };
+                // if (!month) month = 0; // 버튼 안 누르면 0으로 설정, 나중에 < > 버튼 추가하고 수정
+                const month = 0;
+                console.log("month = " + month);
+    
+                const response = await fetch("/sjhealthy/statistics/graph", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ month: month })
+                });
+                const monthlyData = Array(31).fill(null); // 월별 데이터 저장할 배열 초기화
+                
+                const d1 = await response.json(); // List<날짜-몸무게>로 응답
+                const weightList = d1.data;
+                console.log("weightList = " + JSON.stringify(weightList));
+                console.log("message = " + d1.message);
+    
+                const now = document.getElementById("now");
+                let monthNow = 0;
+                weightList.forEach((map) => {
+                    // map으로 보냈는데 확인해보니 일반객체로 찍혀서 Object.entries를 이용해 key, value 순회
+                    Object.entries(map).forEach(([date, weight]) => { 
+                        console.log("forEach 진입");
+                        const mapDate = date; 
+                        const mapWeight = weight;
+                        console.log("날짜" + mapDate + ", 몸무게" + mapWeight);
+                        const day = date.substring(6, 8); // yyMMdd 에서 dd를 가져옴
+                        monthlyData[day-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
 
-            // 그래프로 그림
-            const stackedLine = new Chart(ctx, {
-                type: "line",
-                data: data,
-                options: {
-                    scales: {
-                        y: {
-                            stacked: true
+                        monthNow = date.substring(4, 6); // MM을 가져옴
+                        now.innerText = monthNow + "월"; 
+                    });
+                    console.log("월 체중 = " + monthlyData);
+                    console.log("월 = " + monthNow);
+                });
+
+                // function getDaysInMonth(month, year{
+                function getDaysInMonth(monthNow){
+                    // const labels = Array.from({length:12}, (_, i) => `${i+1}월`); // 1~12월로 labels 생성
+                    const thirtyOndDaysMonths = ["01", "03", "05", "07", "09", "11"];
+                    const thirtyDaysMonths = ["04", "06", "08", "10", "12"];
+                    const twentyEightDaysMonths = ["02"];
+                    if (thirtyOndDaysMonths.includes(monthNow)){
+                        return 31;
+                    } else if (thirtyDaysMonths.includes(monthNow)){
+                        return 30;
+                    } else if (twentyEightDaysMonths.includes(monthNow)){
+                        return 28;
+                    } else return 0;
+                    // 2월은 윤년을 고려하여 29일이 될 수도 있음
+                    // return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28;
+                }
+                const days = getDaysInMonth(monthNow);
+                console.log(days);
+                const labels = Array.from({length: days}, (_, i) => `${i+1}일`);
+                // 그래프로 그림
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const stackedLine = new Chart(ctx, {
+                    type: "line", // 선 그래프
+                    data: {
+                        labels: labels,
+                    datasets: [{
+                        label: "몸무게",
+                        data: monthlyData,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "일"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "체중(kg)"
+                                },
+                                beginAtZero: true  // y축이 0부터 시작
+                            }
                         }
                     }
-                }
-            });
+                });
+            // });
         });
     </script>
 
