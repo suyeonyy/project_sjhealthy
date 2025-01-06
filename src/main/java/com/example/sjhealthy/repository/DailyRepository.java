@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
 
@@ -90,6 +91,15 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             , nativeQuery = true)
     Tuple getStatisticsByMemberId(@Param("memberId") String memberId);
 
+    // 그래프용 해당 월의 날짜별 체중을 조회
+    @Query(value= "SELECT " +
+            "d.daily_date AS date, " +
+            "d.daily_cur_wt AS weight " +
+            "FROM daily_table d " +
+            "WHERE d.daily_month = :month AND d.member_id = :memberId " +
+            "ORDER BY d.daily_date ASC", nativeQuery = true)
+    List<Tuple> getWeightByMemberIdAndMonth(@Param("memberId")String memberId, @Param("month")int month);
+
 
     //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
     @Query(value = "SELECT  DTBL.DAILY_DATE " +
@@ -101,4 +111,5 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                     "ORDER BY DTBL.DAILY_DATE",
             nativeQuery = true)
     List<String> getDateList(@Param("loginId") String loginId, @Param("year") String year, @Param("month") String month);
+
 }

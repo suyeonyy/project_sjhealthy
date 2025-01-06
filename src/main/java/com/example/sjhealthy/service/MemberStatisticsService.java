@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Member;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 public class MemberStatisticsService {
@@ -24,11 +25,35 @@ public class MemberStatisticsService {
     @Autowired
     private MemberStatisticsRepository memberStatisticsRepository;
 
+    // 가장 최근 데이터
     public Double getMemberWeight(String memberId){
         return dailyRepository.getMemberWeight(memberId);
     }
 
-    public List<Double> getWeightListByMemberId(String memberId) {return dailyRepository.getAllWeightByMemberId(memberId);}
+    // 해당 회원의 한 달치 몸무게를 리스트로
+    public List<Map<String, Double>> getWeightListByMemberIdAndMonth(String memberId, int month) {
+        if (month == 0){ // 0으로 오면 해당 월을 불러와 사용
+            LocalDate currentDate = LocalDate.now();
+            month = currentDate.getMonthValue();
+            System.out.println("month: " + month);
+        }
+        List<Tuple> result = dailyRepository.getWeightByMemberIdAndMonth(memberId, month);
+        List<Map<String, Double>> mapList = new ArrayList<>();
+        for (Tuple r : result){
+            String date = r.get("date", String.class);
+            BigDecimal beforeWeight = r.get("weight", BigDecimal.class);
+            Double weight = null;
+            if (beforeWeight != null){
+                weight = beforeWeight.doubleValue();
+            }
+            Map<String, Double> map = new HashMap<>();
+            map.put(date, weight); // 데이터를 Map으로 만들고
+            mapList.add(map);   // 리스트에 추가
+        }
+
+        System.out.println("Tuple -> Map 변환 완료");
+        return mapList;
+    }
     public List<MemberStatisticsDTO> getRankList(){
         List<MemberStatisticsDTO> dtoList = MemberStatisticsMapper.memberStatisticsDTOFromTuple(dailyRepository.getRankList());
 
