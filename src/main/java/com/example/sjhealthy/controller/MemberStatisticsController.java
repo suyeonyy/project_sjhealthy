@@ -4,17 +4,16 @@ import com.example.sjhealthy.component.MemberStatisticsMapper;
 import com.example.sjhealthy.dto.MemberStatisticsDTO;
 import com.example.sjhealthy.dto.Response;
 import com.example.sjhealthy.service.MemberStatisticsService;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/sjhealthy/")
@@ -53,15 +52,26 @@ public class MemberStatisticsController {
         return "statistics/statMain";
     }
 
-    @ResponseBody
     @GetMapping("/statistics/graph")
+    public String openWeightGraph(@SessionAttribute(name = "loginId", required = false) String loginId,
+                                  Model model){
+        model.addAttribute("loginId", loginId);
+        return "statistics/weightChangeGraph";
+    }
+
+    @ResponseBody
+    @PostMapping("/statistics/graph")
     public ResponseEntity<Response<Object>> createWeightChangeGraph(
         @SessionAttribute(name = "loginId", required = false) String loginId,
-                                                                    Model model){
+        Model model, @RequestBody Map<String, Integer> data){
         model.addAttribute("loginId", loginId);
+        System.out.println("그래프 요청");
+
+        int month = data.get("month");
+        System.out.println("month: " + month);
         try {
-            List<Double> weightList = service.getWeightListByMemberId(loginId);
-            System.out.println(weightList);
+            List<Map<String, Double>> weightList = service.getWeightListByMemberIdAndMonth(loginId, month);
+            System.out.println("weightList = " + weightList);
             if (weightList.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "데이터가 존재하지 않습니다."));
             }
