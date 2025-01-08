@@ -31,13 +31,20 @@ public class MemberStatisticsService {
     }
 
     // 해당 회원의 한 달치 몸무게를 리스트로
-    public List<Map<String, Double>> getWeightListByMemberIdAndMonth(String memberId, int month) {
+    public List<Map<String, Double>> getWeightListByMemberIdAndMonth(String memberId, int month, int year) {
         if (month == 0){ // 0으로 오면 해당 월을 불러와 사용
             LocalDate currentDate = LocalDate.now();
             month = currentDate.getMonthValue();
             System.out.println("month: " + month);
         }
-        List<Tuple> result = dailyRepository.getWeightByMemberIdAndMonth(memberId, month);
+
+        if (year == 0) { // 0으로 오면 해당 연도를 불러와 사용
+            LocalDate currentDate = LocalDate.now();
+            year = currentDate.getYear();
+            System.out.println("year: " + year);
+        }
+
+        List<Tuple> result = dailyRepository.getWeightByMemberIdAndMonth(memberId, month, year);
         List<Map<String, Double>> mapList = new ArrayList<>();
         for (Tuple r : result){
             String date = r.get("date", String.class);
