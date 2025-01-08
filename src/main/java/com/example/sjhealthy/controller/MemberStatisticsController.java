@@ -69,8 +69,11 @@ public class MemberStatisticsController {
 
         int month = data.get("month");
         System.out.println("month: " + month);
+        int year = data.get("year");
+        System.out.println("year: " + year);
+
         try {
-            List<Map<String, Double>> weightList = service.getWeightListByMemberIdAndMonth(loginId, month);
+            List<Map<String, Double>> weightList = service.getWeightListByMemberIdAndMonth(loginId, month, year);
             System.out.println("weightList = " + weightList);
             if (weightList.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "데이터가 존재하지 않습니다."));

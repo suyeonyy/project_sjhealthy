@@ -91,14 +91,14 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             , nativeQuery = true)
     Tuple getStatisticsByMemberId(@Param("memberId") String memberId);
 
-    // 그래프용 해당 월의 날짜별 체중을 조회
+    // 그래프용 해당 연,월의 날짜별 체중을 조회
     @Query(value= "SELECT " +
             "d.daily_date AS date, " +
             "d.daily_cur_wt AS weight " +
             "FROM daily_table d " +
-            "WHERE d.daily_month = :month AND d.member_id = :memberId " +
+            "WHERE d.daily_month = :month AND d.daily_year = :year AND d.member_id = :memberId " +
             "ORDER BY d.daily_date ASC", nativeQuery = true)
-    List<Tuple> getWeightByMemberIdAndMonth(@Param("memberId")String memberId, @Param("month")int month);
+    List<Tuple> getWeightByMemberIdAndMonth(@Param("memberId")String memberId, @Param("month")int month, @Param("year")int year);
 
 
     //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
