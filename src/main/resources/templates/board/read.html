@@ -10,11 +10,14 @@
     <h1 th:text="${boardDTO.boardTitle}"></h1>
     작성자: <p th:text="${boardDTO.memberId}"></p><br>
     작성일: <p th:text="${boardDTO.createDate}"></p><br>
-    <input type="hidden" id="boardId" value="${boardDTO.boardId}">
+    <input type="hidden" id="boardId" th:value="${boardDTO.boardId}">
+    <input type="hidden" id="image" th:value="${attachedFile}">
     <hr>
 
 <!-- 첨부파일 -->
-    <input th:if="${attachedFile}" type="image" th:src="${attachedFile}">
+    <img id="attachedImage" alt="첨부 이미지">
+<!-- <input th:if="${attachedFile}" type="image" th:src="${attachedFile}"> -->
+
 
     <p th:text="${boardDTO.boardContent}"></p>
     <hr>
@@ -88,11 +91,44 @@
             deleteBtn.addEventListener("click", (e)=> {
 
                 if (!window.confirm('정말로 삭제하시겠습니까?')){
-                    event.preventDefault(); // 취소시 이벤트 발생 없음
+                    e.preventDefault(); // 취소시 이벤트 발생 없음
                     return false;
                 }
             });
-        }});
+        }
+        // 이미지가 있다면 업로드, 이것도 get 방식 접근이다
+        loadImage();
+        
+        async function loadImage(){
+            const attachedImage = document.getElementById("attachedImage");
+            
+            if (attachedImage){
+                const fileName = document.getElementById("image").value;
+                console.log("파일명 = " + fileName);
+
+                const imageUrl = "/uploads/files/" + fileName;
+                attachedImage.src = imageUrl;
+
+                // try {
+                //     if (fileName){
+                //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
+                //         if (!response.ok){
+                //             console.log("첨부된 파일이 없습니다.");
+                //         } else {
+                //             const data = await response.text();
+        
+                //             // URL로 변환하여 src로
+                //             console.log("경로 " + data);
+                //             attachedImage.src = data;
+                //             // img.src = data;
+                //         }
+                //     }
+                // } catch(error){
+                //     console.log(error);
+                // }
+            }
+        }
+
 
 
         /* 댓글 작성 */
@@ -150,6 +186,8 @@
                 }
             });
         }
+    });
+
     </script>
 
     <!-- 이거 나머지는 댓글 삭제에 쓰자
