@@ -11,6 +11,7 @@ import com.example.sjhealthy.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,10 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     public List<BoardDTO> getList(){
-        List<BoardEntity> boardList = boardRepository.findAll();
+        // board_id 기준으로 내림차순 정렬
+//        Sort sort = Sort.by(Sort.Order.desc("boardId"));
+//        List<BoardEntity> boardList = boardRepository.findAll();
+        List<BoardEntity> boardList = boardRepository.findAllByOrderByBoardIdDesc();
 
         List<BoardDTO> list = new ArrayList<>();
         for (BoardEntity post : boardList){
