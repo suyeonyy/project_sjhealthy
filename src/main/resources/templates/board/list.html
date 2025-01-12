@@ -10,7 +10,7 @@
     <table border="1">
         <thead>
             <tr>
-                <th th:if="admin">삭제</th>
+                <!-- <th th:if="admin">삭제</th> -->
                 <th>글 번호</th>
                 <th>제목</th>
                 <th>작성자</th>
@@ -21,7 +21,7 @@
 
         <tbody>
             <tr th:each="board : ${boardList}">
-                <td th:if="admin"><a th:href="@{/sjhealthy/board/delete(boardId=${board.boardId})}"><button id="adminButton">X</button></a></td>
+                <!-- <td th:if="admin"><a th:href="@{/sjhealthy/board/delete(boardId=${board.boardId})}"><button id="adminButton">X</button></a></td> -->
                 <td th:text="${board.boardId}" id="boardId"></td>
                 <td><a th:href="@{/sjhealthy/board/read?boardId={id}(id=${board.boardId})}" th:text="${board.boardTitle}"></a></td>
                 <td th:text="${board.memberId}"></td>
