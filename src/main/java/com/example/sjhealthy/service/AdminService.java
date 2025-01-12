@@ -35,6 +35,5 @@ public class AdminService {
             return true;
         } else return false;
     }
-    // TODO: 신고 관련 테이블
 
 }

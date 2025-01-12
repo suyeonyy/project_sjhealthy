@@ -3,6 +3,7 @@ package com.example.sjhealthy.controller;
 import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.CommentDTO;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.dto.Response;
 import com.example.sjhealthy.repository.BoardRepository;
 import com.example.sjhealthy.service.BoardService;
 import com.example.sjhealthy.service.CommentService;
@@ -12,6 +13,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +27,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -97,7 +109,8 @@ public class BoardController {
     }
 
     public void saveFile(MultipartFile file, BoardDTO boardDTO) throws IOException {
-        String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
+        String projectPath = System.getProperty("user.dir") + "/uploads/files";
+//            "/src/main/resources/static/files"; // 이렇게 하면 내부라 웹에서 직접 접근 못함
 
         UUID uuid = UUID.randomUUID();
         String fileOriginName = file.getOriginalFilename();
@@ -107,7 +120,29 @@ public class BoardController {
         file.transferTo(saveFile);
 
         boardDTO.setBoardFileName(fileName); // DB에 추가
-        boardDTO.setBoardFilePath("/files/" + fileName);
+        boardDTO.setBoardFilePath("/uploads/files/" + fileName);
+    }
+
+    @ResponseBody
+    @GetMapping("/uploads/files/{fileName}")
+    public ResponseEntity<Resource> getFile(@PathVariable String fileName) throws UnsupportedEncodingException, MalformedURLException {
+        // 파일 경로
+//        fileName = URLEncoder.encode(fileName, "UTF-8");
+        File file = new File("uploads/files/" + fileName);
+        System.out.println("filePath = " + file);
+
+        if (!file.exists()){
+            System.out.println("첨부파일 없음");
+            return ResponseEntity.notFound().build();
+        }
+        // 파일 URL 생성
+        String fileUrl = "http://localhost:8081/sjhealthy/uploads/files/" + fileName;
+        System.out.println("첨부파일 존재");
+        // 파일을 resource로 감싸서 반환, URL만으로 이미지를 표시 가능
+        Resource resource = new FileSystemResource(file);
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(resource);
     }
 
     @RequestMapping("/board/read")
@@ -119,11 +154,11 @@ public class BoardController {
         try {
             BoardDTO result = boardService.read(boardId);
             if (result.getBoardFileName() != null && !result.getBoardFileName().isEmpty()) { // 첨부파일 있을 때 출력
-                model.addAttribute("attachedFile", result.getBoardFilePath());
+                model.addAttribute("attachedFile", result.getBoardFileName());
             }
 
             // 조회수 브라우저 종료시 다시 집계됨
-            Cookie viewCount = addViews(request, boardId, response, result);
+            Cookie viewCount = addViews(request, boardId, result);
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
@@ -150,7 +185,7 @@ public class BoardController {
         }
     }
 
-    public Cookie addViews(HttpServletRequest request, Long boardId, HttpServletResponse response, BoardDTO boardDTO){
+    public Cookie addViews(HttpServletRequest request, Long boardId, BoardDTO boardDTO){
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null){
