@@ -216,14 +216,42 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
     detailBtns.forEach((btn, index) => { // index는 Y가 recY에서 몇 번째 요소인지를 나타내는 인덱스
         
-        btn.addEventListener("click", ()=> toggleDetail(index));
+        btn.addEventListener("click", async ()=> {
+            // 상세 페이지 펼침 접음 & 좋아요 싫어요
+            toggleDetail(index);  
+            
+            // 상세 페이지 정보 요청(근데 서버에서 보낸 것을 써서 이건 조회수 집계용)
+            const recIds = document.querySelectorAll(".recId");
+            const recId = recIds[index].value; // 각 value를 가져옴
+            const recViews = document.querySelectorAll(".recView");
+            const recView = recViews[index];
+
+            const response = await fetch("/sjhealthy/recommend/read?recId=" + recId);
+            const data = await response.json();
+            if (response.ok){
+                recView.textContent = data.data.recViews;
+                console.log("recViews = " + data.data.recViews);
+            } else console.log(data.message);
+
+        });
+        // 상세 페이지 삭제 버튼
+        const deleteBtn = document.getElementById("delete" + index);
+        deleteBtn.addEventListener("click", async (e) => {
+            
+            if (!window.confirm("정말로 삭제하시겠습니까?")){
+                e.preventDefault();
+                return false;
+            }
+        });
     });
 
     async function toggleDetail(index) {
+        // 상세 페이지 펼침 접음 & 좋아요 싫어요
         const recIds = document.querySelectorAll(".recId");
-        console.log("recIds = " + recIds);
         const recId = recIds[index].value; // 각 value를 가져옴
         console.log("recId = " + recId);
+
+        
         try {
             const response = await fetch("/sjhealthy/recommend/count/" + recId);
             const data = await response.json();
@@ -243,6 +271,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                     lastOpendRow.style.display = "none"; // 다른 창 열려있으면 닫음
                 }
 
+                
                 const computedStyle = window.getComputedStyle(detailDiv);
                 
                 // const detailBtn = document.getElementById("detailBtn");
@@ -265,9 +294,28 @@ document.addEventListener("DOMContentLoaded", ()=>{
                     lastOpendRow = null;
                     // detailBtn.innerText = "상세보기";
                 }}
+
+                // // 삭제 버튼
+                // const deleteBtn = document.getElementById("detail-delete"+index);
+                // deleteBtn.addEventListener("click", async (e) => {
+                //     e.preventDefault();
+                //     console.log("삭제 버튼 recId = " + recId);
+
+                //     const response2 = await fetch("/sjhealthy/recommend/delete/" + recId);
+                //     const data2 = await response.json();
+                //     if (response2.ok){
+                //         alert(data2.message);
+                //     } else {
+                //         alert(data2.message);
+                //     }
+                // });
+
+                
         } catch (error){
             console.log("오류 발생: " + error);
         }
     };
+
+    
 
 });
