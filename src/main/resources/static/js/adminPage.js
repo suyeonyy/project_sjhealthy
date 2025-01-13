@@ -109,18 +109,28 @@
             }
         });
 
+        
         // 게시글 관리
-        postNav.addEventListener("click", async (e)=> {
+        let currentPage = 1;
+        const pageSize = 10;
+        
+        postNav.addEventListener("click", (e)=> {
+            loadBoardData(currentPage, e);
+        });
+
+        // 페이지 눌러 해당 게시글 요청
+        async function loadBoardData(page, e){
             e.preventDefault();
 
             content.innerHTML = ""; // 기존 내용 비움
 
             try {
-                const response = await fetch("/sjhealthy/admin/post");
+                const response = await fetch("/sjhealthy/admin/post?page=" + page);
                 const data = await response.json();
 
                 if (!data.message){
                     const boardList = data.data;
+                    console.log(boardList);
 
                     const table = document.createElement("table");
                     table.border = "1";
@@ -142,6 +152,8 @@
                     const tbody = document.createElement("tbody");
 
                     boardList.forEach(board => {
+                        console.log(board.boardTitle);
+
                         const row = document.createElement("tr");
 
                         const deleteCell = document.createElement("td");
@@ -192,6 +204,6 @@
             } catch (error){
                 console.log("Error = " + error);
             }
-
-        });
+        }
+    
     });
