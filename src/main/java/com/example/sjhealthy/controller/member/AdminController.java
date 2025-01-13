@@ -11,6 +11,7 @@ import com.example.sjhealthy.service.AdminService;
 import com.example.sjhealthy.service.BoardService;
 import com.example.sjhealthy.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -91,23 +92,52 @@ public class AdminController {
         return ResponseEntity.ok().body(new Response<>(null, "탈퇴를 완료하였습니다."));
     }
 
-    @ResponseBody
+    // 페이지 없는 거
+//    @ResponseBody
+//    @GetMapping("/admin/post")
+//    public ResponseEntity<Response<Object>> getAllPost(Model model, @SessionAttribute(name = "loginId", required = false)String loginId) {
+//        model.addAttribute("loginId", loginId);
+//        if (loginId != null) {
+//            MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
+//            System.out.println(loginMember);
+//
+//            if (loginMember.getMemberAuth().equals("A")) {
+//                // 관리자인지 확인
+//                List<BoardDTO> dtoList = boardService.getList();
+//
+//                List<BoardEntity> boardList = new ArrayList<>();
+//                for (BoardDTO boardDTO : dtoList) {
+//                    boardList.add(BoardMapper.toBoardEntity(boardDTO, memberService.findMemberEntity(loginId)));
+//                }
+//                return ResponseEntity.ok(new Response<>(boardList, null));
+//            } else {
+//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
+//                    "관리자만 접근 가능한 페이지입니다."));
+//            }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
+//                "관리자만 접근 가능한 페이지입니다."));
+//        }
+//    }
+    @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
-    public ResponseEntity<Response<Object>> getAllPost(Model model, @SessionAttribute(name = "loginId", required = false)String loginId) {
+    public ResponseEntity<Response<Object>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
+                                                       @SessionAttribute(name = "loginId", required = false)String loginId) {
         model.addAttribute("loginId", loginId);
+
+        // TODO: js 에 페이지 추가해서 보내자
+        int pageSize = 10;
+
         if (loginId != null) {
             MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
             System.out.println(loginMember);
 
             if (loginMember.getMemberAuth().equals("A")) {
                 // 관리자인지 확인
-                List<BoardDTO> dtoList = boardService.getList();
+                Page<BoardEntity> board = boardService.getListWithPage(page, pageSize);
+                System.out.println(board);
 
-                List<BoardEntity> boardList = new ArrayList<>();
-                for (BoardDTO boardDTO : dtoList) {
-                    boardList.add(BoardMapper.toBoardEntity(boardDTO, memberService.findMemberEntity(loginId)));
-                }
-                return ResponseEntity.ok(new Response<>(boardList, null));
+                return ResponseEntity.ok(new Response<>(board, null));
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
                     "관리자만 접근 가능한 페이지입니다."));

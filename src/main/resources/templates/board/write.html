@@ -8,15 +8,51 @@
 <div th:replace="~{fragment/header :: main-head}"></div>
 <h1 th:text="${isUpdate} ? '글 수정' : '글 작성'"></h1>
 
-<form th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} : '/sjhealthy/board/write'"
-      th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST"
+<form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} : '/sjhealthy/board/write'"
+      th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST" 
       enctype="multipart/form-data">
-    제목: <input type="text" name="boardTitle" th:value="*{boardTitle}"><br>
-    내용: <textarea name="boardContent" th:text="*{boardContent}"></textarea><br>
+    제목: <input type="text" name="boardTitle" th:value="*{boardTitle}" id="boardTitle" required><br>
+    내용: <textarea name="boardContent" th:text="*{boardContent}" id="boardContent" required></textarea><br>
     첨부파일: <input type="file" name="file"><br>
-    <input type="hidden" name="memberId" th:value="${loginId}">
-    <input type="submit" name="submit" th:value="${isUpdate} ? '수정' : '작성'">
+    <input type="hidden" name="memberId" th:value="${loginId}" id="boardWriter">
+    <input type="submit" name="submit" th:value="${isUpdate} ? '수정' : '작성'" id="submit">
 </form>
+
+<!-- <script>
+    // 이거 submit이 안 돼서 그냥 required 속성 넣음
+    document.addEventListener("DOMContentLoaded", () => {
+        const submitBtn = document.getElementById("submit");
+        const form = document.querySelector(".boardForm");
+
+        if (submitBtn){ 
+            submitBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                const title = document.getElementById("boardTitle").value;
+                const content = document.getElementById("boardContent").value;
+                const writer = document.getElementById("boardWriter").value;
+
+                if (!title){
+                    alert("제목을 입력해 주세요.");
+                } else if (!content){
+                    alert("내용을 입력해 주세요.");
+                } else {
+                    console.log("제출");
+                    // form.submit(); // 폼을 제출. 안 되네;
+                    form.submit();
+                    // submitBtn.click(); // submit 버튼 트리거
+                    
+                    // 페이지 이동은 검증 로직 밑에.
+                    // 근데 서버에서 로그인 상태 걸러서 필요없다
+                    // if (!writer){ // 로그인 하지 않은 상태일 땐 리스트로 보냄
+                    //     alert("로그인 후 이용해 주세요.");
+                    //     window.location.href = "/sjhealthy/board/list";
+                    // }
+                }
+
+            });
+        }
+    });
+</script> -->
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
