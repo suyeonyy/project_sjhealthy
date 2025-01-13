@@ -94,15 +94,18 @@ public class BoardController {
 
             if (writeResult != null) {
                 ra.addAttribute("boardId", writeResult.getBoardId());
+                ra.addAttribute("message", "글 등록이 완료되었습니다.");
                 ra.addFlashAttribute("boardDTO", writeResult);
                 System.out.println("글 등록 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
                 System.out.println("글 등록 실패");
+                ra.addAttribute("message", "글 등록에 실패했습니다.");
                 return "redirect:/sjhealthy/board";
             }
         } catch (Exception e){
             e.printStackTrace(); // 오류 떠서 이유 확인용
+            ra.addAttribute("message", "시스템 오류로 글 등록에 실패했습니다.");
             System.out.println("시스템 오류로 실패");
             return "redirect:/sjhealthy/board";
         }
@@ -244,17 +247,20 @@ public class BoardController {
 
             if (updateResult != null) {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
+                ra.addAttribute("message", "글 수정이 완료되었습니다.");
                 ra.addFlashAttribute("boardDTO", boardDTO);
                 System.out.println("글 수정 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
+                ra.addAttribute("message", "글 수정에 실패했습니다.");
                 System.out.println("글 수정 실패");
                 return "redirect:/sjhealthy/board/read";
             }
         } catch (Exception e){
             e.printStackTrace(); // 오류 떠서 이유 확인용
             System.out.println("시스템 오류로 실패");
+            ra.addAttribute("message", "시스템 오류로 글 수정에 실패했습니다.");
             return "redirect:/sjhealthy";
         }
     }
@@ -263,10 +269,12 @@ public class BoardController {
     public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra){
         boolean isDeleted = boardService.delete(boardId);
         if (isDeleted){
-            System.out.println("글이 삭제되었습니다.");
+            System.out.println("글 삭제가 완료되었습니다.");
+            ra.addAttribute("message", "글 삭제가 완료되었습니다.");
             return "redirect:/sjhealthy/board/list";
         } else {
-            System.out.println("글을 삭제하지 못했습니다.");
+            System.out.println("글 삭제에 실패했습니다.");
+            ra.addAttribute("message", "글 삭제에 실패했습니다.");
             ra.addAttribute("boardId", boardId);
             return "redirect:/sjhealthy/board/read";
         }
