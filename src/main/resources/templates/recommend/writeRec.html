@@ -216,16 +216,34 @@
                         recStoreId: place_id,
                         recStoreGroupCode: place_category_group_code
                    },
-                   success : function(data) {
-                        //console.log("success");
+                   success : function(data, textStatus, jqXHR) { //인자 실제론 안 써도 3개 다 써야 사용 가능
+                        //jqXHR로 상태코드 확인 가능
+                        console.log("success");
+                        console.log("status = " + jqXHR.status);
     
                         // 서버가 리다이렉트 URL을 응답으로 받았을 때
-                        if (data) {
+                        if (jqXHR.status === 200) {
+                            // 상태코드 200일 때(ok)
+                            // alert 메시지 추가
+                            alert("추천글 등록이 완료되었습니다.");
+                            console.log("href = " + data);
                             // 응답으로 받은 URL로 리다이렉트
                             window.location.href = data;
+                        } else {
+                            alert("오류");
+                            window.location.href = data;
                         }
-                   }, error : function() {
-                        //console.log("fail");
+                   }, error : function(xhr, textStatus, errorThrown) {
+                        console.log("fail");
+                        if (xhr.status === 400){
+                            // 상태코드 400일 때(bad request)
+                            alert("추천글 등록에 실패하였습니다.");
+                        } else if (xhr.status === 500){
+                            // 상태코드 500일 때(Internal Server Error)
+                            alert("시스템 오류로 추천글 등록에 실패하였습니다.");
+                        }
+                        window.location.href = "/sjhealthy/recommend";
+                        
                    }
                });
             }
@@ -234,7 +252,7 @@
 
         
         
-        // 유효성 검사
+        // 유효성 검사 후 글 등록
         submit.addEventListener("click", async (e) => {
             e.preventDefault();
             

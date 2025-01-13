@@ -242,19 +242,22 @@ public class RecommendController {
 
             if (result == null){
                 System.out.println("추천글 등록에 실패하였습니다.");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("/sjhealthy/recommend");
             } else {
                 System.out.println("추천글을 등록하였습니다.");
+                return ResponseEntity.status(HttpStatus.OK).body("/sjhealthy/recommend");
             }
         } catch (Exception e){
             e.printStackTrace();
             System.out.println("시스템 오류");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("/sjhealthy/recommend");
         }
 
         //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
-        ra.addFlashAttribute("loginId", loginId);
+//        ra.addFlashAttribute("loginId", loginId);
 
         // 리다이렉트 URL을 JSON 형태로 응답
-        return ResponseEntity.ok("/sjhealthy/recommend");
+//        return ResponseEntity.ok("/sjhealthy/recommend");
 
         /*참고: AJAX를 사용한 POST 요청 후 리다이렉트가 작동하지 않는 문제는 AJAX 요청 자체가 페이지 리다이렉트를 처리하지 않기 때문*/
         //return "redirect:/sjhealthy/recommend";
