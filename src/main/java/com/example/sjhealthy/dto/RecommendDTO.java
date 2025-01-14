@@ -1,8 +1,12 @@
 package com.example.sjhealthy.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RecommendDTO {
     private Long recId;
     private String memberId;
@@ -18,4 +22,5 @@ public class RecommendDTO {
     private String updateDate;
     private String createUser;
     private String updateUser;
+
 }
