@@ -49,7 +49,7 @@ public class DailyService {
     }
 
     public List<String> getDateList(String loginId, String year, String month) {
-        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+//        MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
 
         List<String> dailyList = dailyRepository.getDateList(loginId, year, month);
 
