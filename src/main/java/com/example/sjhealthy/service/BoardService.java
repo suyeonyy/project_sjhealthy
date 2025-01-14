@@ -11,6 +11,10 @@ import com.example.sjhealthy.repository.MemberRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +31,10 @@ public class BoardService {
     private final MemberRepository memberRepository;
 
     public List<BoardDTO> getList(){
-        List<BoardEntity> boardList = boardRepository.findAll();
+        // board_id 기준으로 내림차순 정렬
+//        Sort sort = Sort.by(Sort.Order.desc("boardId"));
+//        List<BoardEntity> boardList = boardRepository.findAll();
+        List<BoardEntity> boardList = boardRepository.findAllByOrderByBoardIdDesc();
 
         List<BoardDTO> list = new ArrayList<>();
         for (BoardEntity post : boardList){
@@ -35,6 +42,12 @@ public class BoardService {
             list.add(BoardMapper.toBoardDTO(post, memberId));
         }
         return list;
+    }
+    public Page<BoardEntity> getListWithPage(int page, int size){ // 페이징
+        Pageable pageable = PageRequest.of(page-1, size); // page는 1부터 시작하니까 -1 해서 가져옴
+
+        return boardRepository.findAllByOrderByBoardIdDesc(pageable);
+
     }
     public BoardDTO write(BoardDTO boardDTO){ // update도 이걸로 사용
         Optional<MemberEntity> entity = memberRepository.findByMemberId(boardDTO.getMemberId());
