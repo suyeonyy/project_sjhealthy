@@ -114,21 +114,26 @@
         let currentPage = 1;
         const pageSize = 10;
         
+        // post 네비버튼 누르면 자동으로 로드(1페이지로)
         postNav.addEventListener("click", (e)=> {
             loadBoardData(currentPage, e);
         });
 
-        // 페이지 눌러 해당 게시글 요청
+        // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로 
         async function loadBoardData(page, e){
             e.preventDefault();
 
             content.innerHTML = ""; // 기존 내용 비움
 
             try {
+                // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
                 const response = await fetch("/sjhealthy/admin/post?page=" + page);
                 const data = await response.json();
-
-                if (!data.message){
+                
+                if (response.status === 200){
+                    const boardListDiv = document.getElementById("content");
+                    boardListDiv.innerHTML = ""; // 기존 내용 초기화
+                    
                     const boardList = data.data;
                     console.log(boardList);
 
@@ -187,23 +192,45 @@
                     table.appendChild(tbody);
                     content.appendChild(table);
 
-                    // 게시물 삭제 버튼
-                    const deletePosts = document.querySelectorAll(".deletePost");
-
-                    deletePosts.forEach((deletePost, index) => {
-                        deletePost.addEventListener("click", async (e)=> {
-                            if (!window.confirm("정말로 삭제하시겠습니까?")){
-                                e.preventDefault();
-                                return false;
-                            }
-                        });
-                    });
+                    displayPagination(data.totalPages, page); // 페이지 버튼 생성
                 } else {
-                    alert(message);
+                    alert("관리자만 접근 가능한 페이지입니다.");
+                    window.location.href = "/sjhealthy";
+
                 }
             } catch (error){
                 console.log("Error = " + error);
             }
         }
+
+
+        function displayPagination(totalPages, currentPage){
+            const pagination = document.getElementById("pagination");
+
+            pagination.innerHTML = ""; // 기존 내용 초기화
+
+            for (let i = 0; i < totalPages; i++){
+                const pageButton = document.createElement("button");
+                pageButton.textContent = i;
+                pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
+                
+                pageButton.addEventListener("click", (e) => {
+                    loadBoardData(i, e); // 클릭한 페이지 데이터 요청하고 html 생성
+                    currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                });
+                pagination.appendChild(pageButton); 
+            }
+        }
+        // 게시물 삭제 버튼
+        const deletePosts = document.querySelectorAll(".deletePost");
+
+        deletePosts.forEach((deletePost, index) => {
+            deletePost.addEventListener("click", async (e)=> {
+                if (!window.confirm("정말로 삭제하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
     
     });
