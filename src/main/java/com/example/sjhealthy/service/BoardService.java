@@ -43,10 +43,11 @@ public class BoardService {
         }
         return list;
     }
-    public Page<BoardEntity> getListWithPage(int page, int size){ // 페이징
+    public Page<BoardDTO> getListWithPage(int page, int size){ // 페이징
         Pageable pageable = PageRequest.of(page-1, size); // page는 1부터 시작하니까 -1 해서 가져옴
 
-        return boardRepository.findAllByOrderByBoardIdDesc(pageable);
+        Page<BoardEntity> entity = boardRepository.findAllByOrderByBoardIdDesc(pageable);
+        return BoardMapper.convertToBoardDTOPage(entity);
 
     }
     public BoardDTO write(BoardDTO boardDTO){ // update도 이걸로 사용

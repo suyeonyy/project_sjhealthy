@@ -134,7 +134,7 @@
                     const boardListDiv = document.getElementById("content");
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
                     
-                    const boardList = data.data;
+                    const boardList = data._embedded.boardDTOList;
                     console.log(boardList);
 
                     const table = document.createElement("table");
@@ -157,8 +157,6 @@
                     const tbody = document.createElement("tbody");
 
                     boardList.forEach(board => {
-                        console.log(board.boardTitle);
-
                         const row = document.createElement("tr");
 
                         const deleteCell = document.createElement("td");
@@ -171,6 +169,7 @@
                         row.appendChild(postNumber);
 
                         const title = document.createElement("td");
+                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}"></a>`;
                         title.textContent = board.boardTitle;
                         row.appendChild(title);
 
@@ -192,7 +191,7 @@
                     table.appendChild(tbody);
                     content.appendChild(table);
 
-                    displayPagination(data.totalPages, page); // 페이지 버튼 생성
+                    displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
                 } else {
                     alert("관리자만 접근 가능한 페이지입니다.");
                     window.location.href = "/sjhealthy";
@@ -209,7 +208,7 @@
 
             pagination.innerHTML = ""; // 기존 내용 초기화
 
-            for (let i = 0; i < totalPages; i++){
+            for (let i = 1; i <= totalPages; i++){
                 const pageButton = document.createElement("button");
                 pageButton.textContent = i;
                 pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
