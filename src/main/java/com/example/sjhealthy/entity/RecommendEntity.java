@@ -3,6 +3,7 @@ package com.example.sjhealthy.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,6 +56,7 @@ public class RecommendEntity {
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY) // 지연
     @JoinColumn(name = "member_id")
     private MemberEntity member;
