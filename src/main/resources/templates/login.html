@@ -8,19 +8,20 @@
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
     <h1>로그인</h1>
-    <form action="../member/login" method="POST">
+    <form action="../member/login" method="POST" id="loginForm">
         아이디: <input type="text" name="memberId" id="memberId"><br>
-        비밀번호: <input type="password" name="memberPassword">
-        <input type="submit" name="submit" value="로그인">
+        비밀번호: <input type="password" name="memberPassword" id="memberPassword">
+        <input type="submit" name="submit" value="로그인" id="submit">
     </form>
 
     <div>
         <a th:href="'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=' + ${kakaoApiKey} + '&redirect_uri=' + ${kakaoRedirectUri}">
             <img th:src="@{/kakao_login_medium_narrow.png}">
         </a>
+        <a th:href="'https://accounts.google.com/o/oauth2/v2/auth?client_id=' + ${client_id} + '&redirect_uri=' + ${redirect_uri} + '&response_type=code&scope=email+profile'">
+            <img th:src="@{/web_light_sq_SI@1x.png}" alt="구글 로그인">
+        </a>
     </div>
-
-    <button id="googleOAuth">구글 로그인</button>
 
     <a href="../member/find-id"><button>아이디 찾기</button></a>
     <a href="../member/find-password"><button>비밀번호 찾기</button></a>
@@ -31,22 +32,44 @@
     if (alertMessage) {
         alert(alertMessage);
     }
-
+    
     document.addEventListener("DOMContentLoaded", ()=> {
+        const submit = document.getElementById("submit");
         const google = document.getElementById("googleOAuth");
-        const client_id = /*[[${client_id}]]*/'';
-        const redirect_uri = /*[[${redirect_uri}]]*/'';
-        console.log("client_id" + client_id);
-        console.log("redirect_uri" + redirect_uri);
-
-        google.addEventListener("click", async (e)=>{
+        const loginForm = document.getElementById("loginForm");
+        
+        // 로그인 유효성 검사
+        submit.addEventListener("click", (e) => {
             e.preventDefault();
 
-            const url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + client_id
-                + "&redirect_uri=" + redirect_uri
-                + "&response_type=code&scope=email+profile"; // scope 에 요청 정보
-            window.location.href = url; // 로그인 페이지로 리다이렉트
-    });
+            const id = document.getElementById("memberId").value;
+            const password = document.getElementById("memberPassword").value;
+
+            if (!id){
+                alert("아이디를 입력해 주세요.");
+            } else if (!password){
+                alert("비밀번호를 입력해 주세요.");
+            } else {
+                loginForm.submit();
+            }
+        });
+
+        // // 구글 로그인 버튼
+        // google.addEventListener("click", (e)=>{
+        //     e.preventDefault();
+
+        //     googleOAuthLogin();
+        // });
+
+        // function googleOAuthLogin(){
+        //     const client_id = /*[[${client_id}]]*/'';
+        //     const redirect_uri = /*[[${redirect_uri}]]*/'';
+    
+        //     const url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + client_id
+        //         + "&redirect_uri=" + redirect_uri
+        //         + "&response_type=code&scope=email+profile"; // scope 에 요청 정보
+        //     window.location.href = url; // 로그인 페이지로 리다이렉트
+        // }
 });
 </script>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
