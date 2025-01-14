@@ -37,6 +37,9 @@ public class LoginController {
     @Value("${CLIENT_ID}") // 이렇게 환경변수로 선언한 값을 불러와 사용
     private String client_id;
 
+    @Value("${CLIENT_SECRET}")
+    private String client_secret;
+
     @Value("${REDIRECT_URI}")
     private String redirect_uri;
 
@@ -53,6 +56,7 @@ public class LoginController {
 
         System.out.println(client_id);
         model.addAttribute("client_id", client_id);
+        System.out.println(redirect_uri);
         model.addAttribute("redirect_uri", redirect_uri);
         model.addAttribute("kakaoApiKey", kakaoApiKey);
         model.addAttribute("kakaoRedirectUri", kakaoRedirectUri);
@@ -60,7 +64,7 @@ public class LoginController {
     }
 
     @PostMapping("/member/login")
-    public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session){
+    public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session, RedirectAttributes ra){
         System.out.println("login");
 
         // TODO: write나 다른 위치에서 온 경우엔 다시 그 위치로 보내는 로직
@@ -74,10 +78,12 @@ public class LoginController {
             } else {
 //                로그인 실패
                 System.out.println("로그인 실패");
+                ra.addAttribute("message", "로그인에 실패하였습니다.");
                 return "redirect:/sjhealthy/member/login";
             }
         } catch (Exception e){
             System.out.println("시스템 오류");
+            ra.addAttribute("message", "시스템 오류로 로그인에 실패하였습니다.");
             return "redirect:/sjhealthy";
         }
     }
@@ -247,9 +253,6 @@ public class LoginController {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // Body
-        String client_id = "***REMOVED***";
-        String client_secret = "***REMOVED***";
-        String redirect_uri = "***REMOVED***";
         String grant_type = "authorization_code";
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -323,6 +326,10 @@ public class LoginController {
 
             if (findIdResult != null){
                 System.out.println("아이디: " + memberDTO.getMemberId());
+                model.addAttribute("memberDTO", findIdResult);
+            } else {
+                System.out.println("아이디가 존재하지 않습니다.");
+                model.addAttribute("dto", 1);
                 model.addAttribute("memberDTO", findIdResult);
             }
             return "findId"; // 양식만 바꿔 같은 뷰 사용
@@ -407,7 +414,7 @@ public class LoginController {
         if (loginId != null){
             session.invalidate(); // 세션 무효화
         }
-        return "redirect:/sjhealthy";
+        return "redirect:/sjhealthy/member/login";
     }
 
     @GetMapping("/member/delete")
