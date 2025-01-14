@@ -1,8 +1,8 @@
 package com.example.sjhealthy.controller.member;
 
-import com.example.sjhealthy.component.BoardMapper;
-import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.BoardDTO;
+import org.springframework.hateoas.EntityModel;
+import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.Response;
 import com.example.sjhealthy.entity.BoardEntity;
@@ -12,6 +12,9 @@ import com.example.sjhealthy.service.BoardService;
 import com.example.sjhealthy.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -121,11 +124,11 @@ public class AdminController {
 //    }
     @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
-    public ResponseEntity<Response<Object>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
-                                                       @SessionAttribute(name = "loginId", required = false)String loginId) {
+    public ResponseEntity<PagedModel<EntityModel<BoardEntity>>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
+                                                                        @SessionAttribute(name = "loginId", required = false)String loginId,
+                                                                        Pageable pageable, PagedResourcesAssembler<BoardEntity> assembler) {
         model.addAttribute("loginId", loginId);
 
-        // TODO: js 에 페이지 추가해서 보내자
         int pageSize = 10;
 
         if (loginId != null) {
@@ -135,16 +138,16 @@ public class AdminController {
             if (loginMember.getMemberAuth().equals("A")) {
                 // 관리자인지 확인
                 Page<BoardEntity> board = boardService.getListWithPage(page, pageSize);
-                System.out.println(board);
 
-                return ResponseEntity.ok(new Response<>(board, null));
+                System.out.println(board);
+                PagedModel<EntityModel<BoardEntity>> boardList = assembler.toModel(board);
+
+                return ResponseEntity.ok().body(boardList);
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-                    "관리자만 접근 가능한 페이지입니다."));
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-                "관리자만 접근 가능한 페이지입니다."));
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
     }
 }
