@@ -32,18 +32,36 @@
     if (alertMessage) {
         alert(alertMessage);
     }
-    
+
     document.addEventListener("DOMContentLoaded", ()=> {
         const submit = document.getElementById("submit");
         const google = document.getElementById("googleOAuth");
         const loginForm = document.getElementById("loginForm");
-        
+
+        console.log("로그인폼확인"); // 올바르게 참조되는지 확인
+        console.log(loginForm); // 올바르게 참조되는지 확인
+
         // 로그인 유효성 검사
+        loginForm.addEventListener("submit", (e) => {
+            const id = document.getElementById("memberId").value;
+            const password = document.getElementById("memberPassword").value;
+
+            if (!id){
+                alert("아이디를 입력해 주세요.");
+                event.preventDefault();
+            } else if (!password){
+                alert("비밀번호를 입력해 주세요.");
+                event.preventDefault();
+            }
+        });
+        /*
         submit.addEventListener("click", (e) => {
             e.preventDefault();
+            console.log("유효성은 타니?");
 
             const id = document.getElementById("memberId").value;
             const password = document.getElementById("memberPassword").value;
+            const loginForm = document.getElementById("loginForm");
 
             if (!id){
                 alert("아이디를 입력해 주세요.");
@@ -53,6 +71,7 @@
                 loginForm.submit();
             }
         });
+        */
 
         // // 구글 로그인 버튼
         // google.addEventListener("click", (e)=>{
