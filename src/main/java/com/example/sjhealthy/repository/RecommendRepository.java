@@ -14,6 +14,14 @@ import java.util.Set;
 //@Repository 생략 가능
 public interface RecommendRepository extends JpaRepository<RecommendEntity, Long> { // <Entity클래스, PK타입>
 
+    List<RecommendEntity> findAllByOrderByRecIdDesc();
+
+    // 추천 게시판 글 작성 중복 체크
+    @Query(value="SELECT * " +
+            "FROM recommend_table r " +
+            "WHERE r.rec_store LIKE CONCAT('%', :recStore, '%') AND r.rec_menu = :recMenu", nativeQuery = true)
+    RecommendEntity findByRecStoreAndRecMenu(@Param("recStore")String recStore, @Param("recMenu")String recMenu);
+
     @Query("SELECT " +
             "(LENGTH(r.recY) - LENGTH(REPLACE(r.recY, '_', ''))) AS likeCount, " +
             "(LENGTH(r.recN) - LENGTH(REPLACE(r.recN, '_', ''))) As dislikeCount " +
