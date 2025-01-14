@@ -42,7 +42,6 @@ public class DailyController {
         String year = strToday.substring(0,4);
         String month = strToday.substring(4,6);
 
-        //List<DailyDTO> dailyList = dailyService.getList(loginId);
         List<String> dailyList = dailyService.getDateList(loginId, year, month);
         System.out.println("dailyList = " + dailyList);
         model.addAttribute("dailyList", dailyList);
@@ -88,7 +87,6 @@ public class DailyController {
 
             if (writeResult != null) {
                 ra.addFlashAttribute("dailyDTO", writeResult);
-                System.out.println("일지 등록 성공");
 
                 //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
                 ra.addFlashAttribute("loginId", loginId);
@@ -130,27 +128,24 @@ public class DailyController {
 
     @RequestMapping("/daily/dailyRead")
     public String readPost(@SessionAttribute(name="loginId", required = false) String loginId,
-                           @RequestParam("dailyId") Long dailyId, Model model,
+                           @RequestParam("dailyDate") String dailyDate, Model model,
                            HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
-
-        System.out.println("진입하나요??");
 
         MemberEntity memberEntity = memberService.findMemberEntity(loginId);
 
         try{
-            // 여기 오류난다 수연아 잠깐 주석처리 해둘게
-//            DailyDTO result = dailyService.read(dailyId);
+            DailyDTO result = dailyService.read(loginId, dailyDate);
 
             if(loginId != null){
             }
 
-//            model.addAttribute("dailyDTO", result);
+            model.addAttribute("dailyDTO", result);
             return "daily/dailyRead";
         }catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
             e.printStackTrace();
-            return "redirect:/sjhealthy/board/list";
+            return "redirect:/sjhealthy/daily/dailyList";
         }
     }
 
@@ -161,5 +156,4 @@ public class DailyController {
 
         return "daily/daygrid-views";
     }
-
 }

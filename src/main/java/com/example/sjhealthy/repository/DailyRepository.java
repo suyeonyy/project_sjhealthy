@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
 
@@ -111,5 +112,35 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                     "ORDER BY DTBL.DAILY_DATE",
             nativeQuery = true)
     List<String> getDateList(@Param("loginId") String loginId, @Param("year") String year, @Param("month") String month);
+
+
+    //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
+    @Query(value = "SELECT  dtbl.daily_id, " +
+                           "dtbl.daily_title, " +
+                           "dtbl.member_id, " +
+                           "dtbl.daily_date, " +
+                           "dtbl.daily_cur_wt, " +
+                           "dtbl.daily_goal_wt, " +
+                           "dtbl.daily_goal_sf, " +
+                           "dtbl.daily_memo, " +
+                           "dtbl.daily_month, " +
+                           "dtbl.daily_year, " +
+                           "dtbl.is_deleted, " +
+                           "dtbl.create_date, " +
+                           "dtbl.update_date, " +
+                           "dtbl.create_user, " +
+                           "dtbl.update_user " +
+                     "FROM  daily_table dtbl " +
+                    "WHERE  1 = 1 " +
+                      "AND  dtbl.member_id = :loginId " +
+                      "AND  dtbl.daily_date = :dailyDate ",
+            nativeQuery = true)
+    Optional<DailyEntity> getDateView(@Param("loginId") String loginId, @Param("dailyDate") String dailyDate);
+
+
+
+
+
+
 
 }
