@@ -3,6 +3,8 @@ package com.example.sjhealthy.repository;
 
 import com.example.sjhealthy.entity.RecommendEntity;
 import jakarta.persistence.Tuple;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +17,8 @@ import java.util.Set;
 public interface RecommendRepository extends JpaRepository<RecommendEntity, Long> { // <Entity클래스, PK타입>
 
     List<RecommendEntity> findAllByOrderByRecIdDesc();
+
+    Page<RecommendEntity> findAllByOrderByRecIdDesc(Pageable pageable);
 
     // 추천 게시판 글 작성 중복 체크
     @Query(value="SELECT * " +

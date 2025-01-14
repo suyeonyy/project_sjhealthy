@@ -13,6 +13,10 @@ import lombok.Data;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.lang.reflect.Member;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,22 +43,57 @@ public class RecommendController {
     private String js_appKey;
 
     @GetMapping({"/recommend", "/recommend/"})
-    public String getRecommendList(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+    public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
 
-        List<RecommendDTO> list = recommendService.getList();
-        model.addAttribute("list", list);
-        model.addAttribute("js_appKey", js_appKey);
+        List<RecommendDTO> dto = recommendService.getList();
+        model.addAttribute("list", dto);
 
-        // 관리자 기능
-        MemberDTO memberDTO = memberService.findMemberIdAtPassFind(loginId);
-        System.out.println("Auth--------" + memberDTO.getMemberAuth());
-        if (memberDTO.getMemberAuth().equals("A")){
-            model.addAttribute("admin", loginId);
-            System.out.println("관리자입니다.");
+        if (loginId != null){
+            MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
+
+            if (member.getMemberAuth().equals("A")){
+                model.addAttribute("admin", member);
+            }
         }
 
         return "recommend/recList";
+    }
+
+    @GetMapping("/recommend/list")
+    public ResponseEntity<PagedModel<EntityModel<RecommendDTO>>> getRecommendList(
+            @SessionAttribute(name = "loginId", required = false)String loginId, Model model,
+            @RequestParam(defaultValue = "1") int page, PagedResourcesAssembler<RecommendDTO> assembler){
+        model.addAttribute("loginId", loginId);
+
+        int size = 10;
+
+        try {
+            Page<RecommendDTO> list = recommendService.getListWithPage(page, size);
+
+            // 관리자 기능
+            if (loginId != null){
+                MemberDTO memberDTO = memberService.findMemberIdAtPassFind(loginId);
+                System.out.println("Auth--------" + memberDTO.getMemberAuth());
+                if (memberDTO.getMemberAuth().equals("A")){
+                    model.addAttribute("admin", loginId);
+                    System.out.println("관리자입니다.");
+                }
+            }
+
+            if (list != null){
+                // 추천글이 있을 때
+                System.out.println(list);
+                PagedModel<EntityModel<RecommendDTO>> recList = assembler.toModel(list);
+                return ResponseEntity.ok(recList);
+            } else {
+                // 추천글이 없을 때
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/recommend/write")
@@ -183,10 +223,35 @@ public class RecommendController {
         }
     }
 
+//    @ResponseBody
+//    @GetMapping("/recommend/count/{recId}")
+//    public ResponseEntity<?> getLikeDislikeCount(@PathVariable Long recId){
+//        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도
+//        List<Tuple> list = recommendService.countLikeAndDislike(recId);
+//        Tuple tuple = list.get(0);
+//        Integer like = tuple.get("likeCount", Integer.class);
+//        Long likeCount = like.longValue();
+//        Integer dislike = tuple.get("dislikeCount", Integer.class);
+//        Long dislikeCount = dislike.longValue();
+//        System.out.println("like = " + likeCount);
+//        System.out.println("dislike = " + dislikeCount);
+//
+//        if (!list.isEmpty()){
+//            return ResponseEntity.ok(new ResponseMessage("집계 완료", likeCount, dislikeCount));
+//        } else {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
+//                "집계 오류", likeCount, dislikeCount));
+//        }
+//    }
+
     @ResponseBody
     @GetMapping("/recommend/count/{recId}")
-    public ResponseEntity<?> getLikeDislikeCount(@PathVariable Long recId){
-        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도
+    public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable Long recId, HttpServletRequest request,
+                                                                @SessionAttribute(name = "loginId", required = false)String loginId,
+                                                                HttpServletResponse response, Model model){
+        model.addAttribute("loginId", loginId);
+
+        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도 + 상세페이지 내용도 포함함 ( 그냥 이걸로 다 하자)
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
         Tuple tuple = list.get(0);
         Integer like = tuple.get("likeCount", Integer.class);
@@ -196,11 +261,20 @@ public class RecommendController {
         System.out.println("like = " + likeCount);
         System.out.println("dislike = " + dislikeCount);
 
-        if (!list.isEmpty()){
-            return ResponseEntity.ok(new ResponseMessage("집계 완료", likeCount, dislikeCount));
+        RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId);
+        System.out.println("상세보기 = " + dto);
+
+        if (list.isEmpty()){
+            System.out.println("정보를 읽어오지 못했습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(
+                null, "집계 오류", likeCount, dislikeCount));
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-                "집계 오류", likeCount, dislikeCount));
+            // 조회수, 브라우저 종료시 다시 집계됨
+            Cookie viewCount = addViews(request, recId);
+            if (viewCount != null){
+                response.addCookie(viewCount);
+            }
+            return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount));
         }
     }
 
@@ -298,14 +372,18 @@ public class RecommendController {
 
     @ResponseBody
     @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
-    public ResponseEntity<List<RecommendEntity>> SearchByStoreName(@PathVariable String storeName){
+    public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){
 
         if (storeName == null || storeName.isEmpty()){
             return ResponseEntity.badRequest().build();
             // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
         }
         List<RecommendEntity> bySearch = recommendService.getListByStoreIdOrPlaceName(null, storeName);
-        return ResponseEntity.ok(bySearch);
+        List<RecommendDTO> dto = new ArrayList<>();
+        for (RecommendEntity s : bySearch){
+            dto.add(RecommendMapper.toRecommendDTO(s, loginId));
+        }
+        return ResponseEntity.ok(dto);
     }
 
     @RequestMapping("/recommend/delete/{recId}")
