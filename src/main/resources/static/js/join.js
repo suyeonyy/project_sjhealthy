@@ -4,6 +4,9 @@ $("#memberId").blur(function() {
    //let check = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,12}$/;
    var memberId = $('#memberId').val();
 
+    console.log("memberId",memberId=="");
+    console.log("memberId",memberId==" ");
+
    $.ajax({
        url : '../member/idCheck.do',
        type : 'post',
@@ -12,14 +15,20 @@ $("#memberId").blur(function() {
            //console.log("success");
            if (data == 1) {
                    // 1 : 아이디가 중복되는 문구
-                   $("#memberIdMsg").text("사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.");
-                   $("#memberIdMsg").css("color","red");
-                   $("#memberIdPass").val("N");
+                   if(memberId != ""){
+                        $("#memberIdMsg").text("사용할 수 없는 아이디입니다. 다른 아이디를 입력해 주세요.");
+                        $("#memberIdMsg").css("color","red");
+                        $("#memberIdPass").val("N");
+                   }else{
+                        $("#memberIdMsg").text("아이디를 입력해주세요.");
+                        $("#memberIdMsg").css("color","red");
+                        $("#memberIdPass").val("N");
+                   }
            } else {
                if( memberId == ""){
                    $("#memberIdMsg").text("아이디를 입력해주세요.");
                    $("#memberIdMsg").css("color","red");
-                  val("N");
+                   $("#memberIdPass").val("N");
                /*
                }else if(!check.test(id)){
                    $("#memberIdMsg").text("6~12자 영문, 숫자를 조합하세요");
