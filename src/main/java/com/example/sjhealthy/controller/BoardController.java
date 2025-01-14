@@ -16,7 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,25 +51,57 @@ public class BoardController {
     private final MemberService memberService;
     private final CommentService commentService;
 
-    @GetMapping("/board/list")
-    public String getBoardList(@SessionAttribute(name = "loginId", required = false) String loginId,
+    @GetMapping("/board")
+    public String openBoardForm(@SessionAttribute(name = "loginId", required = false) String loginId,
                                Model model){
         model.addAttribute("loginId", loginId);
-
-        List<BoardDTO> boardList = boardService.getList();
-        model.addAttribute("boardList", boardList);
-
-        // 로그인 했을 때
-        if (loginId != null){
-            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
-            if (dto.getMemberAuth().equals("A")){ // 관리자
-                model.addAttribute("admin", dto.getMemberAuth());
-            }
-        }
-
         return "board/list";
     }
+    // 페이지 기능 X
+//    @GetMapping("/board/list")
+//    public String getBoardList(@SessionAttribute(name = "loginId", required = false) String loginId,
+//                               Model model){
+//        model.addAttribute("loginId", loginId);
+//
+//        List<BoardDTO> boardList = boardService.getList();
+//        model.addAttribute("boardList", boardList);
+//
+//        // 로그인 했을 때
+//        if (loginId != null){
+//            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+//            if (dto.getMemberAuth().equals("A")){ // 관리자
+//                model.addAttribute("admin", dto.getMemberAuth());
+//            }
+//        }
+//
+//
+//        return "board/list";
+//    }
+    // 페이징 추가
+    @ResponseBody
+    @GetMapping("/board/list")
+    public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getBoardList(
+        @SessionAttribute(name = "loginId", required = false) String loginId, Model model,
+        @RequestParam(defaultValue = "1") int page, PagedResourcesAssembler<BoardDTO> assembler) {
+        model.addAttribute("loginId", loginId);
 
+        int pageSize = 10;
+
+        try {
+            Page<BoardDTO> board = boardService.getListWithPage(page, pageSize);
+
+            if (board == null || board.isEmpty()){
+                // 게시물 없을 때
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            } else {
+                System.out.println(board);
+                PagedModel<EntityModel<BoardDTO>> boardList = assembler.toModel(board);
+                return ResponseEntity.ok().body(boardList);
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     @GetMapping("/board/write")
     public String writeForm(@SessionAttribute(name = "loginId", required = false) String loginId,
                             Model model){
