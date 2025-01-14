@@ -37,7 +37,7 @@
     <tr>
       <th><span>목표만족도</span></th>
       <td>
-        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도" maxlength="5" />
+        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" />
       </td>
     </tr>
     <tr>
@@ -65,13 +65,13 @@
 <script th:inline="javascript">
   //페이지 진입 시
   $(document).ready(function() {
-    console.log("작성 페이지 진입!!");
+    //console.log("작성 페이지 진입!!");
     // 현재 페이지의 URL에서 쿼리 파라미터를 가져오는 방법
     const urlParams = new URLSearchParams(window.location.search);
     // 'dailyDate' 파라미터의 값을 가져옴
     const dailyDate = urlParams.get('dailyDate');
     // 콘솔에 출력
-    console.log(dailyDate);
+    //console.log(dailyDate);
 
     //작성일이 페이지에 자동으로 디폴값 설정되도록 처리
     $("#dailyDate").val(dailyDate);
@@ -101,6 +101,7 @@
       }
   }
 
+  /*작성*/
   function saveDailyWrite(){
     var memberId = $("#memberId").val();
     var dailyTitle = $("#dailyTitle").val();
@@ -129,7 +130,25 @@
     console.log("끝");
     */
 
-    $.ajax({
+    //유효성검사
+    if(dailyTitle.trim() == ""){
+      alert("제목을 입력해주세요.");
+      $("#dailyTitle").focus();
+      return;
+    }else if(dailyCurWt == ""){
+      alert("현재체중을 입력해주세요.");
+      $("#dailyCurWt").focus();
+      return;
+    }else if(dailyGoalWt == ""){
+      alert("목표체중을 입력해주세요.");
+      $("#dailyGoalWt").focus();
+      return;
+    }else if(dailyGoalSf == ""){
+      alert("목표만족도를 입력해주세요.");
+      $("#dailyGoalSf").focus();
+      return;
+    }else{
+      $.ajax({
        url : '../daily/dailyWriteDetail',
        type : 'post',
        data: {
@@ -158,6 +177,7 @@
           //console.log("fail");
        }
    });
+    }
   }
 
 
