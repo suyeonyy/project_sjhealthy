@@ -37,7 +37,7 @@
     <div id="comment-write">
         <input type="text" id="commentWriter" placeholder="작성자" >
         <input type="text" id="commentContent" placeholder="내용" >
-        <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+        <button id="comment-write-btn" onclick="commentWriteClick();">댓글작성</button>
         <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
     </div>
 
@@ -85,54 +85,55 @@
     <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", ()=> {
-        const deleteBtn = document.getElementById("deleteButton");
+            const deleteBtn = document.getElementById("deleteButton");
 
-        if (deleteBtn){
-            deleteBtn.addEventListener("click", (e)=> {
+            if (deleteBtn){
+                deleteBtn.addEventListener("click", (e)=> {
 
-                if (!window.confirm('정말로 삭제하시겠습니까?')){
-                    e.preventDefault(); // 취소시 이벤트 발생 없음
-                    return false;
-                }
-            });
-        }
-        // 이미지가 있다면 업로드, 이것도 get 방식 접근이다
-        loadImage();
-        
-        async function loadImage(){
-            const attachedImage = document.getElementById("attachedImage");
-            
-            if (attachedImage){
-                const fileName = document.getElementById("image").value;
-                console.log("파일명 = " + fileName);
-
-                const imageUrl = "/uploads/files/" + fileName;
-                attachedImage.src = imageUrl;
-
-                // try {
-                //     if (fileName){
-                //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
-                //         if (!response.ok){
-                //             console.log("첨부된 파일이 없습니다.");
-                //         } else {
-                //             const data = await response.text();
-        
-                //             // URL로 변환하여 src로
-                //             console.log("경로 " + data);
-                //             attachedImage.src = data;
-                //             // img.src = data;
-                //         }
-                //     }
-                // } catch(error){
-                //     console.log(error);
-                // }
+                    if (!window.confirm('정말로 삭제하시겠습니까?')){
+                        e.preventDefault(); // 취소시 이벤트 발생 없음
+                        return false;
+                    }
+                });
             }
-        }
+            // 이미지가 있다면 업로드, 이것도 get 방식 접근이다
+            loadImage();
+        
+            async function loadImage(){
+                const attachedImage = document.getElementById("attachedImage");
 
+                if (attachedImage){
+                    const fileName = document.getElementById("image").value;
+                    //console.log("파일명 = " + fileName);
 
+                    const imageUrl = "/uploads/files/" + fileName;
+                    attachedImage.src = imageUrl;
+
+                    // try {
+                    //     if (fileName){
+                    //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
+                    //         if (!response.ok){
+                    //             //console.log("첨부된 파일이 없습니다.");
+                    //         } else {
+                    //             const data = await response.text();
+
+                    //             // URL로 변환하여 src로
+                    //             //.log("경로 " + data);
+                    //             attachedImage.src = data;
+                    //             // img.src = data;
+                    //         }
+                    //     }
+                    // } catch(error){
+                    //     //console.log(error);
+                    // }
+                }
+            }
+        });
 
         /* 댓글 작성 */
-        const commentWrite = () => {
+        function commentWriteClick(){
+            //console.log("함수 들어와");
+
             const writer = document.getElementById("commentWriter").value;
             const contents = document.getElementById("commentContent").value;
 
@@ -142,6 +143,12 @@
             if(writer.trim() == ''){
                 alert("작성자를 입력해주세요.");
                 $("#commentWriter").focus();
+                return;
+            }
+
+            if(contents.trim() == ''){
+                alert("내용을 입력해주세요.");
+                $("#commentContent").focus();
                 return;
             }
 
@@ -157,8 +164,8 @@
                 },
                 success: function(res){
                     //console.log("요청성공", res);
-                    console.log(res);
-                    console.log(res.data);
+                    //console.log(res);
+                    //console.log(res.data);
 
                     /* 댓글 목록을 표현하는 테이블 */
                     let output = "<table class='table'>";
@@ -186,8 +193,6 @@
                 }
             });
         }
-    });
-
     </script>
 
     <!-- 이거 나머지는 댓글 삭제에 쓰자
