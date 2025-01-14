@@ -4,6 +4,7 @@ import com.example.sjhealthy.dto.BoardDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.aspectj.weaver.loadtime.definition.Definition;
 
 import java.time.LocalDate;
@@ -59,6 +60,7 @@ public class BoardEntity {
     @OneToMany(mappedBy = "boardEntity", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY) //게시판 기준
     private List<CommentEntity> commentEntityList = new ArrayList<>();
 
+    @JsonIgnore // 무한 재귀 방지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private MemberEntity member;

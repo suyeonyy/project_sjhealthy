@@ -30,6 +30,11 @@ public class MemberDTO {
     private String createUser;      //등록자
     private String updateUser;      //수정자
 
+    public MemberDTO(String memberId, String memberPassword) {
+        this.memberId = memberId;
+        this.memberPassword = memberPassword;
+    }
+
 //    public static MemberDTO toMemberDTO(MemberEntity memberEntity){
 //        MemberDTO memberDTO = new MemberDTO();
 //
