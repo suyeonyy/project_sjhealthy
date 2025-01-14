@@ -51,8 +51,8 @@
                 // 날짜 형식을 출력
                 var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
 
-                console.log("결과");
-                console.log(startDate);
+                //console.log("결과");
+                //console.log(startDate);
 
                 // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
                 var event = {
@@ -70,9 +70,12 @@
                 });
                 */
            }
-           console.log("이벤트 조회");
-           console.log(events);
+           //console.log("이벤트 조회");
+           //console.log(events);
            initializeFullCalendar(events);
+       }else{
+            var events = [];
+            initializeFullCalendar(events);
        }
     });
 
@@ -109,25 +112,26 @@
                 var dailyDate = arg.startStr;
                 dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
                 window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+            },
+            eventClick : function(info){
+                //console.log("등록된 일정 클릭");
+                //console.log(info.event.start);
+                var date = info.event.start;
+                var year = date.getFullYear() + "";
+                var month = (date.getMonth() + 1).toString().padStart(2, '0') + ""; // 월은 0부터 시작하므로 1을 더해야 합니다.
+                var day = date.getDate().toString().padStart(2, '0') + "";
+
+                // 원하는 형식으로 출력
+                var dailyDate = year + month + day;
+                //console.log("최종",dailyDate);
+
+                window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
             }
         });
 
         // 캘린더 렌더링
         calendar.render();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 </script>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
