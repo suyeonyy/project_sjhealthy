@@ -4,6 +4,7 @@ import com.example.sjhealthy.dto.GoogleProfile;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.OAuthToken;
 import com.example.sjhealthy.dto.Response;
+import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.service.MailServiceImpl;
 import com.example.sjhealthy.service.MemberService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +24,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Map;
 
 @RequestMapping("/sjhealthy/")
 @Controller
@@ -63,28 +66,55 @@ public class LoginController {
         return "login";
     }
 
+//    @PostMapping("/member/login")
+//    public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session, RedirectAttributes ra){
+//        System.out.println("login");
+//
+//        // TODO: write나 다른 위치에서 온 경우엔 다시 그 위치로 보내는 로직
+//        try {
+//            MemberDTO loginResult = memberService.login(memberDTO);
+//            if (loginResult != null){
+////                로그인 성공
+//                session.setAttribute("loginId", loginResult.getMemberId());
+//                System.out.println("로그인 성공");
+//                return "redirect:/sjhealthy";
+//            } else {
+////                로그인 실패
+//                System.out.println("로그인 실패");
+//                ra.addAttribute("message", "로그인에 실패하였습니다.");
+//                return "redirect:/sjhealthy/member/login";
+//            }
+//        } catch (Exception e){
+//            System.out.println("시스템 오류");
+//            ra.addAttribute("message", "시스템 오류로 로그인에 실패하였습니다.");
+//            return "redirect:/sjhealthy";
+//        }
+//    }
+    @ResponseBody
     @PostMapping("/member/login")
-    public String loginFunction(@ModelAttribute MemberDTO memberDTO, HttpSession session, RedirectAttributes ra){
+    public ResponseEntity<Response<Object>> loginFunction(@RequestBody Map<String, String> data, HttpSession session){
         System.out.println("login");
+
+        String memberId = data.get("memberId");
+        String memberPassword = data.get("memberPassword");
 
         // TODO: write나 다른 위치에서 온 경우엔 다시 그 위치로 보내는 로직
         try {
-            MemberDTO loginResult = memberService.login(memberDTO);
+            MemberDTO loginResult = memberService.login(new MemberDTO(memberId, memberPassword));
+
             if (loginResult != null){
-//                로그인 성공
+    //                로그인 성공
                 session.setAttribute("loginId", loginResult.getMemberId());
                 System.out.println("로그인 성공");
-                return "redirect:/sjhealthy";
+                return ResponseEntity.ok(new Response<>(null, "로그인에 성공했습니다."));
             } else {
-//                로그인 실패
+    //                로그인 실패
                 System.out.println("로그인 실패");
-                ra.addAttribute("message", "로그인에 실패하였습니다.");
-                return "redirect:/sjhealthy/member/login";
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "로그인에 실패하였습니다."));
             }
         } catch (Exception e){
             System.out.println("시스템 오류");
-            ra.addAttribute("message", "시스템 오류로 로그인에 실패하였습니다.");
-            return "redirect:/sjhealthy";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 로그인에 실패하였습니다."));
         }
     }
 
