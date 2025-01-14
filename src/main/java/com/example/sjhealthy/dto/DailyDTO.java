@@ -25,4 +25,5 @@ public class DailyDTO {         // 일지
     private String updateDate;  //수정일
     private String createUser;  //등록자
     private String updateUser;  //수정자
+
 }
