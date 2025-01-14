@@ -4,9 +4,6 @@ $("#memberId").blur(function() {
    //let check = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,12}$/;
    var memberId = $('#memberId').val();
 
-    console.log("memberId",memberId=="");
-    console.log("memberId",memberId==" ");
-
    $.ajax({
        url : '../member/idCheck.do',
        type : 'post',
