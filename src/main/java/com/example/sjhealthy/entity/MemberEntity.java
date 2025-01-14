@@ -4,6 +4,7 @@ import com.example.sjhealthy.dto.MemberDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -60,6 +61,7 @@ public class MemberEntity {
     @Column(name="update_user", columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
+    @JsonIgnore // 무한 재귀 방지
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BoardEntity> board;  // 하나의 회원이 여러 게시글을 가짐
 
