@@ -12,7 +12,7 @@
     <h1>추천 게시판</h1>
 
 <!--검색하여 정렬-->
-<input type="search" id="searchByStoreName">
+<span>가게이름: </span><input type="search" id="searchByStoreName">
 <input type="button" id="searchButton" value="검색">
     <table border="1" id="recTable">
         <thead>
@@ -45,7 +45,7 @@
                 <td th:text="${board.recMenu}"></td>
                 <td th:text="${board.memberId}"></td>
                 <td th:text="${board.createDate}"></td>
-                <td th:text="${board.recViews}"></td>
+                <td class="recView" th:text="${board.recViews}"></td>
                 <td>
                     <input type="button" class="recY" value="좋아요">
                 </td>
@@ -62,12 +62,14 @@
                         <p><strong>메뉴: </strong><span th:text="${board.recMenu}"></span></p>
                         <p><strong>좋아요: </strong><span th:id="'detail-like'+ ${iterStat.index}"></span></p> 
                         <p><strong>싫어요: </strong><span th:id="'detail-dislike'+ ${iterStat.index}"></span></p>
-                    </div>    
+                    </div> 
+                    <a th:href="@{/sjhealthy/recommend/delete/{recId}(recId=${board.recId})}" th:if="${admin}" class="delete" th:id="'delete'+${iterStat.index}">
+                        <button>삭제</button>
+                    </a>
                 </td>    
             </tr>
         </tbody>
     </table>
-
 
     <input type="hidden" th:value="${loginId}" id="loginId">
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->

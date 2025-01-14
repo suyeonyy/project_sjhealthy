@@ -29,7 +29,7 @@ public class RecommendService {
     private final MemberRepository memberRepository;
 
     public List<RecommendDTO> getList(){
-        List<RecommendEntity> list = recommendRepository.findAll();
+        List<RecommendEntity> list = recommendRepository.findAllByOrderByRecIdDesc();
         List<RecommendDTO> dtoList = new ArrayList<>(); // dto로 변환하여 저장
 
         for (RecommendEntity entity : list){
@@ -57,12 +57,24 @@ public class RecommendService {
     public RecommendEntity readRecommendationById(Long recId){
         Optional<RecommendEntity> entity = recommendRepository.findById(recId);
 
-        RecommendEntity byRecId;
+        RecommendEntity byRecId = null;
         if (entity.isPresent()){
             byRecId = entity.get();
             return byRecId;
         }
         return null;
+    }
+
+    public void countRecViews(Long recId){
+        Optional<RecommendEntity> entity = recommendRepository.findById(recId);
+
+        RecommendEntity result = null;
+
+        if (entity.isPresent()){
+            result = entity.get();
+            result.setRecViews(result.getRecViews() + 1);
+            recommendRepository.save(result);
+        }
     }
 
     public boolean handleLikeOrDislike(Long recId, String memberId, String type){
@@ -124,5 +136,17 @@ public class RecommendService {
         return recommendRepository.getRecommendationByStoreNameOrStoreId(recStoreId, recStore);
     }
 
+    public RecommendEntity checkByRecStoreAndRecMenu(String recStore, String recMenu){
+        return recommendRepository.findByRecStoreAndRecMenu(recStore, recMenu);
+    }
 
+    public boolean delete(Long recId){
+        Optional<RecommendEntity> rec = recommendRepository.findById(recId);
+
+        if (rec.isPresent()){
+            recommendRepository.deleteById(recId);
+            return true;
+        }
+        return false;
+    }
 }
