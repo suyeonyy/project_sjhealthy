@@ -1,9 +1,15 @@
 package com.example.sjhealthy.component;
 
+import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.RecommendDTO;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.entity.RecommendEntity;
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class RecommendMapper {
@@ -50,5 +56,32 @@ public class RecommendMapper {
         recommendEntity.setMember(memberEntity);
 
         return recommendEntity;
+    }
+
+    public static Page<RecommendDTO> convertToRecommendDTOPage(Page<RecommendEntity> entities){
+        List<RecommendDTO> recommendDTOList = entities.stream()
+            .map(entity -> {
+                String memberId = entity.getMember() != null ? entity.getMember().getMemberId() : null;
+
+                return new RecommendDTO(
+                    entity.getRecId(),
+                    memberId,
+                    entity.getRecStoreId(),
+                    entity.getRecStore(),
+                    entity.getRecStoreGroupCode(),
+                    entity.getRecMenu(),
+                    entity.getRecY(),
+                    entity.getRecN(),
+                    entity.getRecViews(),
+                    entity.getIsDeleted(),
+                    entity.getCreateDate(),
+                    entity.getUpdateDate(),
+                    entity.getCreateUser(),
+                    entity.getUpdateUser()
+                );
+            })
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(recommendDTOList, entities.getPageable(), entities.getTotalElements());
     }
 }

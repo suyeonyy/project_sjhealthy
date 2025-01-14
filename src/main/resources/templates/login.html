@@ -36,25 +36,27 @@
     document.addEventListener("DOMContentLoaded", ()=> {
         const submit = document.getElementById("submit");
         const google = document.getElementById("googleOAuth");
-        const loginForm = document.getElementById("loginForm");
 
-        console.log("로그인폼확인"); // 올바르게 참조되는지 확인
-        console.log(loginForm); // 올바르게 참조되는지 확인
+
+        // const loginForm = document.getElementById("loginForm");
+        // console.log("로그인폼확인"); // 올바르게 참조되는지 확인
+        // console.log(loginForm); // 올바르게 참조되는지 확인
 
         // 로그인 유효성 검사
-        loginForm.addEventListener("submit", (e) => {
-            const id = document.getElementById("memberId").value;
-            const password = document.getElementById("memberPassword").value;
+        // loginForm.addEventListener("submit", (e) => {
+        //     const id = document.getElementById("memberId").value;
+        //     const password = document.getElementById("memberPassword").value;
 
-            if (!id){
-                alert("아이디를 입력해 주세요.");
-                event.preventDefault();
-            } else if (!password){
-                alert("비밀번호를 입력해 주세요.");
-                event.preventDefault();
-            }
-        });
-        /*
+        //     if (!id){
+        //         alert("아이디를 입력해 주세요.");
+        //         event.preventDefault();
+        //     } else if (!password){
+        //         alert("비밀번호를 입력해 주세요.");
+        //         event.preventDefault();
+        //     }
+        // });
+        
+        // 새로 만든 거 아까워서 씀..ㅎ
         submit.addEventListener("click", (e) => {
             e.preventDefault();
             console.log("유효성은 타니?");
@@ -72,7 +74,7 @@
                 submitLoginForm(id, password);
             }
         });
-        */
+        
 
         // 로그인 데이터 제출 후 로그인 처리
         async function submitLoginForm(id, password){

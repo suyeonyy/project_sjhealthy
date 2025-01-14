@@ -124,9 +124,9 @@ public class AdminController {
 //    }
     @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
-    public ResponseEntity<PagedModel<EntityModel<BoardEntity>>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
+    public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
                                                                         @SessionAttribute(name = "loginId", required = false)String loginId,
-                                                                        Pageable pageable, PagedResourcesAssembler<BoardEntity> assembler) {
+                                                                        PagedResourcesAssembler<BoardDTO> assembler) {
         model.addAttribute("loginId", loginId);
 
         int pageSize = 10;
@@ -137,10 +137,9 @@ public class AdminController {
 
             if (loginMember.getMemberAuth().equals("A")) {
                 // 관리자인지 확인
-                Page<BoardEntity> board = boardService.getListWithPage(page, pageSize);
-
+                Page<BoardDTO> board = boardService.getListWithPage(page, pageSize);
                 System.out.println(board);
-                PagedModel<EntityModel<BoardEntity>> boardList = assembler.toModel(board);
+                PagedModel<EntityModel<BoardDTO>> boardList = assembler.toModel(board);
 
                 return ResponseEntity.ok().body(boardList);
             } else {

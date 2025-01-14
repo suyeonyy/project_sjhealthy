@@ -68,6 +68,7 @@ public class MemberEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DailyEntity> daily;  // 하나의 회원이 여러 일지글을 가짐
 
+    @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<RecommendEntity> recommend;  // 하나의 회원이 여러 추천글을 가짐
 
