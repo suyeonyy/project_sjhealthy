@@ -17,214 +17,280 @@
         추천 메뉴: <input type="text" name="recMenu" id="recMenu" style="width: 300px;"><br>
     </li>
 </ul>
-    <button type="button" onclick="dataSubmit();">등록</button>
+    <button type="button" id="submit">등록</button>
 <ul id = "placesList"></ul>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" th:inline="javascript">
-     var jsAppKey = /*[[${js_appKey}]]*/ '';
-
-    // 카카오 지도 SDK를 동적으로 로드
-    var script = document.createElement('script');
-    script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsAppKey + '&libraries=services&autoload=false';
-    script.onload = function(){
-        //console.log("카카오 지도 SDK 로드 완료");
-        map();
-    };
-    script.onerror = function() {
-        //console.error("카카오 지도 SDK 로드 실패");
-    };
-    // <head>에 스크립트 추가
-    document.head.appendChild(script);
-
-    var selectedPlace;
-
-    function map(){
-        window.kakao.maps.load(()=>{
-            //해당 키워드 검색
-            $('#keyword').change(function(){
-                searchPlaces();
-            });
-            
+    document.addEventListener("DOMContentLoaded", () => {
+        
+         var jsAppKey = /*[[${js_appKey}]]*/ '';
     
-            //ps: 카카오지도에서 키워드를 통해 장소를 검색할 수 있게 해주는 객체
-            var ps = new kakao.maps.services.Places();
-            
-            var listEl = document.getElementById('placesList');
-            
-            //keyword의 값을 가져와서 값이 있는지 확인하고, 있으면 ps 객체의 keywordSearch함수의 인자로 keyword를 전달
-            function searchPlaces() {
+        // 카카오 지도 SDK를 동적으로 로드
+        var script = document.createElement('script');
+        script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsAppKey + '&libraries=services&autoload=false';
+        script.onload = function(){
+            //console.log("카카오 지도 SDK 로드 완료");
+            map();
+        };
+        script.onerror = function() {
+            //console.error("카카오 지도 SDK 로드 실패");
+        };
+        // <head>에 스크립트 추가
+        document.head.appendChild(script);
+    
+        var selectedPlace;
+    
+        function map(){
+            window.kakao.maps.load(()=>{
+                //해당 키워드 검색
+                $('#keyword').change(function(){
+                    searchPlaces();
+                });
+                
+        
+                //ps: 카카오지도에서 키워드를 통해 장소를 검색할 수 있게 해주는 객체
+                var ps = new kakao.maps.services.Places();
+                
+                var listEl = document.getElementById('placesList');
+                
+                //keyword의 값을 가져와서 값이 있는지 확인하고, 있으면 ps 객체의 keywordSearch함수의 인자로 keyword를 전달
+                function searchPlaces() {
+    
+                    var keyword = document.getElementById('keyword').value;
+                
+                    if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                        removeAllChildNods(listEl);
+                        return false;
+                    }
+                
+                    ps.keywordSearch( keyword, placesSearchCB);
+                }
+                
+                //장소 검색이 완료되었을 때 호출되는 콜백함수
+                //정상적으로 검색이 완료되었을 경우 displayPlaces함수에 리턴받은 data를 전달
+                function placesSearchCB(data, status, pagination) {
+                    if (status === kakao.maps.services.Status.OK) {
+                
+                        displayPlaces(data);
+                
+                    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                        removeAllChildNods(listEl);
+                        alert('검색 결과가 존재하지 않습니다.');
+                        return;
+                
+                    } else if (status === kakao.maps.services.Status.ERROR) {
+                
+                        alert('검색 결과 중 오류가 발생했습니다.');
+                        return;
+                
+                    }
+                }
+                
+                //검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
+                function displayPlaces(places) {
+                    var fragment = document.createDocumentFragment();
+                
+                    removeAllChildNods(listEl);
+                
+                    for ( var i=0; i<places.length; i++ ) {
+                
+                        var itemEl = getListItem(i, places[i]);
+                
+                        (function(name){
+                            itemEl.onclick = function(){
+                                var key = document.getElementById('keyword');
+                
+                                key.value = name;
+                
+                                removeAllChildNods(listEl);
+                            }
+                        })(places[i].place_name);
+                
+                        fragment.appendChild(itemEl);
+                    }
+                
+                    listEl.appendChild(fragment);
+                }
+                
+                //HTML 코드를 생성
+                function getListItem(index, places) {
+                    //place_name 장소명, 업체명
+                    //id 장소 ID
+                    //category_group_code 중요 카테고리만 그룹핑한 카테고리 그룹 코드
+                    var el = document.createElement('li'),
+                    itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                                '<div class="info">' +
+                                '   <span class = "info-place-name"><b>' + places.place_name + '</b></span>'; //장소명, 업체명
+                    itemStr += '    <span class = "info-place-id" style="display:none;"><small>' + places.id + '</small></span>' //장소 ID
+                    itemStr += '    <span class = "info-category-group-code" style="display:none;"><small>' + places.category_group_code + '</small></span>' //중요 카테고리만 그룹핑한 카테고리 그룹 코드
+                
+                    if (places.road_address_name) {
+                        itemStr += '    <br><span class = "info-address"><small>' + places.road_address_name + '</small></span>' //전체 도로명 주소
+                    } else {
+                        itemStr += '    <br><span class = "info-address"><small>' +  places.address_name  + '</small></span>'; //전체 지번 주소
+                    }
+                
+                    el.innerHTML = itemStr;
+                    el.className = 'item';
+                
+                    return el;
+                }
+                
+                //<ul>태그 아래 생성된 자식노드들을 모두 제거
+                function removeAllChildNods(el) {
+                    var placeIdElement = el.querySelector('.info-place-name b');
+                    if (placeIdElement) {
+                        var place_name = placeIdElement.innerText;
+                    }
+                
+                    var placeIdElement = el.querySelector('.info-place-id small');
+                    if (placeIdElement) {
+                        var place_id = placeIdElement.innerText;
+                    }
+                
+                    var placeIdElement = el.querySelector('.info-category-group-code small');
+                    if (placeIdElement) {
+                        var place_category_group_code = placeIdElement.innerText;
+                    }
+                
+                    // 선택된 정보들을 전역 변수에 저장
+                    selectedPlace = {
+                        name: place_name,
+                        id: place_id,
+                        category_group_code: place_category_group_code
+                    };
+                
+                    while (el.hasChildNodes()) {
+                        el.removeChild (el.lastChild);
+                    }
+                }
+            });
+        };
 
-                var keyword = document.getElementById('keyword').value;
-            
-                if (!keyword.replace(/^\s+|\s+$/g, '')) {
-                    removeAllChildNods(listEl);
-                    return false;
-                }
-            
-                ps.keywordSearch( keyword, placesSearchCB);
+        const submit = document.getElementById("submit");
+        
+    
+        //등록버튼 클릭
+        function dataSubmit() {
+            console.log("등록버튼 클릭");
+    
+            // var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
+            var recMenu = $("#recMenu").val();
+    
+            if(!selectedPlace){
+                alert("업체 명을 선택해주세요.");
+                $("#keyword").focus();
+                return;
             }
-            
-            //장소 검색이 완료되었을 때 호출되는 콜백함수
-            //정상적으로 검색이 완료되었을 경우 displayPlaces함수에 리턴받은 data를 전달
-            function placesSearchCB(data, status, pagination) {
-                if (status === kakao.maps.services.Status.OK) {
-            
-                    displayPlaces(data);
-            
-                } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                    removeAllChildNods(listEl);
-                    alert('검색 결과가 존재하지 않습니다.');
-                    return;
-            
-                } else if (status === kakao.maps.services.Status.ERROR) {
-            
-                    alert('검색 결과 중 오류가 발생했습니다.');
-                    return;
-            
-                }
+    
+            if(recMenu.trim() == ''){
+                alert("추천 메뉴를 입력해주세요.");
+                $("#recMenu").focus();
+                return;
             }
-            
-            //검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
-            function displayPlaces(places) {
-                var fragment = document.createDocumentFragment();
-            
-                removeAllChildNods(listEl);
-            
-                for ( var i=0; i<places.length; i++ ) {
-            
-                    var itemEl = getListItem(i, places[i]);
-            
-                    (function(name){
-                        itemEl.onclick = function(){
-                            var key = document.getElementById('keyword');
-            
-                            key.value = name;
-            
-                            removeAllChildNods(listEl);
+    
+            sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
+        }
+    
+        // 데이터를 서버로 전송하는 함수
+        function sendDataToServer(place_name, place_id, place_category_group_code) {
+            var loginId = $("#loginId").val();
+            var recMenu = $("#recMenu").val();
+            var place_name = place_name;
+            var place_id = place_id;
+            var place_category_group_code = place_category_group_code;
+    
+            console.log("데이터 전송!!");
+            console.log("place_id", place_id);
+    
+            if(place_id != null){
+                console.log("흐음");
+    
+                $.ajax({
+                   url : '../recommend/write',
+                   type : 'post',
+                   data: {
+                        memberId: loginId,
+                        recMenu: recMenu,
+                        recStore: place_name,
+                        recStoreId: place_id,
+                        recStoreGroupCode: place_category_group_code
+                   },
+                   success : function(data, textStatus, jqXHR) { //인자 실제론 안 써도 3개 다 써야 사용 가능
+                        //jqXHR로 상태코드 확인 가능
+                        console.log("success");
+                        console.log("status = " + jqXHR.status);
+    
+                        // 서버가 리다이렉트 URL을 응답으로 받았을 때
+                        if (jqXHR.status === 200) {
+                            // 상태코드 200일 때(ok)
+                            // alert 메시지 추가
+                            alert("추천글 등록이 완료되었습니다.");
+                            console.log("href = " + data);
+                            // 응답으로 받은 URL로 리다이렉트
+                            window.location.href = data;
+                        } else {
+                            alert("오류");
+                            window.location.href = data;
                         }
-                    })(places[i].place_name);
-            
-                    fragment.appendChild(itemEl);
-                }
-            
-                listEl.appendChild(fragment);
+                   }, error : function(xhr, textStatus, errorThrown) {
+                        console.log("fail");
+                        if (xhr.status === 400){
+                            // 상태코드 400일 때(bad request)
+                            alert("추천글 등록에 실패하였습니다.");
+                        } else if (xhr.status === 500){
+                            // 상태코드 500일 때(Internal Server Error)
+                            alert("시스템 오류로 추천글 등록에 실패하였습니다.");
+                        }
+                        window.location.href = "/sjhealthy/recommend";
+                        
+                   }
+               });
             }
+        } // 카카오에서 제공하는, 스크립트가 완전히 로드되기 전에 map 관련 메소드를 실행하려 하는 오류에 대한 해결 함수
+
+
+        
+        
+        // 유효성 검사 후 글 등록
+        submit.addEventListener("click", async (e) => {
+            e.preventDefault();
             
-            //HTML 코드를 생성
-            function getListItem(index, places) {
-                //place_name 장소명, 업체명
-                //id 장소 ID
-                //category_group_code 중요 카테고리만 그룹핑한 카테고리 그룹 코드
-                var el = document.createElement('li'),
-                itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
-                            '<div class="info">' +
-                            '   <span class = "info-place-name"><b>' + places.place_name + '</b></span>'; //장소명, 업체명
-                itemStr += '    <span class = "info-place-id" style="display:none;"><small>' + places.id + '</small></span>' //장소 ID
-                itemStr += '    <span class = "info-category-group-code" style="display:none;"><small>' + places.category_group_code + '</small></span>' //중요 카테고리만 그룹핑한 카테고리 그룹 코드
-            
-                if (places.road_address_name) {
-                    itemStr += '    <br><span class = "info-address"><small>' + places.road_address_name + '</small></span>' //전체 도로명 주소
-                } else {
-                    itemStr += '    <br><span class = "info-address"><small>' +  places.address_name  + '</small></span>'; //전체 지번 주소
+            const recMenu = document.getElementById("recMenu").value;
+            console.log("메뉴: " + recMenu);
+            const recStore = selectedPlace.name;
+            console.log("가게: " + recStore);
+
+            try {
+                if (!recMenu){
+                    alert("추천 메뉴를 입력해 주세요.");
+                } else { // 메뉴명 중복 검사
+                    const response = await fetch("/sjhealthy/recommend/write/check", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            recMenu: recMenu,
+                            recStore: recStore
+                        })
+                    });
+                    if (response.status === 204){
+                        // 중복되는 데이터 없을 때
+                        console.log("데이터가 존재하지 않습니다.");
+                        dataSubmit();
+                    } else {
+                        const data = await response.json();
+                        // 이미 등록된 가게-메뉴일 때
+                        alert(data.message);
+                        return;
+                    }
                 }
-            
-                el.innerHTML = itemStr;
-                el.className = 'item';
-            
-                return el;
-            }
-            
-            //<ul>태그 아래 생성된 자식노드들을 모두 제거
-            function removeAllChildNods(el) {
-                var placeIdElement = el.querySelector('.info-place-name b');
-                if (placeIdElement) {
-                    var place_name = placeIdElement.innerText;
-                }
-            
-                var placeIdElement = el.querySelector('.info-place-id small');
-                if (placeIdElement) {
-                    var place_id = placeIdElement.innerText;
-                }
-            
-                var placeIdElement = el.querySelector('.info-category-group-code small');
-                if (placeIdElement) {
-                    var place_category_group_code = placeIdElement.innerText;
-                }
-            
-                // 선택된 정보들을 전역 변수에 저장
-                selectedPlace = {
-                    name: place_name,
-                    id: place_id,
-                    category_group_code: place_category_group_code
-                };
-            
-                while (el.hasChildNodes()) {
-                    el.removeChild (el.lastChild);
-                }
+            } catch(error) {
+                console.log(error);
             }
         });
-    };
-
-    //등록버튼 클릭
-    function dataSubmit() {
-        console.log("등록버튼 클릭");
-
-        var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
-        var recMenu = $("#recMenu").val();
-
-        if(!selectedPlace){
-            alert("업체 명을 선택해주세요.");
-            $("#keyword").focus();
-            return;
-        }
-
-        if(recMenu.trim() == ''){
-            alert("추천 메뉴를 입력해주세요.");
-            $("#recMenu").focus();
-            return;
-        }
-
-        sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
-    }
-
-    // 데이터를 서버로 전송하는 함수
-    function sendDataToServer(place_name, place_id, place_category_group_code) {
-        var loginId = $("#loginId").val();
-        var recMenu = $("#recMenu").val();
-        var place_name = place_name;
-        var place_id = place_id;
-        var place_category_group_code = place_category_group_code;
-
-        console.log("데이터 전송!!");
-        console.log("place_id", place_id);
-
-        if(place_id != null){
-            console.log("흐음");
-
-            $.ajax({
-               url : '../recommend/write',
-               type : 'post',
-               data: {
-                    memberId: loginId,
-                    recMenu: recMenu,
-                    recStore: place_name,
-                    recStoreId: place_id,
-                    recStoreGroupCode: place_category_group_code
-               },
-               success : function(data) {
-                    //console.log("success");
-
-                    // 서버가 리다이렉트 URL을 응답으로 받았을 때
-                    if (data) {
-                        // 응답으로 받은 URL로 리다이렉트
-                        window.location.href = data;
-                    }
-               }, error : function() {
-                    //console.log("fail");
-               }
-           });
-        }
-    } // 카카오에서 제공하는, 스크립트가 완전히 로드되기 전에 map 관련 메소드를 실행하려 하는 오류에 대한 해결 함수
+    });
 
 </script>
 <!-- 참고링크: https://developlsb2dwb.tistory.com/28-->

@@ -16,7 +16,7 @@ spring:
     username: root
     password: 1234
   resources:
-    static-locations: classpath:/static/
+    static-locations: file:./uploads/
   servlet:
     multipart:
       enabled: true #첨부파일
