@@ -13,6 +13,9 @@ import com.example.sjhealthy.repository.MemberRepository;
 import com.example.sjhealthy.repository.RecommendRepository;
 import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -36,6 +39,12 @@ public class RecommendService {
             dtoList.add(RecommendMapper.toRecommendDTO(entity, entity.getMember().getMemberId()));
         }
         return dtoList;
+    }
+
+    public Page<RecommendDTO> getListWithPage(int page, int size){ // 페이징
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<RecommendEntity> list = recommendRepository.findAllByOrderByRecIdDesc(pageable);
+        return RecommendMapper.convertToRecommendDTOPage(list);
     }
 
     public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
