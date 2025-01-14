@@ -139,12 +139,13 @@ public class DailyController {
         MemberEntity memberEntity = memberService.findMemberEntity(loginId);
 
         try{
-            DailyDTO result = dailyService.read(dailyId);
+            // 여기 오류난다 수연아 잠깐 주석처리 해둘게
+//            DailyDTO result = dailyService.read(dailyId);
 
             if(loginId != null){
             }
 
-            model.addAttribute("dailyDTO", result);
+//            model.addAttribute("dailyDTO", result);
             return "daily/dailyRead";
         }catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
