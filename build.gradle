@@ -42,6 +42,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-mail' // 인증 메일
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas' // 페이징에서 EntityModel 사용
 
 
 	//Webflux
