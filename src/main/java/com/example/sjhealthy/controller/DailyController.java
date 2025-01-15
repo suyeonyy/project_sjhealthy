@@ -3,14 +3,19 @@ package com.example.sjhealthy.controller;
 import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.DailyDTO;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.entity.DailyEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.service.DailyService;
 import com.example.sjhealthy.service.MemberService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.source.tree.MemberReferenceTree;
+import jakarta.persistence.Tuple;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,8 +33,8 @@ public class DailyController {
     private final MemberService memberService;
 
     @GetMapping("/daily/dailyList")
-    public String getDailyList(@SessionAttribute(name = "loginId", required = false) String loginId,
-                               Model model){
+    public String getDailyList(@SessionAttribute(name = "loginId", required = false) String loginId, Model model) throws JsonProcessingException {
+
         model.addAttribute("loginId", loginId);
 
         //현재 날짜 가져오기
@@ -42,8 +44,7 @@ public class DailyController {
         String year = strToday.substring(0,4);
         String month = strToday.substring(4,6);
 
-        List<String> dailyList = dailyService.getDateList(loginId, year, month);
-        System.out.println("dailyList = " + dailyList);
+        List<DailyDTO> dailyList = dailyService.getDateList(loginId, year, month);
         model.addAttribute("dailyList", dailyList);
 
         //로그인 했을 때
