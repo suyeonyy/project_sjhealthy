@@ -10,4 +10,10 @@ import lombok.NoArgsConstructor;
 public class Response<T> { // data 필드를 제네릭으로 받아서 어떠한 타입의 데이터도 받을 수 있다.
     private T data;
     private String message;
+    private Long likeCount;
+    private Long dislikeCount;
+
+    public Response(T data, String message){ // 보통 사용. 4개 다 쓰는 건 Rec 게시판 상세페이지에서만
+        this(data, message, 0L, 0L);
+    }
 }
