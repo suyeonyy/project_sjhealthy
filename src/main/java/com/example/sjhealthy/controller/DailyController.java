@@ -33,7 +33,7 @@ public class DailyController {
     private final MemberService memberService;
 
     @GetMapping("/daily/dailyList")
-    public String getDailyList(@SessionAttribute(name = "loginId", required = false) String loginId, Model model) throws JsonProcessingException {
+    public String getDailyList(@SessionAttribute(name = "loginId", required = false) String loginId, Model model) {
 
         model.addAttribute("loginId", loginId);
 
