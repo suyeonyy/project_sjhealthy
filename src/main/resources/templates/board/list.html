@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-
+<div id="content">
     <table border="1">
         <thead>
             <tr>
@@ -30,8 +30,124 @@
             </tr>
         </tbody>
     </table>
+</div>
+
+<div>
     <a href="/sjhealthy/board/write"><button>글 작성</button></a>
     <a href="/sjhealthy"><button>메인</button></a>
+</div>
+
+<div id="pagination">
+
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const boardDiv = document.getElementById("content");
+
+        // 게시글 관리
+        let currentPage = 1;
+        const pageSize = 10;
+        
+        // 페이지 열면 자동으로 로드(1페이지로)
+        loadBoardData(currentPage);
+
+        // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로 
+        async function loadBoardData(page){
+            const boardListDiv = document.getElementById("content");
+            content.innerHTML = ""; // 기존 내용 비움
+            
+            try {
+                // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
+                const response = await fetch("/sjhealthy/board/list?page=" + page);
+
+                const data = await response.json();
+                
+                if (response.status === 200){
+                    boardListDiv.innerHTML = ""; // 기존 내용 초기화
+                    
+                    const boardList = data._embedded.boardDTOList;
+                    console.log(boardList);
+
+                    const table = document.createElement("table");
+                    table.border = "1";
+
+                    const thead = document.createElement("thead");
+                    thead.innerHTML = `
+                        <tr>
+                            <th>글 번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>작성일</th>
+                            <th>조회수</th>
+                        </tr>
+                    `;
+
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement("tbody");
+
+                    boardList.forEach(board => {
+                        const row = document.createElement("tr");
+
+                        const postNumber = document.createElement("td");
+                        postNumber.textContent = board.boardId;
+                        row.appendChild(postNumber);
+
+                        const title = document.createElement("td");
+                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}">${board.boardTitle}</a>`;
+                        row.appendChild(title);
+
+                        const writer = document.createElement("td");
+                        writer.textContent = board.memberId;
+                        row.appendChild(writer);
+
+                        const createDate = document.createElement("td");
+                        createDate.textContent = board.createDate;
+                        row.appendChild(createDate);
+
+                        const hits = document.createElement("td");
+                        hits.textContent = board.boardViews;
+                        row.appendChild(hits);
+
+                        tbody.appendChild(row);
+                    });
+
+                    table.appendChild(tbody);
+                    boardDiv.appendChild(table);
+
+                    displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
+            
+                } else if (response.status === 204){// 게시글 X
+                    console.log("게시글이 존재하지 않습니다.");
+                }
+            } catch (error){
+                console.log("Error = " + error);
+                console.log("시스템 오류");
+            }
+        }
+
+
+        // 페이지 버튼
+        function displayPagination(totalPages, currentPage){
+            const pagination = document.getElementById("pagination");
+
+            pagination.innerHTML = ""; // 기존 내용 초기화
+
+            for (let i = 1; i <= totalPages; i++){
+                const pageButton = document.createElement("button");
+                pageButton.textContent = i;
+                pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
+                
+                pageButton.addEventListener("click", () => {
+                    loadBoardData(i); // 클릭한 페이지 데이터 요청하고 html 생성
+                    currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                });
+                pagination.appendChild(pageButton); 
+            }
+        }
+    });
+</script>
 
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
