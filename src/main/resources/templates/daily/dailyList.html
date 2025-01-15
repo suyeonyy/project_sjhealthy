@@ -31,19 +31,37 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
 <!-- fullcalendar 언어 CDN -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
-<script>
-    var dailyList = [[${dailyList}]]; //현재날짜(월) 기준으로, 일지를 등록한 날짜 전체 조회
+<script th:inline="javascript">
+    var dailyList = [[${dailyList}]];
+
     $(document).ready(function() {
+        /*
+        if(dailyList.length > 0){
+            for(var i = 0; i < dailyList.length; i++){
+                var selected = dailyList[i];
+                var dailyDate = selected.dailyDate;
+                var dailyTitle = selected.dailyTitle;
+
+                //console.log("dailyDate",dailyDate);
+                //console.log("dailyTitle",dailyTitle);
+            }
+        }
+        */
+
         if(dailyList.length > 0){
             var events = [];
             for(var i = 0; i < dailyList.length; i++){
-                var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
+                var selected = dailyList[i];
+                var dailyDate = selected.dailyDate;
+                var dailyTitle = selected.dailyTitle;
+
+                //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
                 //console.log(typeof dateString);
 
                 // 문자열을 연, 월, 일로 분리
-                var year = dateString.substring(0, 4);
-                var month = dateString.substring(4, 6) - 1; // 월은 0부터 시작
-                var day = dateString.substring(6, 8);
+                var year = dailyDate.substring(0, 4);
+                var month = dailyDate.substring(4, 6) - 1; // 월은 0부터 시작
+                var day = dailyDate.substring(6, 8);
 
                 // 새로운 Date 객체 생성
                 var date = new Date(year, month, day);
@@ -56,8 +74,8 @@
 
                 // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
                 var event = {
-                    title: dailyList[i] + "",
-                    start: dailyList[i] + ""
+                    title: dailyTitle,
+                    start: dailyDate
                 };
                 events.push(event);
 
@@ -70,14 +88,14 @@
                 });
                 */
            }
-           //console.log("이벤트 조회");
-           //console.log(events);
            initializeFullCalendar(events);
        }else{
             var events = [];
             initializeFullCalendar(events);
        }
     });
+
+
 
     function initializeFullCalendar(event1) {
         var calendarEl = $('#calendar')[0];

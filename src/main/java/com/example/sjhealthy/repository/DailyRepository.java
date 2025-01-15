@@ -3,6 +3,7 @@ package com.example.sjhealthy.repository;
 import com.example.sjhealthy.dto.DailyDTO;
 import com.example.sjhealthy.dto.MemberStatisticsDTO;
 import com.example.sjhealthy.entity.DailyEntity;
+import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.entity.MemberStatisticsEntity;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -101,20 +102,19 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             "ORDER BY d.daily_date ASC", nativeQuery = true)
     List<Tuple> getWeightByMemberIdAndMonth(@Param("memberId")String memberId, @Param("month")int month, @Param("year")int year);
 
-
     //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
     @Query(value = "SELECT  DTBL.DAILY_DATE " +
-                     "FROM  daily_table DTBL " +
-                    "WHERE  1 = 1 " +
-                      "AND  DTBL.MEMBER_ID = :loginId " +
-                      "AND  DTBL.DAILY_YEAR = :year " +
-                      "AND  DTBL.DAILY_MONTH = :month " +
-                    "ORDER BY DTBL.DAILY_DATE",
+            ",DTBL.DAILY_TITLE " +
+            "FROM  daily_table DTBL " +
+            "WHERE  1 = 1 " +
+            "AND  DTBL.MEMBER_ID = :loginId " +
+            "AND  DTBL.DAILY_YEAR = :year " +
+            "AND  DTBL.DAILY_MONTH = :month " +
+            "ORDER BY DTBL.DAILY_DATE",
             nativeQuery = true)
-    List<String> getDateList(@Param("loginId") String loginId, @Param("year") String year, @Param("month") String month);
+    List<Object[]> getDateList(@Param("loginId") String loginId, @Param("year") String year, @Param("month") String month);
 
-
-    //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
+    //일지 상세내역
     @Query(value = "SELECT  dtbl.daily_id, " +
                            "dtbl.daily_title, " +
                            "dtbl.member_id, " +
