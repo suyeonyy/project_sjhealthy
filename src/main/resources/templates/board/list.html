@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>커뮤니티</title>
+    <!-- 부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<div id="content">
-    <table border="1">
+<div id="content" class="container justify-content-center">
+    <table class="table table-hover table-striped text-center">
         <thead>
             <tr>
                 <!-- <th th:if="admin">삭제</th> -->
@@ -69,8 +73,13 @@
                     const boardList = data._embedded.boardDTOList;
                     console.log(boardList);
 
+                    const title = document.createElement("h1");
+                    title.innerText = "커뮤니티";
+                    title.className = "fw-bold";
+                    boardDiv.appendChild(title);
+
                     const table = document.createElement("table");
-                    table.border = "1";
+                    table.className = "table table-hover text-center table-bordered mt-4";
 
                     const thead = document.createElement("thead");
                     thead.innerHTML = `
