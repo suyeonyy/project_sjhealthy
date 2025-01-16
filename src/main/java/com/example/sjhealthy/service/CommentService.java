@@ -18,10 +18,11 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final BoardRepository boardRepository; //부모 엔티티도 넘기기 위해
 
+    /* 기존. 임시주석처리
     public Long save(CommentDTO commentDTO) {
         //dto로 받아온 것을 entity로 변환
 
-        /* 부모엔티티(BoardEntity) 조회 */
+        // 부모엔티티(BoardEntity) 조회
         Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(commentDTO.getBoardId());
 
         //존재한다면 댓글 저장 처리
@@ -31,6 +32,40 @@ public class CommentService {
 
             //변환해온 것을 저장
             return commentRepository.save(commentEntity).getComId();
+        }else{
+            return null;
+        }
+    }
+    */
+    public Long save(CommentDTO commentDTO) {
+        //dto로 받아온 것을 entity로 변환
+
+        // 부모엔티티(BoardEntity) 조회
+        Optional<BoardEntity> optionalBoardEntity = boardRepository.findById(commentDTO.getBoardId());
+
+        //존재한다면 댓글 저장 처리
+        if(optionalBoardEntity.isPresent()){
+            BoardEntity boardEntity = optionalBoardEntity.get();
+            CommentEntity commentEntity = CommentEntity.toSaveEntity(commentDTO, boardEntity);
+
+
+            // 댓글이 속할 게시판 번호 (BoardEntity 기준)
+            Long boardId = commentDTO.getBoardId();
+
+            // 해당 게시판에 대한 가장 큰 댓글 순서를 가져옴
+            Long commentOrder = commentRepository.findMaxCommentOrderByBoardId(boardId);
+
+            // 댓글 순서를 계산 (댓글이 없으면 1번부터 시작)
+            commentOrder = commentOrder == null ? 1L : commentOrder + 1;
+
+            // 댓글 순서를 설정
+            commentEntity.setCommentOrder(commentOrder);
+
+            // 댓글 저장
+            commentRepository.save(commentEntity);
+
+            // 저장된 댓글의 ID 반환
+            return commentEntity.getComId();
         }else{
             return null;
         }
