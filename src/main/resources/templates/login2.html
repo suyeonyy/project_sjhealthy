@@ -8,44 +8,38 @@
 
 </head>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<body>
-<div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
-    <div class="col-md-4 col-lg-3 col-12">
-        <div class="card p-4 shadow">
-            <h2 class="text-center mb-4 fw-bold">로그인</h2>
-            <form action="../member/login" method="POST" id="loginForm">
-                <div class="mb-1">
-                    <label for="memberId" class="form-label">
-                    아이디:
-                    </label> 
-                    <input type="text" class="form-control" name="memberId" id="memberId"><br>
-                </div>
-                <div class="mb-3">
-                    <label for="memeberPassword" class="form-label">
-                    비밀번호: 
-                    </label>
-                    <input type="password" class="form-control" name="memberPassword" id="memberPassword">
-                </div>
-                <input type="submit" class="btn btn-primary w-100" name="submit" value="로그인" id="submit">
-            </form>
-            <div class="mt-2 col-12 d-flex gap-2">
+<body class="d-flex flex-column min-vh-100">
+<div class="d-flex justify-content-center">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h2>로그인</h2>
+            </div>
+            <div class="card-body">
+                <form action="../member/login" method="POST" id="loginForm">
+                    아이디: <input type="text" name="memberId" id="memberId"><br>
+                    비밀번호: <input type="password" name="memberPassword" id="memberPassword">
+                    <input type="submit" name="submit" value="로그인" id="submit">
+                </form>
+            </div>
+            <div>
                 <a th:href="'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=' + ${kakaoApiKey} + '&redirect_uri=' + ${kakaoRedirectUri}">
-                    <img th:src="@{/kakao_login_medium_narrow.png}" class="img-fluid">
+                    <img th:src="@{/kakao_login_medium_narrow.png}">
                 </a>
                 <a th:href="'https://accounts.google.com/o/oauth2/v2/auth?client_id=' + ${client_id} + '&redirect_uri=' + ${redirect_uri} + '&response_type=code&scope=email+profile'">
-                    <img th:src="@{/web_light_sq_SI@1x.png}" class="img-fluid" alt="구글 로그인">
+                    <img th:src="@{/web_light_sq_SI@1x.png}" alt="구글 로그인">
                 </a>
             </div>
-            <div class="mt-2 col-12 d-flex justify-content-center">
-                <a href="../member/find-id"><button class="btn btn-light">아이디 찾기</button></a>
-                <a href="../member/find-password"><button class="btn btn-light">비밀번호 찾기</button></a>
+            <div>
+                <a href="../member/find-id"><button>아이디 찾기</button></a>
+                <a href="../member/find-password"><button>비밀번호 찾기</button></a>
+                <a href="../member/join"><button>회원가입</button></a>
             </div>
-        </div>
-        <div class="mt-4 col-12 d-flex gap-2">
-            <p class="text-secondary mt-1">혹시 아직 회원이 아니라면...</p>
-            <a href="../member/join"><button class="btn btn-light container-fluid">회원가입</button></a>
+
         </div>
     </div>
+
+
 </div>
 
 <script th:inline="javascript">
