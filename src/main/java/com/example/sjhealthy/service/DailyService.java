@@ -10,11 +10,13 @@ import com.example.sjhealthy.entity.DailyEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.DailyRepository;
 import com.example.sjhealthy.repository.MemberRepository;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,10 +50,28 @@ public class DailyService {
         return list;
     }
 
-    public List<String> getDateList(String loginId, String year, String month) {
-        List<String> dailyList = dailyRepository.getDateList(loginId, year, month);
+    public List<DailyDTO> getDateList(String loginId, String year, String month) {
+        // 레포지토리에서 데이터 조회 (List<Object[]> 형태로 반환된다고 가정)
+        List<Object[]> queryResults = dailyRepository.getDateList(loginId, year, month);
 
+        // 결과를 DTO 리스트로 변환
+        List<DailyDTO> dailyList = new ArrayList<>();
+
+        // 쿼리 결과를 하나씩 순회하여 DTO 객체 생성
+        for (Object[] result : queryResults) {
+            String dailyDate = (String) result[0]; // 첫 번째 결과는 dailyDate
+            String dailyTitle = (String) result[1]; // 두 번째 결과는 dailyTitle
+
+            // DTO 객체 생성
+            DailyDTO dailyDTO = new DailyDTO(dailyDate, dailyTitle);
+
+            // DTO 리스트에 추가
+            dailyList.add(dailyDTO);
+        }
+
+        // 변환된 DTO 리스트 반환
         return dailyList;
+
     }
 
     public DailyDTO read(String loginId, String dailyDate) {
