@@ -3,16 +3,17 @@
 <head>
     <title>회원가입</title>
     <style>
-        h1 {
+        h2 {
           text-align: center;
           margin: 20px 0;
+          color: #50575e;
         }
 
         .join_container {
           width: 50%;
           margin: 0 auto;
           background-color: #fff;
-          padding: 20px;
+          padding: 10px;
           border-radius: 8px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -30,7 +31,7 @@
         }
 
         td {
-          padding: 10px;
+          padding: 7px;
           border: 1px solid #ddd;
         }
 
@@ -83,7 +84,7 @@
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 
-<h1>회원가입</h1>
+<h2>회원가입</h2>
 <div class="join_container">
     <!-- # onsubmit
          onsubmit의 return 역할: form 전송하기 전 함수 실행하여
@@ -194,7 +195,8 @@
         </table>
     </form>
     <p class="btn_set">
-        <button type="button" class="btn btn_st1" onclick="saveMember();">가입</button>
+        <button type="button" class="btn btn_st1" style="background: rgb(28,137,254)" onclick="saveMember(); ">가입</button>
+        <a href="/sjhealthy/member/login"><button class="btn btn_st1" style="background: rgb(28,137,254)">로그인</button></a>
     </p>
 </div>
 
