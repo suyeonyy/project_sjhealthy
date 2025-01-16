@@ -23,6 +23,7 @@ public class CommentDTO {
     private String createUser;      //등록자
     private String updateUser;      //수정자
     private Long boardId;           //글 고유번호
+    private Long commentOrder; // 댓글 순서 (게시판별로 순차적인 번호)
 
     private String formattedCreateDate; // 화면에 출력될 포맷된 날짜
 
@@ -49,6 +50,7 @@ public class CommentDTO {
         commentDTO.setUpdateDate(commentEntity.getUpdateDate());
         commentDTO.setCreateUser(commentEntity.getCreateUser());
         commentDTO.setUpdateUser(commentEntity.getUpdateUser());
+        commentDTO.setCommentOrder(commentEntity.getCommentOrder());
         commentDTO.setBoardId(boardId);
 
         return commentDTO;
