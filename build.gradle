@@ -61,3 +61,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-parameters'
+} // 재시작 없이 html/css 변경사항 반영 추가하다가 오류나서
