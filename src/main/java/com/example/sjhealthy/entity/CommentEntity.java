@@ -48,6 +48,7 @@ public class CommentEntity {
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private Long commentOrder; // 댓글 순서 (게시판별로 순차적인 번호)
 
     public void setCommentOrder(Long commentOrder) {
