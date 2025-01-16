@@ -51,7 +51,7 @@
                 <th>작성일</th>
             </tr>
             <tr th:each="comment: ${commentList}">
-                <td th:text="${comment.comId}"></td>
+                <td th:text="${comment.commentOrder}"></td>
                 <td th:text="${comment.commentWriter}"></td>
                 <td th:text="${comment.commentContent}"></td>
                 <td th:text="${comment.formattedCreateDate}"></td>
@@ -176,7 +176,7 @@
 
                     for(var i in res.data){
                         output += "<tr>";
-                        output += "<td>" + res.data[i].comId + "</td>";
+                        output += "<td>" + res.data[i].commentOrder + "</td>";
                         output += "<td>" + res.data[i].commentWriter + "</td>";
                         output += "<td>" + res.data[i].commentContent + "</td>";
                         output += "<td>" + res.data[i].formattedCreateDate + "</td>";

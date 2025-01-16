@@ -17,6 +17,13 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long comId;
 
+    /* Board:Comment = 1:N */
+    //Comment는 Board를 참조하는 관계로 지정한다.
+//    cascade = CascadeType.ALL, orphanRemoval = true
+    @ManyToOne(fetch = FetchType.LAZY) //댓글 기준
+    @JoinColumn(name="boardId")
+    private BoardEntity boardEntity;
+
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String memberId; // 근데 사용은 입력해서 사용하는 걸로 함. 조인 안 함
 
@@ -41,12 +48,12 @@ public class CommentEntity {
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
     private String updateUser;
 
-    /* Board:Comment = 1:N */
-    //Comment는 Board를 참조하는 관계로 지정한다.
-//    cascade = CascadeType.ALL, orphanRemoval = true
-    @ManyToOne(fetch = FetchType.LAZY) //댓글 기준
-    @JoinColumn(name="boardId")
-    private BoardEntity boardEntity;
+    @Column(columnDefinition = "VARCHAR(500)", nullable = false)
+    private Long commentOrder; // 댓글 순서 (게시판별로 순차적인 번호)
+
+    public void setCommentOrder(Long commentOrder) {
+        this.commentOrder = commentOrder; // 이 메서드가 없으면 추가해줘야 합니다.
+    }
 
     public static CommentEntity toSaveEntity(CommentDTO commentDTO, BoardEntity boardEntity) {
         CommentEntity commentEntity = new CommentEntity();
@@ -60,6 +67,7 @@ public class CommentEntity {
         commentEntity.setUpdateDate(commentDTO.getUpdateDate());
         commentEntity.setCreateUser(commentDTO.getCreateUser());
         commentEntity.setUpdateUser(commentDTO.getUpdateUser());
+        commentEntity.setCommentOrder(commentDTO.getCommentOrder());
         commentEntity.setBoardEntity(boardEntity);
 
         return commentEntity;
