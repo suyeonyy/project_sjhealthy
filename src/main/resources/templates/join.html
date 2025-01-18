@@ -6,7 +6,7 @@
         h2 {
           text-align: center;
           margin: 20px 0;
-          color: #50575e;
+          /*color: #50575e;*/
         }
 
         .join_container {
@@ -15,7 +15,10 @@
           background-color: #fff;
           padding: 10px;
           border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+
+          box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+          transition: all 0.3s cubic-bezier(.25,.8,.25,1);
         }
 
         table {
@@ -84,8 +87,8 @@
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 
-<h2>회원가입</h2>
 <div class="join_container">
+<h2>회원가입</h2>
     <!-- # onsubmit
          onsubmit의 return 역할: form 전송하기 전 함수 실행하여
          함수가 ture 반환하면 form 전송, false를 반환하면 form 전송하지 않음
@@ -195,8 +198,8 @@
         </table>
     </form>
     <p class="btn_set">
-        <button type="button" class="btn btn_st1" style="background: rgb(28,137,254)" onclick="saveMember(); ">가입</button>
-        <a href="/sjhealthy/member/login"><button class="btn btn_st1" style="background: rgb(28,137,254)">로그인</button></a>
+        <button type="button" class="btn btn_st1" style="background: rgb(12,100,230)" onclick="saveMember(); ">가입</button>
+        <a href="/sjhealthy/member/login"><button class="btn btn_st1" style="background: rgb(12,100,230)">로그인</button></a>
     </p>
 </div>
 
