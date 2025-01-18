@@ -493,5 +493,27 @@ public class LoginController {
 
         return ResponseEntity.ok(accessToken);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    @GetMapping("../login/isLogged")
+    public String homePage(Model model, HttpSession session) {
+        boolean isLoggedIn = session.getAttribute("user") != null; // 예시로 세션에 'user' 객체가 있으면 로그인된 상태로 간주
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        return "header"; // Thymeleaf 템플릿 이름
+    }
+ */
 }
 
