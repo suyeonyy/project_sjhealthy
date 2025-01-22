@@ -16,10 +16,27 @@
           padding-left: 1em;
           padding-right: 1em;
         }
+
+        #calendar {
+            height: 675px !important;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          border-radius: 4px;
+          cursor: pointer;
+          border: none;
+          font-size: 14px;
+        }
+
+        .btn_st1 {
+          background-color: #4CAF50;
+          color: white;
+        }
     </style>
 </head>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<body style="padding:30px;">
+<body>
 <!-- calendar 태그 -->
 <div id='calendar-container'>
     <div id='calendar'></div>
@@ -152,7 +169,7 @@
     }
 </script>
 <a href="/sjhealthy">
-    <button style="float: right;">메인</button>
+    <button class="btn btn_st1" style="float: right; background: rgb(12,100,230);">메인</button>
 </a>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
