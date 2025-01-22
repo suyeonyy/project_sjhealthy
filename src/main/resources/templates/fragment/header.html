@@ -5,37 +5,13 @@
     <meta charset="UTF-8">
     <title>header</title>
     <style>
-		/* nav tag */
-        .nav-ul {
-            padding-top: 10px; /* 상단 여백 10px */
-            margin: 0; /* 기본 margin 제거 */
-            padding: 0; /* 기본 padding 제거 */
-            display: flex; /* flexbox를 사용하여 항목들을 가로로 배치 */
-            list-style-type: none; /* ul 기본 불릿 제거 */
-        }
-
-        .nav-li {
-            border-left: 1px solid #999; /* 각 메뉴의 왼쪽에 "|" 표시(분류 표시) */
-            font: bold 12px Dotum; /* 폰트 설정 - 12px의 돋움체 굵은 글씨로 표시 */
-            padding: 0 10px; /* 각 메뉴 간격 */
-            display: inline-block; /* 각 li 요소가 인라인 블록처럼 동작하도록 설정 */
-        }
-
-        .nav-li:first-child
-            border-left: none; /* 메뉴 분류중 제일 왼쪽의 "|"는 삭제 */
-        }
-
-        /* hover 효과 */
-        a:hover {
-            color: rgb(12,100,230);
-        }
     </style>
 </head>
 
 <body>
 <div th:fragment="main-head" class="header" style="display:flex; align-items:center; justify-content:space-between; width: 100%;">
     <a href="/sjhealthy">
-        <img src="/main_logo.jpg" alt="Logo" class="logo" style="width:200px;">
+        <img src="/main_logo.jpg" alt="Logo" class="logo" style="width:200px; margin-left: 10px;">
     </a>
 
     <nav>
@@ -46,7 +22,6 @@
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/daily/dailyList" style="text-decoration:none; color:#000000;">일지</a></li>
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/statistics" style="text-decoration:none; color:#000000;">광장</a></li>
 
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/member/mypage" style="text-decoration:none; color:#000000;">내 정보</a></li>
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/member/logout" style="text-decoration:none; color:#000000;">로그아웃</a></li>
 
         </ul>
