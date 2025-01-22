@@ -5,7 +5,7 @@
     <title>LoginForm</title>
 </head>
 <body>
-<div th:replace="~{fragment/header :: main-head}"></div>
+<div th:replace="~{fragment/headerNoSession :: main-head}"></div>
     <h1>아이디 찾기</h1>
 
 <form action="../member/find-id" method="POST" th:if="${memberDTO == null && dto == null}" id="findIdForm">
