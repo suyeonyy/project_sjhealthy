@@ -7,11 +7,13 @@
           text-align: center;
           margin: 20px 0;
           /*color: #50575e;*/
+          font-size: calc(1.325rem + .9vw);
+          font-weight: 550 !important;
         }
 
         .join_container {
           width: 50%;
-          margin: 0 auto;
+          margin: 13px auto;
           background-color: #fff;
           padding: 10px;
           border-radius: 8px;
@@ -85,8 +87,7 @@
     </style>
 </head>
 <body>
-<div th:replace="~{fragment/header :: main-head}"></div>
-
+<div th:replace="~{fragment/headerNoSession :: main-head}"></div>
 <div class="join_container">
 <h2>회원가입</h2>
     <!-- # onsubmit
