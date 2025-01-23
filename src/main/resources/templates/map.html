@@ -5,7 +5,7 @@
     <title>Kakao 지도</title>
     <style>
         .map_wrap, .map_wrap * {margin:0; padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
-        .map_wrap {position:relative;width:100%;height:572px;margin-top: 5px;}
+        .map_wrap {position:relative;width:100%;height:617px;}
         #category {position:absolute;top:10px;left:10px;border-radius: 5px; border:1px solid #909090;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);background: #fff;overflow: hidden;z-index: 2;}
         #category li {float:left;list-style: none;width:50px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
         #category li.on {background: #eee;}
@@ -32,12 +32,7 @@
         .placeinfo .title {font-weight: bold; font-size:14px;border-radius: 6px 6px 0 0;margin: -1px -1px 0 -1px;padding:10px; color: #fff;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
         .placeinfo .tel {color:#0f7833;}
         .placeinfo .jibun {color:#999;font-size:11px;margin-top:0;}
-
-        .main-foot {
-            margin-top: 40px !important;
-            margin-left: 8px !important;
-        }
-
+/*
         .text-view{
           text-align: left !important;
           font-family: monospace !important;
@@ -46,6 +41,7 @@
           margin-left: 20px !important;
           font-family: Courier, "Courier New", "Andale Mono", monospace;
         }
+*/
     </style>
     <!-- 헤더 css -->
     <link rel="stylesheet" href="/css/header.css">
@@ -55,8 +51,9 @@
 <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<h2 class="mb-4 text-center text-view">내 주변 보기</h2>
 <main>
+<span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">내 주변 보기</span>
+
 <div class="map_wrap">
     <div id="map" style="width:100%;height:103%;position:relative;overflow:hidden;"></div>
     <ul id="category">
@@ -81,13 +78,13 @@
     // 카카오 지도 SDK를 동적으로 로드
     var script = document.createElement('script');
     script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + jsAppKey + '&libraries=services,clusterer,drawing&autoload=false';
-    console.log(script.src);
+    //console.log(script.src);
     script.onload = function(){
-        console.log("카카오 지도 SDK 로드 완료");
+        //console.log("카카오 지도 SDK 로드 완료");
         map();
     };
     script.onerror = function() {
-            console.error("카카오 지도 SDK 로드 실패");
+            //console.error("카카오 지도 SDK 로드 실패");
     };
     // <head>에 스크립트 추가
     document.head.appendChild(script);
@@ -100,16 +97,16 @@
     function map(){
     var latitude, longitude;
     if (navigator.geolocation){
-        console.log('1');
+        //console.log('1');
 
         navigator.geolocation.getCurrentPosition(function(position){
 
-            console.log('2');
+            //console.log('2');
             latitude = position.coords.latitude;
             longitude = position.coords.longitude;
 
-            console.log('경도' + longitude);
-            console.log('위도' + latitude);
+            //console.log('경도' + longitude);
+            //console.log('위도' + latitude);
 
             //아래 코드를 해당 함수에 넣은 이유: function은 비동기라 안 기다리고 바로 다음으로 넘어가는데 다른 것들은 동기라서 1 -> 3 -> 2 순서로 찍히는 것이다. 그래서 if문 밖으로 위도, 경도 변수를 선언하면 undefined가 찍힌다.
 
@@ -119,7 +116,7 @@
                     center: new kakao.maps.LatLng(latitude, longitude), // 지도의 중심좌표
                     level: 3 // 지도의 확대 레벨
                 };
-                console.log(mapOption);
+                //console.log(mapOption);
     
                 // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
                 var map = new kakao.maps.Map(mapContainer, mapOption);
@@ -253,8 +250,8 @@
     
                 // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
                 function displayPlaceInfo (place) {
-                    console.log("진입????");
-                    console.log(place);
+                    //console.log("진입????");
+                    //console.log(place);
                     
                  
                         //데이터 가져와.
@@ -264,9 +261,9 @@
                         var placeName = place.place_name;
                         var placeKeyword = placeName.split(" ")[0];
                     
-                        console.log('storeId = ' + storeId);
-                        console.log('placeName = ' + placeName);
-                        console.log('placeKeyword = ' + placeKeyword); // 보통 스타벅스 %%점 이런 식이니까
+                        //console.log('storeId = ' + storeId);
+                        //console.log('placeName = ' + placeName);
+                        //console.log('placeKeyword = ' + placeKeyword); // 보통 스타벅스 %%점 이런 식이니까
     
                         $.ajax({
                             url : '/sjhealthy/map/getrecommend',
@@ -295,7 +292,7 @@
                                 data.forEach(function(item){
                                        
                                     content += ' ' + item.recMenu;
-                                    console.log('추천 메뉴 = ' + item.recMenu);
+                                    //console.log('추천 메뉴 = ' + item.recMenu);
     
                                 });
                                 content += '</span>';
@@ -315,7 +312,7 @@
     
                 // 각 카테고리에 클릭 이벤트를 등록합니다
                 function addCategoryClickEvent() {
-                    console.log('addCategory');
+                    //console.log('addCategory');
                     var category = document.getElementById('category'),
                         children = category.children;
     
@@ -326,7 +323,7 @@
     
                 // 카테고리를 클릭했을 때 호출되는 함수입니다
                 function onClickCategory() {
-                    console.log('onClickCategory');
+                    //console.log('onClickCategory');
     
                     var id = this.id,
                         className = this.className;
