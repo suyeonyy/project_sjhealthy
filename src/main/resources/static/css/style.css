@@ -18,8 +18,13 @@ text-align: center;
 }
 
 main {
-flex: 1;
+/*flex: 1;*/
 /*padding: 20px;*/
+}
+
+main {
+    height: calc(100% - 120px); /* 화면 높이에서 header와 footer의 높이를 빼기 (헤더와 푸터는 각각 60px로 가정) */
+    overflow: auto; /* main 영역에만 스크롤이 생기도록 설정 */
 }
 
 footer {
