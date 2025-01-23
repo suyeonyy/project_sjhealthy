@@ -13,7 +13,7 @@
 
         .join_container {
           width: 50%;
-          margin: 13px auto;
+          margin: 8px auto;
           background-color: #fff;
           padding: 10px;
           border-radius: 8px;
@@ -84,20 +84,13 @@
           text-align: center;
           margin-top: 20px;
         }
-
-        .logo {
-            margin-left: 9px !important;
-            margin-top: 2px !important;
-        }
-
-        .main-foot {
-            margin-top: 26px !important;
-            margin-left: 9px !important;
-        }
     </style>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/headerNoSession :: main-head}"></div>
+<main>
 <div class="join_container">
 <h2>회원가입</h2>
     <!-- # onsubmit
@@ -213,7 +206,7 @@
         <a href="/sjhealthy/member/login"><button class="btn btn_st1" style="background: rgb(12,100,230)">로그인</button></a>
     </p>
 </div>
-
+</main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
