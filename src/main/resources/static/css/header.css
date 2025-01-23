@@ -1,0 +1,40 @@
+.main-head-header {
+display:flex;
+align-items:center;
+justify-content:space-between;
+width: 100%;
+}
+
+.main-head-logo {
+width:200px;
+margin-left: 16px;
+margin-top: 10px;
+}
+
+.main-head-nav-ul {
+padding-top:10px;
+margin:0;
+padding:0;
+display:flex;
+list-style-type:none;
+}
+
+.main-head-nav-li{
+border-left:1px solid #999;
+font:bold 25px Dotum;
+padding:0 10px;
+display:inline-block;
+}
+
+.main-head-nav-li:first-child {
+border-left: none;
+}
+
+.main-head-a {
+    text-decoration:none;
+    color:#000000;
+}
+
+.main-head-a:hover {
+    color:rgb(12,100,230);
+}
