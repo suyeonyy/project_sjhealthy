@@ -45,7 +45,7 @@ public class AdminController {
         if (loginId != null) {
             MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
 
-            if (loginMember.getMemberAuth().equals("A")) {
+            if (loginMember.getMemberAuth().equals("A") || loginMember.getMemberId().equals("admin")) {
                 List<MemberDTO> dtoList = memberService.getMemberList();
                 model.addAttribute("memberList", dtoList);
                 return "adminPage";
