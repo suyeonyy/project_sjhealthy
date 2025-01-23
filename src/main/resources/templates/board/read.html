@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>readForm</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-
+<main>
     <h1 th:text="${boardDTO.boardTitle}"></h1>
     작성자: <p th:text="${boardDTO.memberId}"></p><br>
     작성일: <p th:text="${boardDTO.createDate}"></p><br>
@@ -80,7 +82,7 @@
     -->
     <!-- 댓글 출력 부분 -->
 
-
+</main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
     <script th:inline="javascript">
