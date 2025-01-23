@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>연동 해제</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <button id="deleteMember">회원 탈퇴</button>
     <button id="deleteGoogleOAuth">구글 연동 해제</button>
     <input type="hidden" id="memberId" th:value="${loginId}">
+</main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript" th:src="@{/js/deleteGoogleAccount.js}"></script>
 <script>
