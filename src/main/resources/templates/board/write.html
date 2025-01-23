@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${isUpdate} ? '글 수정' : '글 작성'"></title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
 <h1 th:text="${isUpdate} ? '글 수정' : '글 작성'"></h1>
 
 <form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} : '/sjhealthy/board/write'"
@@ -17,7 +20,7 @@
     <input type="hidden" name="memberId" th:value="${loginId}" id="boardWriter">
     <input type="submit" name="submit" th:value="${isUpdate} ? '수정' : '작성'" id="submit">
 </form>
-
+</main>
 <!-- <script>
     // 이거 submit이 안 돼서 그냥 required 속성 넣음
     document.addEventListener("DOMContentLoaded", () => {
