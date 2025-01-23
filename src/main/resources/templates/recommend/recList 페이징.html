@@ -6,9 +6,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"  th:inline="javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=/*[[${js_appKey}]]*/&autoload=false"></script>
  <!-- th:inline="javascript"로 thymleaf가 js 안에서 변수를 제대로 처리하게 함. 근데 내부에서만 해당. 이거는 왜 되지?-->
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <h1>추천 게시판</h1>
 
 <!--검색하여 정렬-->
@@ -92,7 +95,7 @@
 <div id="pagination">
 
 </div>
-
+</main>
 <script th:inline="javascript" th:src="@{/js/recList.js}"></script>
 
 <div th:replace="~{fragment/footer :: main-foot}"></div>
