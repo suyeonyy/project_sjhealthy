@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>LoginForm</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/headerNoSession :: main-head}"></div>
+<main>
     <h1>아이디 찾기</h1>
 
 <form action="../member/find-id" method="POST" th:if="${memberDTO == null && dto == null}" id="findIdForm">
@@ -24,7 +27,7 @@
     <a href="../member/login"><button>로그인</button></a>
     <a href="../member/find-id"><button>아이디 찾기</button></a>
 </p>
-
+</main>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const findId = document.getElementById("findId");
