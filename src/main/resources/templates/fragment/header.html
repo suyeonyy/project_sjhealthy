@@ -4,23 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <title>header</title>
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 
 <body>
-<div th:fragment="main-head" class="header" style="display:flex; align-items:center; justify-content:space-between; width: 100%;">
+<div th:fragment="main-head" class="main-head-header">
     <a href="/sjhealthy">
-        <img src="/main_logo.jpg" alt="Logo" class="logo" style="width:200px; margin-left: 16px; margin-top: 10px;">
+        <img src="/main_logo.jpg" alt="Logo" class="main-head-logo">
     </a>
 
     <nav>
-        <ul class="nav-ul" style="padding-top:10px; margin:0; padding:0; display:flex; list-style-type:none;">
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block; border-left: none;"><a href="/sjhealthy/board" style="text-decoration:none; color:#000000;">커뮤니티</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/recommend" style="text-decoration:none; color:#000000;">추천 게시판</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/map" style="text-decoration:none; color:#000000;">내 주변 보기</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/daily/dailyList" style="text-decoration:none; color:#000000;">일지</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/statistics" style="text-decoration:none; color:#000000;">광장</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;" th:if="${loginId == 'admin'}"><a href="/sjhealthy/admin" style="text-decoration:none; color:#000000;">관리자 기능</a></li>
-            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/member/logout" style="text-decoration:none; color:#000000;">로그아웃</a></li>
+        <ul class="main-head-nav-ul" >
+            <li class="main-head-nav-li"><a href="/sjhealthy/board" class="main-head-a">커뮤니티</a></li>
+            <li class="main-head-nav-li"><a href="/sjhealthy/recommend" class="main-head-a">추천 게시판</a></li>
+            <li class="main-head-nav-li"><a href="/sjhealthy/map" class="main-head-a">내 주변 보기</a></li>
+            <li class="main-head-nav-li"><a href="/sjhealthy/daily/dailyList" class="main-head-a">일지</a></li>
+            <li class="main-head-nav-li"><a href="/sjhealthy/statistics" class="main-head-a">광장</a></li>
+            <li class="main-head-nav-li" th:if="${loginId == 'admin'}"><a href="/sjhealthy/admin" class="main-head-a">관리자 기능</a></li>
+            <li class="main-head-nav-li"><a href="/sjhealthy/member/logout" class="main-head-a">로그아웃</a></li>
         </ul>
     </nav>
 </div>
