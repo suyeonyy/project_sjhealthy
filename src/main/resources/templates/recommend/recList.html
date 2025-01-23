@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>추천 게시판</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"  th:inline="javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=/*[[${js_appKey}]]*/&autoload=false"></script>
  <!-- th:inline="javascript"로 thymleaf가 js 안에서 변수를 제대로 처리하게 함. 근데 내부에서만 해당. 이거는 왜 되지?-->
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <h1>추천 게시판</h1>
 
 <!--검색하여 정렬-->
@@ -76,7 +79,7 @@
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
     <a href="/sjhealthy"><button>메인</button></a>
     <a href="/sjhealthy/recommend/write" id="writeButton"><button>추천글 작성</button></a>
-
+</main>
 <script th:inline="javascript" th:src="@{/js/recList.js}"></script>
 
 <div th:replace="~{fragment/footer :: main-foot}"></div>
