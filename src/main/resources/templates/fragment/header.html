@@ -19,9 +19,8 @@
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/map" style="text-decoration:none; color:#000000;">내 주변 보기</a></li>
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/daily/dailyList" style="text-decoration:none; color:#000000;">일지</a></li>
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/statistics" style="text-decoration:none; color:#000000;">광장</a></li>
-
+            <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;" th:if="${loginId == 'admin'}"><a href="/sjhealthy/admin" style="text-decoration:none; color:#000000;">관리자 기능</a></li>
             <li class="nav-li" style="border-left:1px solid #999; font:bold 25px Dotum; padding:0 10px; display:inline-block;"><a href="/sjhealthy/member/logout" style="text-decoration:none; color:#000000;">로그아웃</a></li>
-
         </ul>
     </nav>
 </div>
