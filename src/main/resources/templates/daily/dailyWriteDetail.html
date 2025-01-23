@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>일지 작성</title>
-    <style>
-    </style>
+  <!-- 헤더, 메인, 푸터 위치 고정 -->
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div th:replace="~{fragment/header :: main-head}"></div>
+  <main>
   <table>
     <tbody>
     <tr>
@@ -54,6 +55,7 @@
   <a href="../daily/dailyList">
     <button>목록</button>
   </a>
+  </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
