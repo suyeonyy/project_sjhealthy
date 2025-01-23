@@ -45,17 +45,30 @@
             text-decoration: auto !important;
             cursor: auto !important;
         }
+
+        .text-view{
+          text-align: left !important;
+          font-family: monospace !important;
+          font-size: xx-large !important;
+          font-weight: 900 !important;
+          margin-left: 20px !important;
+          font-family: Courier, "Courier New", "Andale Mono", monospace;
+        }
     </style>
+    <!-- 헤더 css -->
+    <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <div th:replace="~{fragment/header :: main-head}"></div>
 <main>
-<body>
-<!-- calendar 태그 -->
-<div id='calendar-container'>
-    <div id='calendar'></div>
-</div>
+    <body>
+    <!-- calendar 태그 -->
+    <div id='calendar-container'>
+        <!-- '일지'라는 페이지 제목 추가 -->
+        <div class="text-view">일지 목록</div>
+        <div id='calendar'></div>
+    </div>
 </main>
 <!-- jquery CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
