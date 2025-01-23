@@ -23,8 +23,8 @@ public class JoinController {
 
     @PostMapping("/member/join")
     public String join(@ModelAttribute MemberDTO memberDTO, RedirectAttributes redirectAttributes){
-        System.out.println("회원가입");
-        System.out.println(memberDTO);
+        //System.out.println("회원가입");
+        //System.out.println(memberDTO);
         memberService.join(memberDTO);
 
         // 리다이렉트 시 전달할 메시지
@@ -38,8 +38,8 @@ public class JoinController {
     @PostMapping("/member/idCheck.do")
     @ResponseBody
     public int joinIdCheck(@RequestParam String memberId) {
-        System.out.println("중복체크");
-        System.out.println(memberId);
+        //System.out.println("중복체크");
+        //System.out.println(memberId);
 
         return memberService.memberIdCheck(memberId);
     }
