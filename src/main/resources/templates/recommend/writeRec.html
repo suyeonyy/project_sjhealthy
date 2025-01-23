@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>추천글 작성</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <h1>추천글 작성</h1>
 <ul>
     <li>
@@ -19,6 +22,7 @@
 </ul>
     <button type="button" id="submit">등록</button>
 <ul id = "placesList"></ul>
+</main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
