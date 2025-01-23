@@ -17,9 +17,12 @@
             height: 20px;
         }
     </style>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <h2>체중 변화 그래프</h2>
     <div>
         <button id="before">이전</button>
@@ -352,7 +355,7 @@
     </script>
 
     <a href="/sjhealthy"><button>메인</button></a>
-
+</main>
 
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
