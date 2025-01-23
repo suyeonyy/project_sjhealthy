@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>광장</title>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<main>
     <div class="container">
         <!-- 전체 -->
         <table border="1">
@@ -48,7 +51,7 @@
     <a href="/sjhealthy/statistics/graph"><button>몸무게 변화</button></a>
     <a href="/sjhealthy"><button>메인</button></a>
 
-
+</main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
