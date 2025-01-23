@@ -1,0 +1,30 @@
+/* 헤더, 메인, 푸터 위치 고정 - 공통 css */
+html, body {
+height: 100%;
+margin: 0;
+}
+
+body {
+display: flex;
+flex-direction: column;
+min-height: 100vh; /* 페이지의 최소 높이를 화면 전체로 설정 */
+}
+
+header {
+background-color: #333;
+color: white;
+padding: 10px;
+text-align: center;
+}
+
+main {
+flex: 1;
+/*padding: 20px;*/
+}
+
+footer {
+background-color: #333;
+color: white;
+text-align: center;
+padding: 10px;
+}
