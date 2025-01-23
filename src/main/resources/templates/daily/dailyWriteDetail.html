@@ -1,69 +1,123 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>일지 작성</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>일지 작성</title>
   <!-- 헤더, 메인, 푸터 위치 고정 -->
   <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery-3.6.0.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <style>
+    .card-header {
+        background-color: #f8f9fa;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        font-size: 1.1rem;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .table th, .table td {
+        padding: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .text-view{
+      text-align: left !important;
+      font-family: monospace !important;
+      font-size: xx-large !important;
+    }
+  </style>
 </head>
 <body>
-  <div th:replace="~{fragment/header :: main-head}"></div>
-  <main>
-  <table>
-    <tbody>
-    <tr>
-      <th><span>제목</span></th>
-      <td>
-        <input type="text" id="dailyTitle" name="dailyTitle" placeholder="제목" maxlength="500" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>작성일</span></th>
-      <td>
-        <input type="text" id="dailyDate" name="dailyDate" placeholder="작성일" maxlength="8" readonly="readonly" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>현재체중</span></th>
-      <td>
-        <input type="text" id="dailyCurWt" name="dailyCurWt" placeholder="현재체중" oninput="validateInput(this)"/>
-      </td>
-    </tr>
-    <tr>
-      <th><span>목표체중</span></th>
-      <td>
-        <input type="text" id="dailyGoalWt" name="dailyGoalWt" placeholder="목표체중" maxlength="5" oninput="validateInput(this)"/>
-      </td>
-    </tr>
-    <tr>
-      <th><span>목표만족도</span></th>
-      <td>
-        <input type="text" id="dailyGoalSf" name="dailyGoalSf" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" />
-      </td>
-    </tr>
-    <tr>
-      <th><span>메모</span></th>
-      <td>
-        <textarea id="dailyMemo" name="dailyMemo" maxlength="2000">
-        </textarea>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
-  <button type="button" class="btn btn_st1" onclick="saveDailyWrite();">작성</button>
-  <a href="../daily/dailyList">
-    <button>목록</button>
-  </a>
-  </main>
+<div th:replace="~{fragment/header :: main-head}"></div>
+<main>
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center text-view">일지 작성</h2>
+
+    <div class="card shadow-lg">
+      <div class="card-header">
+        <span>일지 작성</span>
+      </div>
+      <div class="card-body">
+        <form id="dailyWriteForm">
+          <div class="table-responsive">
+            <table class="table">
+              <tbody>
+              <tr>
+                <th><label for="dailyTitle">제목</label></th>
+                <td>
+                  <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" required>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="dailyDate">작성일</label></th>
+                <td>
+                  <input type="text" id="dailyDate" name="dailyDate" class="form-control" placeholder="작성일" maxlength="8" readonly required>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="dailyCurWt">현재체중</label></th>
+                <td>
+                  <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" oninput="validateInput(this)" required>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="dailyGoalWt">목표체중</label></th>
+                <td>
+                  <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" required>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="dailyGoalSf">목표만족도</label></th>
+                <td>
+                  <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
+                </td>
+              </tr>
+              <tr>
+                <th><label for="dailyMemo">메모</label></th>
+                <td>
+                  <textarea id="dailyMemo" name="dailyMemo" class="form-control" maxlength="2000"></textarea>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+          <div class="text-center">
+            <button type="button" class="btn btn-custom" onclick="saveDailyWrite()">작성</button>
+            <a href="../daily/dailyList" class="btn btn-secondary ml-2">목록</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
-</body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- datepickern 라이브러리 추가 -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <script th:inline="javascript">
   //페이지 진입 시
   $(document).ready(function() {
@@ -203,4 +257,5 @@
   });
   */
 </script>
+</body>
 </html>
