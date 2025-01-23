@@ -38,11 +38,11 @@ public class MapController {
 
         String storeId = placeRequest.getStoreId();
         String placeName = placeRequest.getPlaceName();
-        System.out.println(placeRequest);
+        //System.out.println(placeRequest);
 
         // Recommend 게시판에서 일정 기준 이상 달성한 것만 리스트로 뽑아 보내는 로직을 추가해야 한다.
         List<RecommendEntity> recommendEntityList = recommendService.getListByStoreIdOrPlaceName(storeId, placeName);
-        System.out.println("recommendEntityList = " + recommendEntityList);
+        //System.out.println("recommendEntityList = " + recommendEntityList);
         return ResponseEntity.ok(recommendEntityList);
 
     }
