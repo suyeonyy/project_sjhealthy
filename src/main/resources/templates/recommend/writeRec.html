@@ -178,7 +178,7 @@
     
         //등록버튼 클릭
         function dataSubmit() {
-            console.log("등록버튼 클릭");
+            //console.log("등록버튼 클릭");
     
             // var selectedPlace = window.selectedPlace;  // 전역에서 선택된 장소 정보 가져오기
             var recMenu = $("#recMenu").val();
@@ -195,6 +195,12 @@
                 return;
             }
     
+            // confirm 메시지
+            if (!window.confirm("추천글을 등록하시겠습니까?")){
+                e.preventDefault();
+                return false;
+            } 
+
             sendDataToServer(selectedPlace.name, selectedPlace.id, selectedPlace.category_group_code);
         }
     
@@ -206,11 +212,11 @@
             var place_id = place_id;
             var place_category_group_code = place_category_group_code;
     
-            console.log("데이터 전송!!");
-            console.log("place_id", place_id);
+            //console.log("데이터 전송!!");
+            //console.log("place_id", place_id);
     
             if(place_id != null){
-                console.log("흐음");
+                //console.log("흐음");
     
                 $.ajax({
                    url : '../recommend/write',
@@ -225,14 +231,14 @@
                    success : function(data, textStatus, jqXHR) { //인자 실제론 안 써도 3개 다 써야 사용 가능
                         //jqXHR로 상태코드 확인 가능
                         console.log("success");
-                        console.log("status = " + jqXHR.status);
+                        //console.log("status = " + jqXHR.status);
     
                         // 서버가 리다이렉트 URL을 응답으로 받았을 때
                         if (jqXHR.status === 200) {
                             // 상태코드 200일 때(ok)
                             // alert 메시지 추가
                             alert("추천글 등록이 완료되었습니다.");
-                            console.log("href = " + data);
+                            //console.log("href = " + data);
                             // 응답으로 받은 URL로 리다이렉트
                             window.location.href = data;
                         } else {
@@ -263,9 +269,9 @@
             e.preventDefault();
             
             const recMenu = document.getElementById("recMenu").value;
-            console.log("메뉴: " + recMenu);
+            //console.log("메뉴: " + recMenu);
             const recStore = selectedPlace.name;
-            console.log("가게: " + recStore);
+            //console.log("가게: " + recStore);
 
             try {
                 if (!recMenu){
