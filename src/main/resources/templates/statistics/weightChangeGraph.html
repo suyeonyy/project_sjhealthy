@@ -51,8 +51,8 @@
             let month = 0;
             let year = 0;
            
-            console.log("month = " + month);
-            console.log("year = " + year);
+            //console.log("month = " + month);
+            //console.log("year = " + year);
 
             let monthlyData = Array(31).fill(null); // 월별 데이터 저장할 배열 초기화
             let yearlyData = Array(12).fill(null); // 월 평균 데이터 12개 저장할 배열 초기화
@@ -72,13 +72,13 @@
             let minus = 0;
             // 증감 버튼 클릭시
             before.addEventListener("click", (e) => {
-                console.log("decrease");
+                //console.log("decrease");
                 plus = 0; // 초기화
 
                 // 일 단위일 때
                 if (sorted === 0){
                     month--; // 이전 달 데이터
-                    console.log("month = " + month);
+                    //console.log("month = " + month);
                     minus--;
                     sortByMonth();
                     let mn = Number(monthNow);
@@ -89,7 +89,7 @@
                     }
                 } else {
                     year--; // 월 단위일 때 이전 연도 데이터 
-                    console.log("year = " + year);
+                    //console.log("year = " + year);
                     minus--;
                     sortByYear();
                     now.innerText = Number(yearNow) + minus + "년";
@@ -98,12 +98,12 @@
 
             
             after.addEventListener("click", (e) => {
-                console.log("increase");
+                //console.log("increase");
                 minus = 0;
 
                 if (sorted === 0){
                     month++;
-                    console.log("month = " + month);
+                    //console.log("month = " + month);
                     plus++;
                     sortByMonth();
                     let mn = Number(monthNow);
@@ -114,7 +114,7 @@
                     }
                 } else {
                     year++;
-                    console.log("year = " + year);
+                    //console.log("year = " + year);
                     plus++;
                     sortByYear();
                     now.innerText = Number(yearNow) + plus + "년";
@@ -126,7 +126,7 @@
             sortByMonth();
 
             sortBtnByMonth.addEventListener("click", (e) => {
-                console.log("Month");
+                //console.log("Month");
 
                 // sorted 0이 일, 1이 월
                 if (sorted === 0){
@@ -137,7 +137,7 @@
             });
 
             sortBtnByYear.addEventListener("click", (e) => {
-                console.log("Year");
+                //console.log("Year");
 
                 if (sorted === 1){
                     e.preventDefault(); // 이미 월 단위 그래프라면 변화 없도록
@@ -169,7 +169,7 @@
                         console.log(d1.message);
                     } else{
                     weightList = d1.data;
-                    console.log("weightList = " + JSON.stringify(weightList));
+                    //console.log("weightList = " + JSON.stringify(weightList));
                     console.log("message = " + d1.message);
                     }
                 }
@@ -185,7 +185,7 @@
                 }
 
                 await requestData();
-                console.log("request 후 " + weightList);
+                //console.log("request 후 " + weightList);
 
                 sorted = 0;
 
@@ -197,18 +197,18 @@
                     weightList.forEach((map) => {
                         // map으로 보냈는데 확인해보니 일반객체로 찍혀서 Object.entries를 이용해 key, value 순회
                         Object.entries(map).forEach(([date, weight]) => { 
-                            console.log("forEach 진입");
+                            //console.log("forEach 진입");
                             const mapDate = date; 
                             const mapWeight = weight;
-                            console.log("날짜" + mapDate + " 월, 몸무게" + mapWeight);
+                            //console.log("날짜" + mapDate + " 월, 몸무게" + mapWeight);
                             const day = date.substring(6, 8); // yyyyMMdd 에서 dd를 가져옴
                             monthlyData[day-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
         
                             monthNow = date.substring(4, 6); // MM을 가져옴
                             now.innerText = monthNow + "월"; 
                         });
-                        console.log("일별 체중 = " + monthlyData);
-                        console.log("월 = " + monthNow);
+                        //console.log("일별 체중 = " + monthlyData);
+                        //console.log("월 = " + monthNow);
                     });
                 }
                 
@@ -256,7 +256,7 @@
                 }
 
                 await requestData();
-                console.log("request 후 " + weightList);
+                //console.log("request 후 " + weightList);
                 sorted = 1;
 
                 const labels = Array.from({length:12}, (_, i) => `${i+1}월`); // 1~12월로 labels 생성
@@ -272,11 +272,11 @@
                     let count = 0; // 데이터 개수
 
                     Object.entries(map).forEach(([date, weight]) => { 
-                        console.log("forEach 진입");
+                        //console.log("forEach 진입");
                         // 반복문으로 데이터 평균내어 월 평균 무게로 출력
                         const mapDate = date; 
                         const mapWeight = weight;
-                        console.log("날짜" + mapDate + " 년, 몸무게" + mapWeight);
+                        //console.log("날짜" + mapDate + " 년, 몸무게" + mapWeight);
                         const month = date.substring(4, 6); // yyyyMMdd 에서 MM을 가져옴
                         monthlyData[month-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
 
@@ -297,9 +297,9 @@
                     yearlyData[i] = monthEverage;
                     i++;
                 });
-                console.log("일별 체중 = " + monthlyData);
-                console.log("연도 = " + yearNow);
-                console.log("월 평균 = " + yearlyData);
+                //console.log("일별 체중 = " + monthlyData);
+                //console.log("연도 = " + yearNow);
+                //console.log("월 평균 = " + yearlyData);
                 }       
                 // 그래프로 그림
                 chartInstance = new Chart(ctx, {
