@@ -78,12 +78,16 @@
                         <label for="file">첨부파일</label>
                         <input type="file" name="file" class="form-control-file" style="margin-top:10px;">
                     </div>
+                    <div>
+                        <span>첨부된 파일: </span>
+                        <span th:if="${fileName}" id="fileName" style="margin-top: 10px;" th:text="${fileName}"></span>
+                    </div>
                     <input type="hidden" name="memberId" th:value="${loginId}" id="boardWriter">
                     <div class="text-center">
                         <button type="submit" name="submit" class="btn btn-custom" id="submit">
                             <span id= "action" th:text="${isUpdate} ? '수정' : '작성'"></span>
                         </button>
-                        <a href="/sjhealthy/board/list" class="btn btn-secondary ml-2">목록</a>
+                        <a href="/sjhealthy/board" class="btn btn-secondary ml-2">목록</a>
                     </div>
                 </form>
             </div>
@@ -93,9 +97,8 @@
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const submitButton = document.getElementById("submit");
-        const action = document.getElementById("action").value;
-        console.log("어떤 작업? " + action);
         const form = document.querySelector(".boardForm");
+        const action = document.getElementById("boardTitle").value;
 
 
         submitButton.addEventListener("click", (e) => {
@@ -120,7 +123,7 @@
                     //     alert("로그인 후 이용해 주세요.");
                     //     window.location.href = "/sjhealthy/board/list";
                     // }
-                    if (action === "수정"){
+                    if (action){ // 수정일 때
                         if (!window.confirm("글을 수정하시겠습니까?")){
                             e.preventDefault();
                             return false;
