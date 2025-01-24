@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>추천 게시판</title>
+    <!-- 부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- 헤더 css -->
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"  th:inline="javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=/*[[${js_appKey}]]*/&autoload=false"></script>
  <!-- th:inline="javascript"로 thymleaf가 js 안에서 변수를 제대로 처리하게 함. 근데 내부에서만 해당. 이거는 왜 되지?-->
@@ -14,12 +23,15 @@
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 <main>
-    <h1>추천 게시판</h1>
-
-<!--검색하여 정렬-->
-<span>가게이름: </span><input type="search" id="searchByStoreName">
-<input type="button" id="searchButton" value="검색">
-    <table border="1" id="recTable">
+    <!-- <h1>추천 게시판</h1> -->
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">추천 목록</span>
+    <br>
+    <div id="content" class="container justify-content-center">
+        <!--검색하여 정렬-->
+        <span>가게이름: </span><input type="search" id="searchByStoreName">
+        <input type="button" id="searchButton" value="검색" class="btn btn-custom">
+    <!-- 테이블 -->
+    <table class="table table-hover text-center table-bordered mt-4" id="recTable">
         <thead>
         <tr>
             <th>상세보기</th> <!-- 상세보기 버튼-->
@@ -45,7 +57,10 @@
                     <!-- td에는 value가 없다. 그래서 js에서 읽지 못하고 서버로 보내 null로 보내지는 오류가 있었다.
                     td는 value가 아니라 textContent 나 innerText로 읽어야 한다.
                     아니면 input 태그를 넣어 value로 읽는다-->
-                <td><input type="text" th:value="${board.recId}" class="recId" readonly></td>
+                <!-- <td><input type="text" th:value="${board.recId}" class="recId" readonly></td> -->
+                 <td>
+                    <p th:text="${board.recId}" class="recId"></p>
+                 </td>
                 <td th:text="${board.recStore}"></td>
                 <td th:text="${board.recMenu}"></td>
                 <td th:text="${board.memberId}"></td>
@@ -69,18 +84,24 @@
                         <p><strong>싫어요: </strong><span th:id="'detail-dislike'+ ${iterStat.index}"></span></p>
                     </div> 
                     <a th:href="@{/sjhealthy/recommend/delete/{recId}(recId=${board.recId})}" th:if="${admin}" class="delete" th:id="'delete'+${iterStat.index}">
-                        <button>삭제</button>
+                        <button class="btn btn-light">삭제</button>
                     </a>
                 </td>    
             </tr>
         </tbody>
     </table>
+</div>
 
+<div>
     <input type="hidden" th:value="${loginId}" id="loginId">
     <input type="hidden" th:value="${admin}" id="admin">
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
-    <a href="/sjhealthy"><button>메인</button></a>
-    <a href="/sjhealthy/recommend/write" id="writeButton"><button>추천글 작성</button></a>
+</div>
+<div class="text-center mt-4">
+    <a href="/sjhealthy/recommend/write" id="writeButton"><button class="btn btn-custom">추천글 작성</button></a>
+    <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
+</div>
+
 </main>
 <script th:inline="javascript" th:src="@{/js/recList.js}"></script>
 
