@@ -50,9 +50,13 @@
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 작성</span>
-
 <main>
+    <!-- 등록 페이지일 때 -->
+    <span th:if="${isUpdate == null}" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 작성</span>
+
+    <!-- 수정 페이지일 때 -->
+    <span th:if="${isUpdate != null}" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 수정</span>
+
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header">
