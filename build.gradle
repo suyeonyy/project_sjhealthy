@@ -62,6 +62,11 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs << '-parameters'
+//} // 재시작 없이 html/css 변경사항 반영 추가하다가 오류나서
+
 tasks.withType(JavaCompile) {
-    options.compilerArgs << '-parameters'
-} // 재시작 없이 html/css 변경사항 반영 추가하다가 오류나서
+    options.compilerArgs += ["-parameters"]
+}
+// 같은 이윤데 여러 개의 옵션을 추가하거나 확장 가능성을 생각할 땐 이걸로
