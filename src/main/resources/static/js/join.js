@@ -284,10 +284,11 @@ function saveMember() {
         return false;
     }
     else {
+        if(confirm("가입하시겠습니까?")){
+            // 폼 데이터를 서버로 전송
+            form.submit();
+        }
         //console.log("폼 데이터를 서버로 전송");
         //console.log(form);
-
-        // 폼 데이터를 서버로 전송
-        form.submit();
     }
 }
