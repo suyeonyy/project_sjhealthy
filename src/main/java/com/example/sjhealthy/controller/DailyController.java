@@ -157,4 +157,88 @@ public class DailyController {
 
         return "daily/daygrid-views";
     }
+
+    @GetMapping("/daily/update")
+    public String getUpdateForm(@RequestParam("dailyId") Long dailyId, Model model,
+                                @SessionAttribute(name = "loginId", required = false) String loginId){
+        model.addAttribute("loginId", loginId);
+
+        if (loginId == null){
+            return "redirect:/login"; // 로그인 페이지로 리디렉션
+        } else {
+            // 회원은 글 수정 뷰로 연결
+            DailyDTO dailyDTO = dailyService.readView(dailyId);
+
+            model.addAttribute("dailyDTO", dailyDTO);
+            model.addAttribute("loginId", loginId);
+            return "daily/dailyUpdate";
+        }
+    }
+
+    @PostMapping("/daily/update")
+    public ResponseEntity<Map<String, String>> updatePost(@ModelAttribute DailyDTO dailyDTO, Model model, RedirectAttributes ra,
+                             @SessionAttribute(name = "loginId", required = false) String loginId,
+                             @RequestParam("dailyId") Long dailyId){
+        model.addAttribute("loginId", loginId);
+
+        try {
+            DailyDTO postDTO = dailyService.readView(dailyId);
+            postDTO.setDailyTitle(dailyDTO.getDailyTitle());
+            postDTO.setDailyCurWt(dailyDTO.getDailyCurWt());
+            postDTO.setDailyGoalWt(dailyDTO.getDailyGoalWt());
+            postDTO.setDailyGoalSf(dailyDTO.getDailyGoalSf());
+            postDTO.setDailyMemo(dailyDTO.getDailyMemo());
+            postDTO.setDailyYear(dailyDTO.getDailyYear());
+            postDTO.setDailyMonth(dailyDTO.getDailyMonth());
+
+            DailyDTO updateResult = dailyService.update(postDTO);
+
+            if (updateResult != null) {
+                /*
+                ra.addAttribute("dailyId", dailyDTO.getDailyId());
+                ra.addAttribute("message", "일지 수정이 완료되었습니다.");//alertMessage
+                ra.addFlashAttribute("dailyDTO", dailyDTO);
+                System.out.println("일지 수정 성공");
+                return "redirect:/sjhealthy/daily/dailyRead";
+                */
+                ra.addFlashAttribute("dailyDTO", updateResult);
+                ra.addFlashAttribute("loginId", loginId);
+                ra.addFlashAttribute("alertMessage", "일지 수정이 완료되었습니다.");
+                Map<String, String> response = new HashMap<>();
+                String redirectUrl = "/sjhealthy/daily/dailyRead?dailyDate=" + updateResult.getDailyDate();
+                String alertMessage = "일지 수정이 완료되었습니다."; // 알림 메시지
+                response.put("redirectUrl", redirectUrl);
+                response.put("alertMessage", alertMessage);
+                // 리다이렉트 URL을 JSON 형태로 응답
+                return ResponseEntity.ok(response);
+
+            } else {
+                /*
+                ra.addAttribute("dailyId", dailyDTO.getDailyId());
+                ra.addAttribute("message", "일지 수정에 실패했습니다.");
+                System.out.println("일지 수정 실패");
+                return "redirect:/sjhealthy/daily/dailyRead";
+                */
+                Map<String, String> response = new HashMap<>();
+                String redirectUrl = "/sjhealthy/daily/dailyRead";
+                response.put("redirectUrl", redirectUrl);
+
+                System.out.println("일지 수정 실패");
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception e){
+            /*
+            e.printStackTrace(); // 오류 떠서 이유 확인용
+            System.out.println("시스템 오류로 실패");
+            ra.addAttribute("message", "시스템 오류로 글 수정에 실패했습니다.");
+            return "redirect:/sjhealthy";
+            */
+            Map<String, String> response = new HashMap<>();
+            String redirectUrl = "/sjhealthy/daily/dailyRead";
+            response.put("redirectUrl", redirectUrl);
+
+            System.out.println("일지 수정 실패");
+            return ResponseEntity.ok(response);
+        }
+    }
 }
