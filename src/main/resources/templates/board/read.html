@@ -156,46 +156,50 @@
                 return;
             }
 
-            $.ajax({
-                //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
-                type: "post",
-                url: "../comment/save",
-                data: {
-                    "commentWriter": writer,
-                    "commentContent": contents,
-                    "boardId": id,
-                    "memberId": loginId
-                },
-                success: function(res){
-                    //console.log("요청성공", res);
-                    //console.log(res);
-                    //console.log(res.data);
+            if(confirm("댓글을 작성하시겠습니까?")){
+                $.ajax({
+                    //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
+                    type: "post",
+                    url: "../comment/save",
+                    data: {
+                        "commentWriter": writer,
+                        "commentContent": contents,
+                        "boardId": id,
+                        "memberId": loginId
+                    },
+                    success: function(res){
+                        //console.log("요청성공", res);
+                        //console.log(res);
+                        //console.log(res.data);
 
-                    /* 댓글 목록을 표현하는 테이블 */
-                    let output = "<table class='table'>";
-                    output += "<tr><th>댓글번호</th>";
-                    output += "<th>작성자</th>";
-                    output += "<th>내용</th>";
-                    output += "<th>작성일</th>";
+                        alert("댓글 작성이 완료되었습니다.");
 
-                    for(var i in res.data){
-                        output += "<tr>";
-                        output += "<td>" + res.data[i].commentOrder + "</td>";
-                        output += "<td>" + res.data[i].commentWriter + "</td>";
-                        output += "<td>" + res.data[i].commentContent + "</td>";
-                        output += "<td>" + res.data[i].formattedCreateDate + "</td>";
-                        output += "</tr>";
+                        /* 댓글 목록을 표현하는 테이블 */
+                        let output = "<table class='table'>";
+                        output += "<tr><th>댓글번호</th>";
+                        output += "<th>작성자</th>";
+                        output += "<th>내용</th>";
+                        output += "<th>작성일</th>";
+
+                        for(var i in res.data){
+                            output += "<tr>";
+                            output += "<td>" + res.data[i].commentOrder + "</td>";
+                            output += "<td>" + res.data[i].commentWriter + "</td>";
+                            output += "<td>" + res.data[i].commentContent + "</td>";
+                            output += "<td>" + res.data[i].formattedCreateDate + "</td>";
+                            output += "</tr>";
+                        }
+                        output += "</table>";
+
+                        document.getElementById('comment-list').innerHTML = output;
+                        document.getElementById('commentWriter').value = '';
+                        document.getElementById('commentContent').value = '';
+                    },
+                    error: function(err){
+                        //console.log("요청실패", err);
                     }
-                    output += "</table>";
-
-                    document.getElementById('comment-list').innerHTML = output;
-                    document.getElementById('commentWriter').value = '';
-                    document.getElementById('commentContent').value = '';
-                },
-                error: function(err){
-                    //console.log("요청실패", err);
-                }
-            });
+                });
+            }
         }
     </script>
 
