@@ -91,11 +91,11 @@ public class DailyController {
 
                 //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
                 ra.addFlashAttribute("loginId", loginId);
-                ra.addFlashAttribute("alertMessage", "일지가 등록되었습니다.");
+                ra.addFlashAttribute("alertMessage", "일지 작성이 완료되었습니다.");
 
                 Map<String, String> response = new HashMap<>();
                 String redirectUrl = "/sjhealthy/daily/dailyList";
-                String alertMessage = "일지가 등록되었습니다."; // 알림 메시지
+                String alertMessage = "일지 작성이 완료되었습니다."; // 알림 메시지
                 response.put("redirectUrl", redirectUrl);
                 response.put("alertMessage", alertMessage);
 
