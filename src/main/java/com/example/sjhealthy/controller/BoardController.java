@@ -217,7 +217,15 @@ public class BoardController {
             List<CommentDTO> commentDTOList = commentService.findAll(boardId);
             model.addAttribute("commentList", commentDTOList);
 
+            // 날짜 yy/MM/dd로
+            String date = result.getCreateDate();
+            String year = date.substring(0, 2);
+            String month = date.substring(2, 4);
+            String day = date.substring(4, 6);
+            String sendDate = year + "/" + month + "/" + day;
+
             model.addAttribute("boardDTO", result);
+            model.addAttribute("createDate", sendDate);
             return "board/read";
         } catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
@@ -266,6 +274,13 @@ public class BoardController {
             BoardDTO dto = boardService.read(boardId);
             model.addAttribute("loginId", loginId);
             model.addAttribute("isUpdate", dto);
+
+            // 첨부파일 존재하면
+            String fileName = dto.getBoardFileName();
+            if (fileName != null){
+                model.addAttribute("fileName", fileName.substring(fileName.indexOf("_") + 1));
+                // 저장용 이름 말고 원래 첨부한 이름으로 보내서 사용
+            }
             return "board/write"; // 뷰에서 확인하여 다른 폼 출력
         }
     }
@@ -273,14 +288,25 @@ public class BoardController {
     @PostMapping("/board/update")
     public String updatePost(@ModelAttribute BoardDTO boardDTO, Model model, RedirectAttributes ra,
                              @SessionAttribute(name = "loginId", required = false) String loginId,
-                             @RequestParam("boardId") Long boardId){
+                             @RequestParam("boardId") Long boardId, @RequestParam("file") MultipartFile file){
         model.addAttribute("loginId", loginId);
 
         try {
             BoardDTO postDTO = boardService.read(boardId);
             postDTO.setBoardTitle(boardDTO.getBoardTitle());
             postDTO.setBoardContent(boardDTO.getBoardContent());
+            if (!file.isEmpty()){ // 첨부파일이 존재한다면
+                // 기존에 첨부되었던 파일은 삭제해준다.
+                File before = new File(postDTO.getBoardFilePath());
 
+                if (before.exists()){
+                    if (before.delete()){
+                        System.out.println("기존 첨부 파일이 삭제되었습니다.");
+                    } else System.out.println("첨부파일이 삭제되지 않았습니다.");
+                }
+                saveFile(file, postDTO); // postDTO에 MultipartFile로 읽어온 첨부파일 저장
+            }
+            // 새로운 데이터로 다시 등록
             BoardDTO updateResult = boardService.write(postDTO);
 
             if (updateResult != null) {
@@ -305,9 +331,19 @@ public class BoardController {
 
     @RequestMapping("/board/delete")
     public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra){
+        BoardDTO data = boardService.read(boardId);
+        //첨부파일 있는지 확인하기 위해
+        File file = new File(data.getBoardFilePath());
+
         boolean isDeleted = boardService.delete(boardId);
         if (isDeleted){
             System.out.println("글 삭제가 완료되었습니다.");
+            if (file.exists()){ // 있으면 저장소에서도 삭제
+                if (file.delete()){
+                    System.out.println("첨부파일이 삭제되었습니다.");
+                } else System.out.println("첨부파일이 삭제되지 않았습니다.");
+            } else System.out.println("첨부파일이 존재하지 않습니다.");
+
             ra.addAttribute("message", "글 삭제가 완료되었습니다.");
             return "redirect:/sjhealthy/board/list";
         } else {
