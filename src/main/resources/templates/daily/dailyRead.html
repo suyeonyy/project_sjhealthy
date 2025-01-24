@@ -59,7 +59,7 @@
           <strong>작성일</strong>
         </div>
         <div class="col-md-9">
-          <span th:text="${dailyDTO.dailyDate}"></span>
+          <span id="dailyDate" th:text="${dailyDTO.dailyDate}"></span>
         </div>
       </div>
 
@@ -114,6 +114,16 @@
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script>
+  $(document).ready(function() {
+    var dailyDate = document.getElementById('dailyDate').innerText;
+    // 날짜 문자열을 `YYYYMMDD` 형태에서 `YYYY/MM/DD`로 변환
+    var formattedDate = dailyDate.slice(0, 4) + '/' + dailyDate.slice(4, 6) + '/' + dailyDate.slice(6, 8);
+    //console.log(formattedDate);  // "2025/01/08"
+
+    $("#dailyDate").text(formattedDate);
+  });
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
