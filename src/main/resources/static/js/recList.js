@@ -54,11 +54,15 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                     input1.value = "상세보기";
                     cell1.appendChild(input1);
 
-                    const input2 = document.createElement("input");
+                    // const input2 = document.createElement("input");
+                    // input2.className = "recId";
+                    // input2.value = item.recId;
+                    // input2.type = "text";
+                    // input2.readOnly = true;
+                    // cell2.appendChild(input2);
+                    const input2 = document.createElement("p");
                     input2.className = "recId";
-                    input2.value = item.recId;
-                    input2.type = "text";
-                    input2.readOnly = true;
+                    input2.textContent = item.recId;
                     cell2.appendChild(input2);
 
                     cell3.textContent = item.recStore;
@@ -127,7 +131,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         // 쿼리셀렉터로는 value를 가져올 수 있으나 All일 때는 이렇게 해서 가져와야 한다.
         const recIds = document.querySelectorAll(".recId");
         console.log("recIds = " + recIds);
-        const recId = recIds[index].value; // 각 value를 가져옴
+        // const recId = recIds[index].value; // 각 value를 가져옴
+        const recId = recIds[index].textContent; // 각 textContent 가져옴
         console.log("recId = " + recId);
 
 
@@ -172,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         console.log("싫어요 이벤트 리스너 연결 " + index);
             e.preventDefault();
             const recIds = document.querySelectorAll(".recId");
-            const recId = recIds[index].value;
+            const recId = recIds[index].textContent;
 
             // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
             if (!loginId){
@@ -224,7 +229,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             
             // 상세 페이지 정보 요청(근데 서버에서 보낸 것을 써서 이건 조회수 집계용)
             const recIds = document.querySelectorAll(".recId");
-            const recId = recIds[index].value; // 각 value를 가져옴
+            const recId = recIds[index].textContent; // 각 value를 가져옴
             const recViews = document.querySelectorAll(".recView");
             const recView = recViews[index];
 
@@ -257,7 +262,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     async function toggleDetail(index) {
         // 상세 페이지 펼침 접음 & 좋아요 싫어요 
         const recIds = document.querySelectorAll(".recId");
-        const recId = recIds[index].value; // 각 value를 가져옴
+        const recId = recIds[index].textContent; // 각 value를 가져옴
         console.log("recId = " + recId);
 
         

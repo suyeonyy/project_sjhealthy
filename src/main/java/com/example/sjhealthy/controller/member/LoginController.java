@@ -231,6 +231,7 @@ public class LoginController {
         }
     }
 
+    // 구글 로그인 연동
     @GetMapping("/member/login/oauth/google")
     public String OAuthGoogle(String code, HttpServletRequest request, RedirectAttributes ra, Model model) throws JsonProcessingException {
         OAuthToken token = getAccessTokenWithGoogle(code, request);
