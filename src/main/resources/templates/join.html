@@ -3,6 +3,11 @@
 <head>
     <title>회원가입</title>
     <style>
+        main {
+            padding: 0px !important;
+            overflow: hidden !important;
+        }
+
         h2 {
           text-align: center;
           margin: 20px 0;
@@ -67,6 +72,7 @@
           margin-right: 15px;
         }
 
+        /* 버튼 스타일 */
         .btn {
           padding: 10px 20px;
           border-radius: 4px;
@@ -75,8 +81,13 @@
           font-size: 14px;
         }
 
-        .btn_st1 {
-          background-color: #4CAF50;
+        .btn-custom {
+          background-color: #007bff;
+          color: white;
+        }
+
+        .btn-custom:hover {
+          background-color: #0056b3;
           color: white;
         }
 
@@ -202,8 +213,9 @@
         </table>
     </form>
     <p class="btn_set">
-        <button type="button" class="btn btn_st1" style="background: rgb(12,100,230)" onclick="saveMember(); ">가입</button>
-        <a href="/sjhealthy/member/login"><button class="btn btn_st1" style="background: rgb(12,100,230)">로그인</button></a>
+        <!-- 수정된 버튼들 -->
+        <button type="button" class="btn btn-custom" onclick="saveMember();">가입</button>
+        <a href="/sjhealthy/member/login"><button class="btn btn-secondary" style="background-color: #6c757d; color:white;">목록</button></a>
     </p>
 </div>
 </main>
