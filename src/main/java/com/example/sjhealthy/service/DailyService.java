@@ -84,4 +84,27 @@ public class DailyService {
             return null;
         }
     }
+
+
+    public DailyDTO readView(Long dailyId){
+        Optional<DailyEntity> entity = dailyRepository.findById(dailyId);
+
+        if (entity.isPresent()){
+            DailyEntity readEntity = entity.get();
+            return DailyMapper.toDailyDTO(readEntity, readEntity.getMember().getMemberId());
+        } else return null;
+    }
+
+    public DailyDTO update(DailyDTO dailyDTO){ // update도 이걸로 사용
+        Optional<MemberEntity> entity = memberRepository.findByMemberId(dailyDTO.getMemberId());
+        if (entity.isPresent()){
+            MemberEntity memberEntity = entity.get();
+            DailyEntity postEntity = DailyMapper.toDailyEntity(dailyDTO, memberEntity);
+            // 저장
+            DailyEntity savedEntity = dailyRepository.save(postEntity);
+            // 다시 dto로 변환해 반환
+            return DailyMapper.toDailyDTO(savedEntity, savedEntity.getMember().getMemberId());
+        } else return null;
+    }
+
 }
