@@ -217,7 +217,15 @@ public class BoardController {
             List<CommentDTO> commentDTOList = commentService.findAll(boardId);
             model.addAttribute("commentList", commentDTOList);
 
+            // 날짜 yy/MM/dd로
+            String date = result.getCreateDate();
+            String year = date.substring(0, 2);
+            String month = date.substring(2, 4);
+            String day = date.substring(4, 6);
+            String sendDate = year + "/" + month + "/" + day;
+
             model.addAttribute("boardDTO", result);
+            model.addAttribute("createDate", sendDate);
             return "board/read";
         } catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
