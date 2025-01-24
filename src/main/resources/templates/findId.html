@@ -70,15 +70,18 @@
 
                     <div class="text-center">
                         <button type="submit" name="findId" id="findId" class="btn btn-custom" style="margin-top: 10px;">아이디 찾기</button>
+                        <a href="/sjhealthy/member/login"><button class="btn btn-secondary" style="background-color: #6c757d; color:white; margin-top: 10px;">목록</button></a>
                     </div>
                 </form>
 
                 <!-- 아이디 찾기 결과 -->
                 <p th:if="${memberDTO != null}" class="alert alert-success alert-custom" style="background-color: #F1FCFE;">
                     찾으시는 아이디는 <strong th:text="${memberDTO.memberId}"></strong> 입니다.<br>
+                </p>
+                <div class="text-center" th:if="${memberDTO != null}">
                     <a href="../member/login"><button class="btn btn-custom">로그인</button></a>
                     <a href="../member/find-password"><button class="btn btn-custom">비밀번호 찾기</button></a>
-                </p>
+                </div>
 
                 <p th:if="${dto != null}" class="alert alert-danger alert-custom">
                     아이디가 존재하지 않습니다.<br>
