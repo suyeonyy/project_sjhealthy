@@ -83,7 +83,7 @@
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
                     
                     const boardList = data._embedded.boardDTOList;
-                    console.log(boardList);
+                    //console.log(boardList);
 
                     const title = document.createElement("h1");
                     //title.innerText = "커뮤니티";
@@ -124,7 +124,11 @@
                         row.appendChild(writer);
 
                         const createDate = document.createElement("td");
-                        createDate.textContent = board.createDate;
+                        const date = board.createDate;
+                        const year = date.substring(0, 2);
+                        const month = date.substring(2, 4);
+                        const day = date.substring(4, 6);
+                        createDate.textContent = year + month + day;
                         row.appendChild(createDate);
 
                         const hits = document.createElement("td");
