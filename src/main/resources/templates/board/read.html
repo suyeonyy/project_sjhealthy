@@ -20,9 +20,10 @@
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 상세내역</span>
 
 <main>
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 상세내역</span>
+
     <div class="container mt-5">
         <div class="card shadow-lg">
             <div class="card-header">
@@ -47,44 +48,53 @@
                     </div>
                 </div>
 
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>내용</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text="${boardDTO.boardContent}"></p>
+                    </div>
+                </div>
+
                 <input type="hidden" id="boardId" th:value="${boardDTO.boardId}">
                 <input type="hidden" id="image" th:value="${attachedFile}">
                 <hr>
 
                 <!-- 첨부파일 -->
-                <div class="mb-3">
-                    <img th:if="${attachedFile}" id="attachedImage" alt="첨부 이미지" class="img-fluid">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>첨부파일</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <img th:if="${attachedFile}" id="attachedImage" alt="첨부 이미지" class="img-fluid">
+                    </div>
                 </div>
-
-                <div class="mb-3">
-                    <p th:text="${boardDTO.boardContent}"></p>
-                </div>
-
                 <hr>
 
                 <div class="text-center">
-                    <a href="../board/list" class="btn btn-secondary">목록</a>
-
-                    <a th:if="${boardDTO.memberId == loginId}" th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}">
+                    <a th:if="${boardDTO.memberId == loginId}" th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}" style="text-decoration: none;">
                         <button class="btn btn-primary">수정</button>
                     </a>
 
-                    <a th:if="${boardDTO.memberId == loginId || admin == 'A'}" th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}">
-                        <button class="btn btn-danger" id="deleteButton">삭제</button>
+                    <a th:if="${boardDTO.memberId == loginId || admin == 'A'}" th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}" style="text-decoration: none;">
+                        <button class="btn btn-primary" id="deleteButton">삭제</button>
                     </a>
+
+                    <a href="../board/list" class="btn btn-secondary" style="text-decoration: none;">목록</a>
                 </div>
 
                 <!-- 댓글 작성 부분 -->
                 <div id="comment-write" class="mt-4">
                     <input type="text" id="commentWriter" class="form-control mb-2" placeholder="작성자">
                     <input type="text" id="commentContent" class="form-control mb-2" placeholder="내용">
-                    <button id="comment-write-btn" class="btn btn-success" onclick="commentWriteClick();">댓글작성</button>
+                    <button id="comment-write-btn" class="btn btn-secondary" onclick="commentWriteClick();" style="float:right;">댓글작성</button>
                     <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
                 </div>
 
                 <!-- 댓글 출력 부분 -->
                 <div id="comment-list" class="mt-4">
-                    <table class="table table-striped">
+                    <table class="table">
                         <thead>
                         <tr>
                             <th>댓글번호</th>
@@ -107,163 +117,163 @@
         </div>
     </div>
 </main>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
-    <script th:inline="javascript">
-        document.addEventListener("DOMContentLoaded", ()=> {
-            const deleteBtn = document.getElementById("deleteButton");
-
-            if (deleteBtn){
-                deleteBtn.addEventListener("click", (e)=> {
-
-                    if (!window.confirm('정말로 삭제하시겠습니까?')){
-                        e.preventDefault(); // 취소시 이벤트 발생 없음
-                        return false;
-                    }
-                });
-            }
-            // 이미지가 있다면 업로드, 이것도 get 방식 접근이다
-            loadImage();
-        
-            async function loadImage(){
-                const attachedImage = document.getElementById("attachedImage");
-
-                if (attachedImage){
-                    const fileName = document.getElementById("image").value;
-                    //console.log("파일명 = " + fileName);
-
-                    const imageUrl = "/uploads/files/" + fileName;
-                    attachedImage.src = imageUrl;
-
-                    // try {
-                    //     if (fileName){
-                    //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
-                    //         if (!response.ok){
-                    //             //console.log("첨부된 파일이 없습니다.");
-                    //         } else {
-                    //             const data = await response.text();
-
-                    //             // URL로 변환하여 src로
-                    //             //.log("경로 " + data);
-                    //             attachedImage.src = data;
-                    //             // img.src = data;
-                    //         }
-                    //     }
-                    // } catch(error){
-                    //     //console.log(error);
-                    // }
-                }
-            }
-        });
-
-        /* 댓글 작성 */
-        function commentWriteClick(){
-            //console.log("함수 들어와");
-
-            const writer = document.getElementById("commentWriter").value;
-            const contents = document.getElementById("commentContent").value;
-
-            const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
-            var loginId = $("#loginId").val();
-
-            if(writer.trim() == ''){
-                alert("작성자를 입력해주세요.");
-                $("#commentWriter").focus();
-                return;
-            }
-
-            if(contents.trim() == ''){
-                alert("내용을 입력해주세요.");
-                $("#commentContent").focus();
-                return;
-            }
-
-            if(confirm("댓글을 작성하시겠습니까?")){
-                $.ajax({
-                    //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
-                    type: "post",
-                    url: "../comment/save",
-                    data: {
-                        "commentWriter": writer,
-                        "commentContent": contents,
-                        "boardId": id,
-                        "memberId": loginId
-                    },
-                    success: function(res){
-                        //console.log("요청성공", res);
-                        //console.log(res);
-                        //console.log(res.data);
-
-                        alert("댓글 작성이 완료되었습니다.");
-
-                        /* 댓글 목록을 표현하는 테이블 */
-                        let output = "<table class='table'>";
-                        output += "<tr><th>댓글번호</th>";
-                        output += "<th>작성자</th>";
-                        output += "<th>내용</th>";
-                        output += "<th>작성일</th>";
-
-                        for(var i in res.data){
-                            output += "<tr>";
-                            output += "<td>" + res.data[i].commentOrder + "</td>";
-                            output += "<td>" + res.data[i].commentWriter + "</td>";
-                            output += "<td>" + res.data[i].commentContent + "</td>";
-                            output += "<td>" + res.data[i].formattedCreateDate + "</td>";
-                            output += "</tr>";
-                        }
-                        output += "</table>";
-
-                        document.getElementById('comment-list').innerHTML = output;
-                        document.getElementById('commentWriter').value = '';
-                        document.getElementById('commentContent').value = '';
-                    },
-                    error: function(err){
-                        //console.log("요청실패", err);
-                    }
-                });
-            }
-        }
-    </script>
-
-    <!-- 이거 나머지는 댓글 삭제에 쓰자
-<script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", ()=> {
         const deleteBtn = document.getElementById("deleteButton");
 
         if (deleteBtn){
-            deleteBtn.addEventListener("click", async (e)=> {
-                try{
-                    if (!window.confirm('정말로 삭제하시겠습니까?')){
-                        event.preventDefault(); // 취소시 이벤트 발생 없음
-                        return false;
-                    }
+            deleteBtn.addEventListener("click", (e)=> {
 
-                    // 삭제하려는 게시물 ID 가져오기
-                    const boardId = document.getElementById("boardId").value;
-
-                    // 삭제 요청 보내기
-                    const response = await fetch("../board/delete", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            boardId: boardId
-                        })
-                    });
-
-                    if (response.ok){
-                        alert("게시물이 삭제되었습니다.");
-                        window.location.href= "../board/list"
-                    } else {
-                        alert("게시물 삭제에 실패했습니다.");
-                    }
-                } catch (error){
-                    console.log('오류 발생:', error);
+                if (!window.confirm('정말로 삭제하시겠습니까?')){
+                    e.preventDefault(); // 취소시 이벤트 발생 없음
+                    return false;
                 }
             });
         }
+        // 이미지가 있다면 업로드, 이것도 get 방식 접근이다
+        loadImage();
+
+        async function loadImage(){
+            const attachedImage = document.getElementById("attachedImage");
+
+            if (attachedImage){
+                const fileName = document.getElementById("image").value;
+                //console.log("파일명 = " + fileName);
+
+                const imageUrl = "/uploads/files/" + fileName;
+                attachedImage.src = imageUrl;
+
+                // try {
+                //     if (fileName){
+                //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
+                //         if (!response.ok){
+                //             //console.log("첨부된 파일이 없습니다.");
+                //         } else {
+                //             const data = await response.text();
+
+                //             // URL로 변환하여 src로
+                //             //.log("경로 " + data);
+                //             attachedImage.src = data;
+                //             // img.src = data;
+                //         }
+                //     }
+                // } catch(error){
+                //     //console.log(error);
+                // }
+            }
+        }
     });
+
+    /* 댓글 작성 */
+    function commentWriteClick(){
+        //console.log("함수 들어와");
+
+        const writer = document.getElementById("commentWriter").value;
+        const contents = document.getElementById("commentContent").value;
+
+        const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
+        var loginId = $("#loginId").val();
+
+        if(writer.trim() == ''){
+            alert("작성자를 입력해주세요.");
+            $("#commentWriter").focus();
+            return;
+        }
+
+        if(contents.trim() == ''){
+            alert("내용을 입력해주세요.");
+            $("#commentContent").focus();
+            return;
+        }
+
+        if(confirm("댓글을 작성하시겠습니까?")){
+            $.ajax({
+                //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
+                type: "post",
+                url: "../comment/save",
+                data: {
+                    "commentWriter": writer,
+                    "commentContent": contents,
+                    "boardId": id,
+                    "memberId": loginId
+                },
+                success: function(res){
+                    //console.log("요청성공", res);
+                    //console.log(res);
+                    //console.log(res.data);
+
+                    alert("댓글 작성이 완료되었습니다.");
+
+                    /* 댓글 목록을 표현하는 테이블 */
+                    let output = "<table class='table'>";
+                    output += "<tr><th>댓글번호</th>";
+                    output += "<th>작성자</th>";
+                    output += "<th>내용</th>";
+                    output += "<th>작성일</th>";
+
+                    for(var i in res.data){
+                        output += "<tr>";
+                        output += "<td>" + res.data[i].commentOrder + "</td>";
+                        output += "<td>" + res.data[i].commentWriter + "</td>";
+                        output += "<td>" + res.data[i].commentContent + "</td>";
+                        output += "<td>" + res.data[i].formattedCreateDate + "</td>";
+                        output += "</tr>";
+                    }
+                    output += "</table>";
+
+                    document.getElementById('comment-list').innerHTML = output;
+                    document.getElementById('commentWriter').value = '';
+                    document.getElementById('commentContent').value = '';
+                },
+                error: function(err){
+                    //console.log("요청실패", err);
+                }
+            });
+        }
+    }
+</script>
+
+<!-- 이거 나머지는 댓글 삭제에 쓰자
+<script>
+document.addEventListener("DOMContentLoaded", ()=> {
+    const deleteBtn = document.getElementById("deleteButton");
+
+    if (deleteBtn){
+        deleteBtn.addEventListener("click", async (e)=> {
+            try{
+                if (!window.confirm('정말로 삭제하시겠습니까?')){
+                    event.preventDefault(); // 취소시 이벤트 발생 없음
+                    return false;
+                }
+
+                // 삭제하려는 게시물 ID 가져오기
+                const boardId = document.getElementById("boardId").value;
+
+                // 삭제 요청 보내기
+                const response = await fetch("../board/delete", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        boardId: boardId
+                    })
+                });
+
+                if (response.ok){
+                    alert("게시물이 삭제되었습니다.");
+                    window.location.href= "../board/list"
+                } else {
+                    alert("게시물 삭제에 실패했습니다.");
+                }
+            } catch (error){
+                console.log('오류 발생:', error);
+            }
+        });
+    }
+});
 </script> -->
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 
