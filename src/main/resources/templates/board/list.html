@@ -10,9 +10,16 @@
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+<span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 목록</span>
 <main>
 <div id="content" class="container justify-content-center">
     <table class="table table-hover table-striped text-center">
@@ -40,12 +47,12 @@
     </table>
 </div>
 
-<div>
-    <a href="/sjhealthy/board/write"><button>글 작성</button></a>
-    <a href="/sjhealthy"><button>메인</button></a>
+<div class="text-center mt-4">
+    <a href="/sjhealthy/board/write"><button class="btn btn-custom">글 작성</button></a>
+    <a href="/sjhealthy"><button class="btn btn-secondary">목록</button></a>
 </div>
 
-<div id="pagination">
+<div class="text-center mt-4" id="pagination">
 
 </div>
 </main>
@@ -78,7 +85,7 @@
                     console.log(boardList);
 
                     const title = document.createElement("h1");
-                    title.innerText = "커뮤니티";
+                    //title.innerText = "커뮤니티";
                     title.className = "fw-bold";
                     boardDiv.appendChild(title);
 
