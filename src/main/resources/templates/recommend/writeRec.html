@@ -95,22 +95,47 @@
                 //검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
                 function displayPlaces(places) {
                     var fragment = document.createDocumentFragment();
-                
+
                     removeAllChildNods(listEl);
                 
                     for ( var i=0; i<places.length; i++ ) {
                 
                         var itemEl = getListItem(i, places[i]);
-                
+
+                        //console.log("이전소스");
+                        /*
                         (function(name){
                             itemEl.onclick = function(){
                                 var key = document.getElementById('keyword');
                 
                                 key.value = name;
-                
+
+                                console.log("5");
+
                                 removeAllChildNods(listEl);
                             }
                         })(places[i].place_name);
+                        */
+
+                        //console.log("변경소스");
+                        (function(name, place_id, category_group_code){
+                            itemEl.onclick = function(){
+                                var key = document.getElementById('keyword');
+                                key.value = name;
+
+                                // 클릭된 장소 정보를 전역 변수에 저장
+                                selectedPlace = {
+                                    name: name,
+                                    id: place_id,
+                                    category_group_code: category_group_code
+                                };
+
+                                removeAllChildNods(listEl);
+                            };
+                        })(places[i].place_name, places[i].id, places[i].category_group_code);
+
+
+
                 
                         fragment.appendChild(itemEl);
                     }
@@ -148,7 +173,7 @@
                     if (placeIdElement) {
                         var place_name = placeIdElement.innerText;
                     }
-                
+
                     var placeIdElement = el.querySelector('.info-place-id small');
                     if (placeIdElement) {
                         var place_id = placeIdElement.innerText;
@@ -158,13 +183,18 @@
                     if (placeIdElement) {
                         var place_category_group_code = placeIdElement.innerText;
                     }
-                
+
+                    console.log("전역변수 값 조회");
+                    console.log(selectedPlace);
+
+                    /*
                     // 선택된 정보들을 전역 변수에 저장
                     selectedPlace = {
                         name: place_name,
                         id: place_id,
                         category_group_code: place_category_group_code
                     };
+                    */
                 
                     while (el.hasChildNodes()) {
                         el.removeChild (el.lastChild);
@@ -230,7 +260,7 @@
                    },
                    success : function(data, textStatus, jqXHR) { //인자 실제론 안 써도 3개 다 써야 사용 가능
                         //jqXHR로 상태코드 확인 가능
-                        console.log("success");
+                        //console.log("success");
                         //console.log("status = " + jqXHR.status);
     
                         // 서버가 리다이렉트 URL을 응답으로 받았을 때
@@ -246,7 +276,7 @@
                             window.location.href = data;
                         }
                    }, error : function(xhr, textStatus, errorThrown) {
-                        console.log("fail");
+                        //console.log("fail");
                         if (xhr.status === 400){
                             // 상태코드 400일 때(bad request)
                             alert("추천글 등록에 실패하였습니다.");
@@ -261,9 +291,6 @@
             }
         } // 카카오에서 제공하는, 스크립트가 완전히 로드되기 전에 map 관련 메소드를 실행하려 하는 오류에 대한 해결 함수
 
-
-        
-        
         // 유효성 검사 후 글 등록
         submit.addEventListener("click", async (e) => {
             e.preventDefault();
@@ -289,7 +316,7 @@
                     });
                     if (response.status === 204){
                         // 중복되는 데이터 없을 때
-                        console.log("데이터가 존재하지 않습니다.");
+                        //console.log("데이터가 존재하지 않습니다.");
                         dataSubmit();
                     } else {
                         const data = await response.json();
@@ -299,7 +326,7 @@
                     }
                 }
             } catch(error) {
-                console.log(error);
+                //console.log(error);
             }
         });
     });
