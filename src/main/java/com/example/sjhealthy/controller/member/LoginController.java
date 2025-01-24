@@ -379,36 +379,68 @@ public class LoginController {
 
 //    @GetMapping("/member/find-password")
 //    인증메일을 입력한 아이디를 조회해서 해당 계정의 이메일인지 확인하는 과정 필요
-    @PostMapping("/member/find-password")
-    public String findPasswordAfterPost(@ModelAttribute MemberDTO memberDTO, Model model,
-                                        @SessionAttribute(name = "mailCode", required = false) String mailCode,
-                                        @SessionAttribute(name = "memberId", required = false) String memberId,
-                                        @RequestParam(name = "verificationCode")String inputCode){
-        // 컨트롤러에서 아이디 존재하는지 확인 후 메일 인증 진행
-        // 메일로 인증메일 발송 (이 과정은 RestController와 js로)
-        try {
-            System.out.println(memberId + " " + mailCode);
-            MemberDTO byMemberId = memberService.findMemberIdAtPassFind(memberId);
-            System.out.println(byMemberId);
+//    @PostMapping("/member/find-password")
+//    public String findPasswordAfterPost(@ModelAttribute MemberDTO memberDTO, Model model,
+//                                        @SessionAttribute(name = "mailCode", required = false) String mailCode,
+//                                        @SessionAttribute(name = "memberId", required = false) String memberId,
+//                                        @RequestParam(name = "verificationCode")String inputCode,
+//                                        RedirectAttributes ra){
+//        // 컨트롤러에서 아이디 존재하는지 확인 후 메일 인증 진행
+//        // 메일로 인증메일 발송 (이 과정은 RestController와 js로)
+//        try {
+//            System.out.println(memberId + " " + mailCode);
+//            MemberDTO byMemberId = memberService.findMemberIdAtPassFind(memberId);
+//            System.out.println(byMemberId);
+//
+//            if (byMemberId != null){
+//                if (mailCode.equals(inputCode)){
+//                    System.out.println("입력 코드: " + inputCode);
+//                    System.out.println("인증 코드: " + mailCode);
+//                    return "setNewPassword";
+//                } else {
+//                    System.out.println("코드가 일치하지 않습니다.");
+//                }
+//            } else {
+//                System.out.println("아이디가 존재하지 않습니다.");
+//                ra.addAttribute("message", "아이디가 존재하지 않습니다.");
+//            }
+//        } catch (Exception e){
+//            System.out.println("시스템 오류");
+//        }
+//        return "redirect:/sjhealthy/member/login";
+//    }
 
-            if (byMemberId != null){
-                if (mailCode.equals(inputCode)){
-                    System.out.println("입력 코드: " + inputCode);
-                    System.out.println("인증 코드: " + mailCode);
-                    return "setNewPassword";
-                } else {
-                    System.out.println("코드가 일치하지 않습니다.");
-                }
+    @ResponseBody
+    @PostMapping("/member/find-password/check")
+    public ResponseEntity<Response<Object>> checkCode(@RequestBody Map<String, String> data,
+                                                      @SessionAttribute(name = "mailCode", required = false) String mailCode) {
+        try {
+            String code = data.get("code");
+            String memberId = data.get("memberId");
+            String memberEmail = data.get("memberEmail");
+
+            MemberDTO dto = memberService.findMemberIdAtPassFind(memberId);
+            if (dto == null) {
+                // 존재하지 않는 아이디
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 존재하지 않습니다."));
+            } else if (!dto.getMemberEmail().equals(memberEmail)) {
+                // 아이디는 존재하나 입력한 이메일과 다를 때
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "등록한 이메일과 일치하지 않습니다."));
             } else {
-                System.out.println("아이디가 존재하지 않습니다.");
+                if (code.equals(mailCode)) {
+                    return ResponseEntity.ok(new Response<>(null, "인증번호가 일치합니다."));
+                } else
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "인증번호가 일치하지 않습니다."));
             }
-        } catch (Exception e){
-            System.out.println("시스템 오류");
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 실패하였습니다."));
         }
-        return "redirect:/sjhealthy/member/login";
     }
 
-
+    @GetMapping("/member/set-new-password")
+    public String openSetNewPasswordForm(){
+        return "setNewPassword";
+    }
     @PostMapping("/member/set-new-password")
     public String setNewPassword(@RequestParam("password")String password, RedirectAttributes ra,
 //                                 @RequestParam("passwordCheck")String passwordCheck,
@@ -493,18 +525,6 @@ public class LoginController {
 
         return ResponseEntity.ok(accessToken);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /*
