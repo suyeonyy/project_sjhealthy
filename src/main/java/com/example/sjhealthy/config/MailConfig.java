@@ -1,5 +1,6 @@
 package com.example.sjhealthy.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,8 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfig {
+    @Value("${PASSWORD}")
+    private String password;
 
     @Bean
     public JavaMailSender javaMailSender(){
@@ -17,7 +20,7 @@ public class MailConfig {
 
         javaMailSender.setHost("smtp.naver.com");
         javaMailSender.setUsername("kongjy621@naver.com");
-        javaMailSender.setPassword("!"); // 일단 공란으로
+        javaMailSender.setPassword(password);
         javaMailSender.setPort(465);
         javaMailSender.setJavaMailProperties(getMailProperties());
 
