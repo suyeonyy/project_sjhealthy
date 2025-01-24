@@ -2,32 +2,96 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>LoginForm</title>
-    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>아이디 찾기</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <style>
+        .form-group label {
+          font-weight: bold;
+        }
+
+        .alert-custom {
+          font-size: 1.1rem;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .btn-custom {
+          background-color: #007bff;
+          color: white;
+        }
+
+        .btn-custom:hover {
+          background-color: #0056b3;
+          color: white;
+        }
+
+        .card {
+          margin-top: 3rem;
+        }
+
+        .card-header {
+          background-color: #f8f9fa;
+          font-size: 1.25rem;
+          font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragment/headerNoSession :: main-head}"></div>
+
 <main>
-    <h1>아이디 찾기</h1>
+    <div class="container mt-5">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                아이디 찾기
+            </div>
+            <div class="card-body">
 
-<form action="../member/find-id" method="POST" th:if="${memberDTO == null && dto == null}" id="findIdForm">
-    이름: <input type="text" name="memberName" id="memberName" placeholder="이름을 입력해 주세요."><br>
-    생년월일: <input type="text" name="memberBirth" id="memberBirth" placeholder="8자로 입력해 주세요."><br>
-    <input type="submit" name="findId" value="아이디 찾기" id="findId">
-</form>
+                <!-- 아이디 찾기 폼 -->
+                <form action="../member/find-id" method="POST" th:if="${memberDTO == null && dto == null}" id="findIdForm">
+                    <div class="form-group">
+                        <label for="memberName">이름</label>
+                        <input type="text" class="form-control" name="memberName" id="memberName" placeholder="이름을 입력해 주세요.">
+                    </div>
 
-<p th:if="${memberDTO != null}">
-    찾으시는 아이디는 <input type="text" name="memberName" th:value="${memberDTO.memberId}" readonly>입니다.<br>
-    <a href="../member/login"><button>로그인</button></a>
-    <a href="../member/find-password"><button>비밀번호 찾기</button></a>
-</p>
-<p th:if="${dto != null}">
-    아이디가 존재하지 않습니다.<br>
-    <a href="../member/login"><button>로그인</button></a>
-    <a href="../member/find-id"><button>아이디 찾기</button></a>
-</p>
+                    <div class="form-group">
+                        <label for="memberBirth">생년월일</label>
+                        <input type="text" class="form-control" name="memberBirth" id="memberBirth" placeholder="8자로 입력해 주세요.">
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" name="findId" id="findId" class="btn btn-custom" style="margin-top: 10px;">아이디 찾기</button>
+                    </div>
+                </form>
+
+                <!-- 아이디 찾기 결과 -->
+                <p th:if="${memberDTO != null}" class="alert alert-success alert-custom" style="background-color: #F1FCFE;">
+                    찾으시는 아이디는 <strong th:text="${memberDTO.memberId}"></strong> 입니다.<br>
+                    <a href="../member/login"><button class="btn btn-custom">로그인</button></a>
+                    <a href="../member/find-password"><button class="btn btn-custom">비밀번호 찾기</button></a>
+                </p>
+
+                <p th:if="${dto != null}" class="alert alert-danger alert-custom">
+                    아이디가 존재하지 않습니다.<br>
+                    <a href="../member/login"><button class="btn btn-custom">로그인</button></a>
+                    <a href="../member/find-id"><button class="btn btn-custom">아이디 찾기</button></a>
+                </p>
+            </div>
+        </div>
+    </div>
 </main>
+
+
+
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const findId = document.getElementById("findId");
