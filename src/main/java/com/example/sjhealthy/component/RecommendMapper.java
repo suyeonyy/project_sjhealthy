@@ -62,12 +62,15 @@ public class RecommendMapper {
         List<RecommendDTO> recommendDTOList = entities.stream()
             .map(entity -> {
                 String memberId = entity.getMember() != null ? entity.getMember().getMemberId() : null;
+                // 프랜차이즈는 지점명 빼고 보냄
+                String recStore = entity.getRecStore().contains(" ") ? entity.getRecStore().split(" ")[0] : entity.getRecStore();
+
 
                 return new RecommendDTO(
                     entity.getRecId(),
                     memberId,
                     entity.getRecStoreId(),
-                    entity.getRecStore(),
+                    recStore,
                     entity.getRecStoreGroupCode(),
                     entity.getRecMenu(),
                     entity.getRecY(),

@@ -361,7 +361,7 @@ public class RecommendController {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(recMenu, "등록 가능합니다."));
             } else {
                 System.out.println("중복");
-                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new Response<>(null, "중복되는 데이터가 존재합니다."));
+                return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new Response<>(null, "중복되는 데이터가 존재합니다.\n추천을 원하시면 해당 추천글에 좋아요를 눌러주세요."));
             }
 
         } catch (Exception e){
