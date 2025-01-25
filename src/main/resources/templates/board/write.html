@@ -99,13 +99,13 @@
                     </div>
                     <div class="form-row">
                         <label for="boardContent">내용</label>
-                        <textarea name="boardContent" th:text="*{boardContent}" id="boardContent" class="form-control" required></textarea>
+                        <textarea name="boardContent" th:text="*{boardContent}" id="boardContent" class="form-control"></textarea>
                     </div>
                     <div class="form-row">
                         <label for="file">첨부파일</label>
                         <input type="file" name="file" class="form-control-file" style="margin-top:10px;">
                     </div>
-                    <div>
+                    <div th:if="${isUpdate != null}">
                         <span>첨부된 파일: </span>
                         <span th:if="${fileName}" id="fileName" style="margin-top: 10px;" th:text="${fileName}"></span>
                     </div>
@@ -135,6 +135,7 @@
 
                 if (!title){
                     alert("제목을 입력해 주세요.");
+                    $("#boardTitle").focus();
                     e.preventDefault();
                 } else if (!content){
                     //alert("내용을 입력해 주세요.");
