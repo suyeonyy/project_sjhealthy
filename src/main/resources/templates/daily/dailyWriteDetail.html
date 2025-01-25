@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="/css/header.css">
   <!-- 헤더, 메인, 푸터 위치 고정 -->
   <link rel="stylesheet" href="/css/style.css">
-
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <script src="/js/jquery-3.6.0.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
@@ -37,13 +36,28 @@
         border-radius: 5px;
     }
 
-    .table th, .table td {
-        padding: 0.75rem;
-        vertical-align: middle;
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-row label {
+        width: 120px; /* 라벨의 너비를 설정 */
+        margin-right: 10px; /* 라벨과 입력칸 사이의 간격 */
+        font-weight: 600;
+    }
+
+    .form-row .form-control {
+        flex: 1; /* 입력칸이 남은 공간을 채우도록 설정 */
     }
 
     .text-center {
         text-align: center;
+    }
+
+    .card {
+        margin-top: 30px;
     }
   </style>
 </head>
@@ -61,50 +75,33 @@
       </div>
       <div class="card-body">
         <form id="dailyWriteForm">
-          <div class="table-responsive">
-            <table class="table">
-              <tbody>
-              <tr>
-                <th><label for="dailyTitle">제목</label></th>
-                <td>
-                  <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" required>
-                </td>
-              </tr>
-              <tr>
-                <th><label for="dailyDate">작성일</label></th>
-                <td>
-                  <input type="text" id="dailyDate" name="dailyDate" class="form-control" placeholder="작성일" maxlength="8" readonly required>
-                </td>
-              </tr>
-              <tr>
-                <th><label for="dailyCurWt">현재체중</label></th>
-                <td>
-                  <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" oninput="validateInput(this)" required>
-                </td>
-              </tr>
-              <tr>
-                <th><label for="dailyGoalWt">목표체중</label></th>
-                <td>
-                  <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" required>
-                </td>
-              </tr>
-              <tr>
-                <th><label for="dailyGoalSf">목표만족도</label></th>
-                <td>
-                  <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
-                </td>
-              </tr>
-              <tr>
-                <th><label for="dailyMemo">메모</label></th>
-                <td>
-                  <textarea id="dailyMemo" name="dailyMemo" class="form-control" maxlength="2000"></textarea>
-                </td>
-              </tr>
-              </tbody>
-            </table>
+          <div class="form-row">
+            <label for="dailyTitle">제목</label>
+            <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" required>
           </div>
+          <div class="form-row">
+            <label for="dailyDate">작성일</label>
+            <input type="text" id="dailyDate" name="dailyDate" class="form-control" placeholder="작성일" maxlength="8" readonly required>
+          </div>
+          <div class="form-row">
+            <label for="dailyCurWt">현재체중</label>
+            <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" oninput="validateInput(this)" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyGoalWt">목표체중</label>
+            <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyGoalSf">목표만족도</label>
+            <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyMemo">메모</label>
+            <textarea id="dailyMemo" name="dailyMemo" class="form-control" maxlength="2000"></textarea>
+          </div>
+
           <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
-          <div class="text-center">
+          <div class="text-center mt-3">
             <button type="button" class="btn btn-custom" onclick="saveDailyWrite()">작성</button>
             <a href="../daily/dailyList" class="btn btn-secondary ml-2">목록</a>
           </div>
