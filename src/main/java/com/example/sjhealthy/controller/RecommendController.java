@@ -315,10 +315,10 @@ public class RecommendController {
             RecommendDTO result = recommendService.addRecommendation(recommendDTO);
 
             if (result == null){
-                System.out.println("추천글 등록에 실패하였습니다.");
+                System.out.println("추천글 작성에 실패하였습니다.");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("/sjhealthy/recommend");
             } else {
-                System.out.println("추천글을 등록하였습니다.");
+                System.out.println("추천글이 작성되었습니다.");
                 return ResponseEntity.status(HttpStatus.OK).body("/sjhealthy/recommend");
             }
         } catch (Exception e){
