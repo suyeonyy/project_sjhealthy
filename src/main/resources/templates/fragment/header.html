@@ -20,7 +20,7 @@
             <li class="main-head-nav-li"><a href="/sjhealthy/map" class="main-head-a">내 주변 보기</a></li>
             <li class="main-head-nav-li"><a href="/sjhealthy/daily/dailyList" class="main-head-a">일지</a></li>
             <li class="main-head-nav-li"><a href="/sjhealthy/statistics" class="main-head-a">광장</a></li>
-            <li class="main-head-nav-li" th:if="${loginId == 'admin'}"><a href="/sjhealthy/admin" class="main-head-a">관리자 기능</a></li>
+            <li class="main-head-nav-li" th:if="${admin != null}"><a href="/sjhealthy/admin" class="main-head-a">관리자 기능</a></li>
             <li class="main-head-nav-li" th:if="${loginId == null}"><a href="/sjhealthy/member/logout" class="main-head-a">로그인</a></li>
             <li class="main-head-nav-li" th:if="${loginId != null}"><a href="/sjhealthy/member/logout" class="main-head-a">로그아웃</a></li>
         </ul>
