@@ -8,10 +8,19 @@
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+        .card-header {
+            background-color: #f8f9fa;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 <main>
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">추천글 작성</span>
+
     <div class="container">
         <div class="card shadow-lg">
             <div class="card-header">
