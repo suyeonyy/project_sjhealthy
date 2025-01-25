@@ -378,11 +378,12 @@ public class RecommendController {
             return ResponseEntity.badRequest().build();
             // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
         }
-        List<RecommendEntity> bySearch = recommendService.getListByStoreIdOrPlaceName(null, storeName);
+        List<RecommendEntity> bySearch = recommendService.getListByPlaceName(storeName);
         List<RecommendDTO> dto = new ArrayList<>();
         for (RecommendEntity s : bySearch){
             dto.add(RecommendMapper.toRecommendDTO(s, loginId));
         }
+        System.out.println(dto);
         return ResponseEntity.ok(dto);
     }
 
