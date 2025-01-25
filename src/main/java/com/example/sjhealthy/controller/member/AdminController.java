@@ -124,7 +124,7 @@ public class AdminController {
 //    }
     @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
-    public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getAllPost(@RequestParam(defaultValue = "1") int page, Model model,
+    public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getAllPost(@RequestParam(defaultValue = "1", name = "page") int page, Model model,
                                                                         @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                         PagedResourcesAssembler<BoardDTO> assembler) {
         model.addAttribute("loginId", loginId);
