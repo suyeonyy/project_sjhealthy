@@ -84,6 +84,8 @@
     <!-- 수정 페이지일 때 -->
     <span th:if="${isUpdate != null}" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 수정</span>
 
+    <input type="hidden" id="isUpdateValue" th:value="${isUpdate != null ? 'true' : 'false'}" />
+
     <div class="container mt-5">
         <div class="card shadow-lg">
             <div class="card-header">
@@ -123,46 +125,43 @@
 </main>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        const isUpdate = document.getElementById("isUpdateValue").value;
+
         const submitButton = document.getElementById("submit");
         const form = document.querySelector(".boardForm");
-        const action = document.getElementById("boardTitle").value;
-
 
         submitButton.addEventListener("click", (e) => {
             const title = document.getElementById("boardTitle").value;
-                const content = document.getElementById("boardContent").value;
-                const writer = document.getElementById("boardWriter").value;
+            const content = document.getElementById("boardContent").value;
+            const writer = document.getElementById("boardWriter").value;
+            const action = document.getElementById("boardTitle").value;
 
-                if (!title){
-                    alert("제목을 입력해 주세요.");
-                    $("#boardTitle").focus();
-                    e.preventDefault();
-                } else if (!content){
-                    //alert("내용을 입력해 주세요.");
-                    //e.preventDefault();
+            // 제목이 없으면 폼 제출을 막고 알림
+            if (!title){
+                alert("제목을 입력해 주세요.");
+                $("#boardTitle").focus();
+                e.preventDefault();  // 폼 제출을 막음
+                return;
+            } else if (!content){
+                // 내용이 비어있을 경우 추가 검증 (필요 시)
+                // alert("내용을 입력해 주세요.");
+                // e.preventDefault();
+            }
+
+            // 수정일 때
+            if (isUpdate == 'true') {
+                if (confirm("글을 수정하시겠습니까?")) {
+                    form.submit();  // "확인"을 누르면 폼 제출
                 } else {
-                    console.log("제출");
-                    // form.submit(); // 폼을 제출. 안 되네;
-                    // submitBtn.click(); // submit 버튼 트리거
-                    
-                    // 페이지 이동은 검증 로직 밑에.
-                    // 근데 서버에서 로그인 상태 걸러서 필요없다
-                    // if (!writer){ // 로그인 하지 않은 상태일 땐 리스트로 보냄
-                    //     alert("로그인 후 이용해 주세요.");
-                    //     window.location.href = "/sjhealthy/board/list";
-                    // }
-                    if (action){ // 수정일 때
-                        if (!window.confirm("글을 수정하시겠습니까?")){
-                            e.preventDefault();
-                            return false;
-                        }
-                    } else {
-                        if (!window.confirm("글을 등록하시겠습니까?")){
-                        e.preventDefault();
-                        return false;
-                        } 
-                    }
+                    e.preventDefault();  // "취소"를 누르면 제출 안됨
                 }
+            } else {  // 작성일 때
+                if (confirm("글을 작성하시겠습니까?")) {
+                    form.submit();  // "확인"을 누르면 폼 제출
+                } else {
+                    e.preventDefault();  // "취소"를 누르면 제출 안됨
+                }
+            }
         });
     });
 </script>
