@@ -1,8 +1,10 @@
 package com.example.sjhealthy.controller;
 
 import com.example.sjhealthy.component.MemberStatisticsMapper;
+import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.MemberStatisticsDTO;
 import com.example.sjhealthy.dto.Response;
+import com.example.sjhealthy.service.MemberService;
 import com.example.sjhealthy.service.MemberStatisticsService;
 import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class MemberStatisticsController {
     @Autowired
     private MemberStatisticsService service;
 
+    @Autowired
+    private MemberService memberService;
+
 //    TODO: 회원가입 후 회원 키, 몸무게 입력 칸 추가
     @GetMapping({"/statistics", "/statistics/"})
     public String getStatistics(@SessionAttribute(name = "loginId", required = false) String loginId,
@@ -35,13 +40,12 @@ public class MemberStatisticsController {
                 model.addAttribute("statistics", null);
             } else {
                 System.out.println("통계 가져오기 성공");
-                System.out.println(achievement);
                 Double memberWeight = service.getMemberWeight(loginId); // 몸무게
-                System.out.println("몸무게 가져오기 성공");
-                System.out.println(memberWeight);
+                Double memberHeight = memberService.findMemberIdAtPassFind(loginId).getMemberHeight();
 
                 model.addAttribute("statistics", achievement);
                 model.addAttribute("memberWeight", memberWeight);
+                model.addAttribute("memberHeight", memberHeight);
             }
         }
 
