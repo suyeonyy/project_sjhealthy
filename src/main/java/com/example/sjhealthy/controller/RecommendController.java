@@ -53,7 +53,7 @@ public class RecommendController {
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
 
             if (member.getMemberAuth().equals("A")){
-                model.addAttribute("admin", member);
+                model.addAttribute("administrator", member);
             }
         }
 
