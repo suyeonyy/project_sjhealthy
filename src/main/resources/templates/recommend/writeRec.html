@@ -156,34 +156,18 @@
                     }
                 }
                 
-                //검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
+                // 검색된 데이터를 꺼내서 <ul>태그에 하나씩 넣어줌
                 function displayPlaces(places) {
                     var fragment = document.createDocumentFragment();
 
                     removeAllChildNods(listEl);
-                
-                    for ( var i=0; i<places.length; i++ ) {
-                
+
+                    for (var i = 0; i < places.length; i++) {
                         var itemEl = getListItem(i, places[i]);
 
-                        //console.log("이전소스");
-                        /*
-                        (function(name){
-                            itemEl.onclick = function(){
-                                var key = document.getElementById('keyword');
-                
-                                key.value = name;
-
-                                console.log("5");
-
-                                removeAllChildNods(listEl);
-                            }
-                        })(places[i].place_name);
-                        */
-
-                        //console.log("변경소스");
-                        (function(name, place_id, category_group_code){
-                            itemEl.onclick = function(){
+                        // 선택된 장소 클릭 시 동작
+                        (function(name, place_id, category_group_code) {
+                            itemEl.onclick = function() {
                                 var key = document.getElementById('keyword');
                                 key.value = name;
 
@@ -198,36 +182,33 @@
                             };
                         })(places[i].place_name, places[i].id, places[i].category_group_code);
 
-
-
-                
                         fragment.appendChild(itemEl);
                     }
-                
+
                     listEl.appendChild(fragment);
                 }
-                
-                //HTML 코드를 생성
+
+                // HTML 코드를 생성
                 function getListItem(index, places) {
-                    //place_name 장소명, 업체명
-                    //id 장소 ID
-                    //category_group_code 중요 카테고리만 그룹핑한 카테고리 그룹 코드
-                    var el = document.createElement('li'),
-                    itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
-                                '<div class="info">' +
-                                '   <span class = "info-place-name"><b>' + places.place_name + '</b></span>'; //장소명, 업체명
-                    itemStr += '    <span class = "info-place-id" style="display:none;"><small>' + places.id + '</small></span>' //장소 ID
-                    itemStr += '    <span class = "info-category-group-code" style="display:none;"><small>' + places.category_group_code + '</small></span>' //중요 카테고리만 그룹핑한 카테고리 그룹 코드
-                
+                    // place_name 장소명, 업체명
+                    // id 장소 ID
+                    // category_group_code 중요 카테고리만 그룹핑한 카테고리 그룹 코드
+                    var el = document.createElement('li');
+                    var itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
+                                  '<div class="info">' +
+                                  '   <span class="info-place-name"><b>' + places.place_name + '</b></span>'; //장소명, 업체명
+                    itemStr += '    <span class="info-place-id" style="display:none;"><small>' + places.id + '</small></span>'; //장소 ID
+                    itemStr += '    <span class="info-category-group-code" style="display:none;"><small>' + places.category_group_code + '</small></span>'; //카테고리 코드
+
                     if (places.road_address_name) {
-                        itemStr += '    <br><span class = "info-address"><small>' + places.road_address_name + '</small></span>' //전체 도로명 주소
+                        itemStr += '    <br><span class="info-address"><small>' + places.road_address_name + '</small></span>'; //도로명 주소
                     } else {
-                        itemStr += '    <br><span class = "info-address"><small>' +  places.address_name  + '</small></span>'; //전체 지번 주소
+                        itemStr += '    <br><span class="info-address"><small>' + places.address_name + '</small></span>'; //지번 주소
                     }
-                
+
                     el.innerHTML = itemStr;
-                    el.className = 'item';
-                
+                    el.className = 'list-group-item list-group-item-action'; // 부트스트랩 스타일 적용
+
                     return el;
                 }
                 
