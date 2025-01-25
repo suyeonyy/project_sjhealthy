@@ -7,23 +7,36 @@
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 <main>
-    <h1>추천글 작성</h1>
-<ul>
-    <li>
-        <span class = "option-title">업체 명</span>
-        <input type = "text" id ="keyword" class = "input-textbox" placeholder = "업체 명 입력 후 엔터를 눌러 검색해주세요." style="width: 300px;">
-        <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
-    </li>
-    <li>
-        추천 메뉴: <input type="text" name="recMenu" id="recMenu" style="width: 300px;"><br>
-    </li>
-</ul>
-    <button type="button" id="submit">등록</button>
-<ul id = "placesList"></ul>
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h2>추천글 작성</h2>
+            </div>
+            <div class="card-body">
+                <form id="recommendForm">
+                    <div class="form-group">
+                        <label for="keyword">업체 명</label>
+                        <input type="text" id="keyword" class="form-control" placeholder="업체 명 입력 후 엔터를 눌러 검색해주세요." style="width: 100%;" required>
+                        <input type="hidden" name="memberId" id="loginId" th:value="${loginId}">
+                    </div>
+                    <div class="form-group">
+                        <label for="recMenu">추천 메뉴</label>
+                        <input type="text" name="recMenu" id="recMenu" class="form-control" style="width: 100%;" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" id="submit" class="btn btn-primary btn-custom">등록</button>
+                    </div>
+                </form>
+
+                <ul id="placesList" class="list-group mt-3"></ul>
+            </div>
+        </div>
+    </div>
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript" th:inline="javascript">
