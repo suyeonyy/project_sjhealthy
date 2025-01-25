@@ -162,10 +162,11 @@
 
                         const createDate = document.createElement("td");
                         const date = board.createDate;
-                        const year = date.substring(0, 2);
-                        const month = date.substring(2, 4);
-                        const day = date.substring(4, 6);
-                        createDate.textContent = year + month + day;
+
+                        const year = date.substring(0, 4);
+                        const month = date.substring(4, 6);
+                        const day = date.substring(6, 8);
+                        createDate.textContent = year + "/" + month + "/" + day;
                         row.appendChild(createDate);
 
                         const hits = document.createElement("td");

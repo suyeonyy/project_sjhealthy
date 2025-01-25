@@ -133,6 +133,11 @@
 <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", ()=> {
+        const message = [[${message}]];
+        if (message) {
+            alert(message);
+        }
+
         const deleteBtn = document.getElementById("deleteButton");
 
         if (deleteBtn){
