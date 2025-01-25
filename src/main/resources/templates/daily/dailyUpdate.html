@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="/css/header.css">
   <!-- 헤더, 메인, 푸터 위치 고정 -->
   <link rel="stylesheet" href="/css/style.css">
-
   <link rel="stylesheet" href="/css/bootstrap.min.css">
   <script src="/js/jquery-3.6.0.min.js"></script>
   <script src="/js/bootstrap.min.js"></script>
@@ -32,6 +31,30 @@
         background-color: #0056b3;
         color: white;
     }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-row label {
+        width: 120px; /* 라벨의 너비를 설정 */
+        margin-right: 10px; /* 라벨과 입력칸 사이의 간격 */
+        font-weight: 600;
+    }
+
+    .form-row .form-control {
+        flex: 1; /* 입력칸이 남은 공간을 채우도록 설정 */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .card {
+        margin-top: 30px;
+    }
   </style>
 </head>
 <body>
@@ -40,7 +63,6 @@
   <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">일지 수정</span>
 
   <div class="container mt-5">
-
     <div class="card shadow-lg">
       <div class="card-header">
         <span>일지 수정</span>
@@ -49,58 +71,34 @@
         <!-- 수정 폼 시작 -->
         <form th:action="@{../daily/update?dailyId={id}(id=${dailyDTO.dailyId})}" method="post">
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>제목</strong>
-            </div>
-            <div class="col-md-9">
-              <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" th:value="${dailyDTO.dailyTitle}" required>
-            </div>
+          <div class="form-row">
+            <label for="dailyTitle">제목</label>
+            <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" th:value="${dailyDTO.dailyTitle}" required>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>작성일</strong>
-            </div>
-            <div class="col-md-9">
-              <input type="text" id="dailyDate" class="form-control" th:value="${dailyDTO.dailyDate}" readonly>
-            </div>
+          <div class="form-row">
+            <label for="dailyDate">작성일</label>
+            <input type="text" id="dailyDate" class="form-control" th:value="${dailyDTO.dailyDate}" readonly>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>현재체중</strong>
-            </div>
-            <div class="col-md-9">
-              <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" th:value="${dailyDTO.dailyCurWt}" oninput="validateInput(this)" required>
-            </div>
+          <div class="form-row">
+            <label for="dailyCurWt">현재체중</label>
+            <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" th:value="${dailyDTO.dailyCurWt}" oninput="validateInput(this)" required>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>목표체중</strong>
-            </div>
-            <div class="col-md-9">
-              <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" th:value="${dailyDTO.dailyGoalWt}" required>
-            </div>
+          <div class="form-row">
+            <label for="dailyGoalWt">목표체중</label>
+            <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" th:value="${dailyDTO.dailyGoalWt}" required>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>목표만족도</strong>
-            </div>
-            <div class="col-md-9">
-              <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" th:value="${dailyDTO.dailyGoalSf}" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
-            </div>
+          <div class="form-row">
+            <label for="dailyGoalSf">목표만족도</label>
+            <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" th:value="${dailyDTO.dailyGoalSf}" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
           </div>
 
-          <div class="row mb-3">
-            <div class="col-md-3">
-              <strong>메모</strong>
-            </div>
-            <div class="col-md-9">
-              <textarea id="dailyMemo" name="dailyMemo" class="form-control" rows="4" maxlength="2000" th:text="${dailyDTO.dailyMemo}"></textarea>
-            </div>
+          <div class="form-row">
+            <label for="dailyMemo">메모</label>
+            <textarea id="dailyMemo" name="dailyMemo" class="form-control" rows="4" maxlength="2000" th:text="${dailyDTO.dailyMemo}"></textarea>
           </div>
 
           <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
@@ -113,7 +111,6 @@
         <!-- 수정 폼 끝 -->
       </div>
     </div>
-
   </div>
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
