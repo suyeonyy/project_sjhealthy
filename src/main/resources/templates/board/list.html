@@ -15,6 +15,44 @@
             background-color: #007bff;
             color: white;
         }
+
+        #pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 20px;
+        }
+
+        #pagination button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #pagination button:hover {
+            background-color: #f0f0f0;
+        }
+
+        #pagination button:disabled {
+            background-color: white;
+            color: grey;
+            border: 2px solid grey;
+            cursor: not-allowed;
+        }
+
+        #pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border: 2px solid #007bff;
+        }
+
+        #pagination button:focus {
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -48,14 +86,13 @@
     </table>
 </div>
 
+<div class="text-center mt-4" id="pagination"></div>
+
 <div class="text-center mt-4">
     <a href="/sjhealthy/board/write"><button class="btn btn-custom">글 작성</button></a>
     <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
 </div>
 
-<div class="text-center mt-4" id="pagination">
-
-</div>
 </main>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
