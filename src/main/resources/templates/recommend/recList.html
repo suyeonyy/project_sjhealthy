@@ -84,7 +84,7 @@
                         <p><strong>좋아요: </strong><span th:id="'detail-like'+ ${iterStat.index}"></span></p> 
                         <p><strong>싫어요: </strong><span th:id="'detail-dislike'+ ${iterStat.index}"></span></p>
                     </div> 
-                    <a th:href="@{/sjhealthy/recommend/delete/{recId}(recId=${board.recId})}" th:if="${admin}" class="delete" th:id="'delete'+${iterStat.index}">
+                    <a th:href="@{/sjhealthy/recommend/delete/{recId}(recId=${board.recId})}" th:if="${administrator}" class="delete" th:id="'delete'+${iterStat.index}">
                         <button class="btn btn-light">삭제</button>
                     </a>
                 </td>    

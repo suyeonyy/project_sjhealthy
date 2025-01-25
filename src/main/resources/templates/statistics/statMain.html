@@ -90,7 +90,7 @@
             </thead>
             <tbody>
             <tr th:each="member : ${list}"
-                th:class="${member.memberId == statistics.memberId} ? 'table-highlight' : ''">
+                th:class="${statistics != null && member.memberId == statistics.memberId} ? 'table-highlight' : ''">
                 <td th:text="${member.memberRank}"></td>
                 <td th:text="${member.memberId}"></td>
                 <td th:text="${member.memberAchievementPercentage} + ' %'"></td>
@@ -146,8 +146,8 @@
             <div class="col-md-4">
                 <div class="card text-center shadow-sm mb-4">
                     <div class="card-body bg-warning text-white">
-                        <h5 class="card-title"><i class="bi bi-weight"></i> 현재 몸무게</h5>
-                        <p class="card-text" th:text="${memberWeight} + ' kg'"></p>
+                        <h5 class="card-title"><i class="bi bi-weight"></i> 현재 몸무게 / 키</h5>
+                        <p class="card-text" th:text="${memberWeight} + ' kg / ' + ${memberHeight} + ' cm'"></p>
                     </div>
                 </div>
             </div>
