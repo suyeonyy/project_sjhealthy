@@ -145,6 +145,10 @@ public class RecommendService {
         return recommendRepository.getRecommendationByStoreNameOrStoreId(recStoreId, recStore);
     }
 
+    public List<RecommendEntity> getListByPlaceName(String recStore){
+        return recommendRepository.getRecommendationByStoreName(recStore);
+    }
+
     public RecommendEntity checkByRecStoreAndRecMenu(String recStore, String recMenu){
         return recommendRepository.findByRecStoreAndRecMenu(recStore, recMenu);
     }
