@@ -51,7 +51,7 @@ public class DailyController {
         if(loginId != null){
             MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
             if(dto.getMemberAuth().equals("A")){ //관리자
-                model.addAttribute("admin", dto.getMemberAuth());
+                model.addAttribute("administrator", dto.getMemberAuth());
             }
         }
 
