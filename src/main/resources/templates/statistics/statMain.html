@@ -3,56 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <title>광장</title>
+    <!-- 부트스트랩 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 헤더 css -->
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
+    <!-- 아이콘 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        #pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 20px;
+        }
+
+        #pagination button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #pagination button:hover {
+            background-color: #f0f0f0;
+        }
+
+        #pagination button:disabled {
+            background-color: white;
+            color: grey;
+            border: 2px solid grey;
+            cursor: not-allowed;
+        }
+
+        #pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border: 2px solid #007bff;
+        }
+
+        #pagination button:focus {
+            outline: none;
+        }
+
+        /* Top 5 스타일 */
+        .top-title {
+            background-color: #e9ecef;  /* 부드러운 회색 배경 */
+            padding: 0.5em;
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;  /* 어두운 글자 색 */
+            text-align: center;
+            border-radius: 5px;  /* 둥근 모서리 */
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 가벼운 그림자 */
+        }
+
+        .table-highlight {
+            background-color: #f1f1f1 !important; /* 연회색 */
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
-<main>
-    <div class="container">
-        <!-- 전체 -->
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>순위</th>
-                    <th>아이디</th>
-                    <th>목표 달성도</th>
-                </tr>
-            </thead>
 
+<main>
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">광장</span>
+
+    <div id="content" class="container justify-content-center" style="margin-top:18px;">
+        <!-- 순위 테이블 -->
+        <span class="top-title">Top 5</span>
+
+        <table class="table text-center table-bordered mt-4">
+            <thead>
+            <tr>
+                <th>순위</th>
+                <th>아이디</th>
+                <th>목표 달성도</th>
+            </tr>
+            </thead>
             <tbody>
-                <tr th:each="member : ${list}">
-                    <td th:text="${member.memberRank}"></td>
-                    <td th:text="${member.memberId}"></td>
-                    <td th:text="${member.memberAchievementPercentage} + ' %'"></td>
-                </tr>
+            <tr th:each="member : ${list}"
+                th:class="${member.memberId == statistics.memberId} ? 'table-highlight' : ''">
+                <td th:text="${member.memberRank}"></td>
+                <td th:text="${member.memberId}"></td>
+                <td th:text="${member.memberAchievementPercentage} + ' %'"></td>
+            </tr>
             </tbody>
         </table>
-
     </div>
+
+    <div class="text-center mt-4" id="pagination">
+        <!-- 페이지 버튼 -->
+    </div>
+
     <br>
     <hr>
     <br>
-    <!-- 본인 -->
-    <div th:if="${statistics}">
-        <h2>내 기록</h2>
-        <p><span th:text="'아이디: '"></span><strong th:text="${statistics.memberId}"></strong></p>
-        <p><span th:text="'현재 몸무게: '"></span><strong th:text="${memberWeight} + ' kg'"></strong></p>
-        <p><span th:text="'목표 달성도: '"></span><strong th:text="${statistics.memberAchievementPercentage} + ' %'"></strong></p>
-        <p><span th:text="'BMI: '"></span><strong th:text="${statistics.memberBmi}"></strong></p>
-        <p><span th:text="'순위: '"></span><strong th:text="${statistics.memberRank}"></strong></p>
+
+    <!-- 본인 기록 -->
+    <div th:if="${statistics}" class="container">
+        <span class="top-title">내 기록</span>
+
+        <!-- 상단 카드 영역 (순위, 아이디, 목표달성도) -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <div class="card-body bg-info text-white">
+                        <h5 class="card-title"><i class="bi bi-person-circle"></i> 아이디</h5>
+                        <p class="card-text" th:text="${statistics.memberId}"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <div class="card-body bg-success text-white">
+                        <h5 class="card-title"><i class="bi bi-bar-chart-line"></i> 목표 달성도</h5>
+                        <p class="card-text" th:text="${statistics.memberAchievementPercentage} + ' %'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <div class="card-body bg-primary text-white">
+                        <h5 class="card-title"><i class="bi bi-trophy"></i> 순위</h5>
+                        <p class="card-text" th:text="${statistics.memberRank}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 카드 영역 (현재 몸무게, BMI) -->
+        <div class="row mt-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <div class="card-body bg-warning text-white">
+                        <h5 class="card-title"><i class="bi bi-weight"></i> 현재 몸무게</h5>
+                        <p class="card-text" th:text="${memberWeight} + ' kg'"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-center shadow-sm mb-4">
+                    <div class="card-body bg-danger text-white">
+                        <h5 class="card-title"><i class="bi bi-heart-pulse"></i> BMI</h5>
+                        <p class="card-text" th:text="${statistics.memberBmi}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div th:if="${statistics == null}">
-        <h2>내 기록</h2>
-        <p>데이터가 존재하지 않습니다.</p>
+
+    <!-- 데이터가 없을 경우 -->
+    <div th:if="${statistics == null}" class="container">
+        <span class="top-title">내 기록</span>
+
+        <p class="text-center">데이터가 존재하지 않습니다.</p>
     </div>
 
-
-    <a href="/sjhealthy/statistics/graph"><button>몸무게 변화</button></a>
-    <a href="/sjhealthy"><button>메인</button></a>
-
+    <!-- 버튼들 -->
+    <div class="container mt-4 text-center">
+        <a href="/sjhealthy/statistics/graph" class="btn btn-primary">몸무게 변화</a>
+        <a href="/sjhealthy" class="btn btn-secondary">홈</a>
+    </div>
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
