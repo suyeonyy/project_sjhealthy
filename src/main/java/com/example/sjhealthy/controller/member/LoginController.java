@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -53,8 +54,11 @@ public class LoginController {
     @Value("${REDIRECT_KAKAO_URI}")
     private String kakaoRedirectUri;
 
+    @Autowired
+    private PasswordEncoder pwEncoder;
+
     @GetMapping("/member/login")
-    public String showLoginPage(Model model){
+    public String showLoginPage(Model model, @RequestParam(name="message", required = false)String message){
         System.out.println("loginForm");
 
         System.out.println(client_id);
@@ -450,20 +454,20 @@ public class LoginController {
 
         try {
             MemberDTO beforeUpdate = memberService.findMemberIdAtPassFind(memberId);
-            // 뷰에서 일치 검사
-            if (!password.equals(beforeUpdate.getMemberPassword())){
+            if (!pwEncoder.matches(password, beforeUpdate.getMemberPassword())){
                 beforeUpdate.setMemberPassword(password);
-                memberService.join(beforeUpdate); // 바꾼 비밀번호로 정보 수정(JPA 에선 save로 등록과 수정을 한다)
-                ra.addAttribute("비밀번호를 변경하였습니다.");
+                memberService.changePassword(beforeUpdate); // 바꾼 비밀번호로 정보 수정(JPA 에선 save로 등록과 수정을 한다)
+                ra.addFlashAttribute("changePassMessage", "비밀번호를 변경하였습니다.");
                 return "redirect:/sjhealthy/member/login";
             } else {
                 // 기존 비밀번호와 동일하면 돌려보냄
                 System.out.println("기존 비밀번호와 동일한 비밀번호입니다.");
-                ra.addAttribute("기존 비밀번호와 동일한 비밀번호입니다.");
+                ra.addFlashAttribute("changePassMessage", "기존 비밀번호와 동일한 비밀번호입니다.");
                 return "redirect:/sjhealthy/member/login";
             }
         } catch (Exception e){
             System.out.println("시스템 오류");
+            ra.addFlashAttribute("changePassMessage", "시스템 오류로 실패하였습니다.");
             e.printStackTrace();
             return "redirect:/sjhealthy/member/login";
         }
