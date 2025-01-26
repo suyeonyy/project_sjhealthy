@@ -68,6 +68,21 @@ public class MemberService {
         memberRepository.save(memberEntity);
     }
 
+    public void changePassword(MemberDTO memberDTO){
+        // 기존 엔티티 조회
+        Optional<MemberEntity> entity = memberRepository.findByMemberId(memberDTO.getMemberId());
+
+        if (entity.isPresent()){
+            MemberEntity memberEntity = entity.get();
+
+            // 비밀번호만 교체
+            memberEntity.setMemberPassword(pwEncoder.encode(memberDTO.getMemberPassword()));
+
+            // 교체한 걸로 등록
+            memberRepository.save(memberEntity);
+        }
+    }
+
     /* 회원가입 아이디 중복체크 */
     public int memberIdCheck(String memberId) {
         if (memberId == null || memberId.trim().isEmpty()) {
