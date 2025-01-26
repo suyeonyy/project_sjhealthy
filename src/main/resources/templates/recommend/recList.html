@@ -131,12 +131,21 @@
                 if (response.status === 200){
                     const array = Array.isArray(data) ? data : [data];
                     // const tableTd = recommendListTr.getElementsByTagName("td")[0];
+                   
                     
+
+
+
+                    // 만드는 . html도 수정 필요. 아예 테이블까지 만들자
                     array.forEach((item, index) => {
                         const row = tableTd.insertRow();
 
                         const cell1 = row.insertCell(0);
                     });
+
+
+
+
                     
                 } else if (response.status === 204){
                     alert("추천글이 존재하지 않습니다.");

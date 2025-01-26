@@ -330,14 +330,18 @@ public class BoardController {
     }
 
     @RequestMapping("/board/delete")
-    public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra){
+    public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra) throws NullPointerException{
         BoardDTO data = boardService.read(boardId);
-        //첨부파일 있는지 확인하기 위해
-        File file = new File(data.getBoardFilePath());
+        File file = null;
+        if (data != null){
+            //첨부파일 있는지 확인하기 위해
+            file = new File(data.getBoardFilePath());
+        }
 
         boolean isDeleted = boardService.delete(boardId);
         if (isDeleted){
             System.out.println("글 삭제가 완료되었습니다.");
+            assert file != null; // nullPointerException 발생 막기 위해
             if (file.exists()){ // 있으면 저장소에서도 삭제
                 if (file.delete()){
                     System.out.println("첨부파일이 삭제되었습니다.");
