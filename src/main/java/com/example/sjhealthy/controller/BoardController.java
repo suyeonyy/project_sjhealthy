@@ -355,12 +355,53 @@ public class BoardController {
             } else System.out.println("첨부파일이 존재하지 않습니다.");
 
             ra.addAttribute("message", "글 삭제가 완료되었습니다.");
-            return "redirect:/sjhealthy/board/list";
+            return "redirect:/sjhealthy/board";
         } else {
             System.out.println("글 삭제에 실패했습니다.");
             ra.addAttribute("message", "글 삭제에 실패했습니다.");
             ra.addAttribute("boardId", boardId);
             return "redirect:/sjhealthy/board/read";
         }
+    }
+
+    // 관리자 기능에서 사용
+    @ResponseBody
+    @RequestMapping("/board/delete/{boardId}")
+    public ResponseEntity<Response<Object>> deletePostForAdmin(@PathVariable("boardId") Long boardId) throws NullPointerException{
+        BoardDTO data = boardService.read(boardId);
+        System.out.println(data);
+        if (data != null) {
+            //첨부파일 있는지 확인하기 위해
+            String filePath = data.getBoardFilePath();
+            if (filePath != null && !filePath.isEmpty()) {
+                File file = new File(filePath);
+                boolean isDeleted = boardService.delete(boardId);
+                if (isDeleted) {
+                    System.out.println("글 삭제가 완료되었습니다.");
+                    assert file != null; // nullPointerException 발생 막기 위해
+                    if (file.exists()) { // 있으면 저장소에서도 삭제
+                        if (file.delete()) {
+                            System.out.println("첨부파일이 삭제되었습니다.");
+                        } else System.out.println("첨부파일이 삭제되지 않았습니다.");
+                    } else System.out.println("첨부파일이 존재하지 않습니다.");
+                    return ResponseEntity.ok(new Response<>(null, "글 삭제가 완료되었습니다."));
+                } else {
+                    System.out.println("글 삭제에 실패했습니다.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "글 삭제에 실패했습니다."));
+                }
+            } else {
+                System.out.println("첨부파일 경로가 없으므로 파일 삭제를 생략합니다.");
+                // 첨부파일 경로가 없을 경우 별도 처리
+                boolean isDeleted = boardService.delete(boardId);
+                if (isDeleted) {
+                    System.out.println("글 삭제가 완료되었습니다.");
+                    return ResponseEntity.ok(new Response<>(null, "글 삭제가 완료되었습니다."));
+                } else {
+                    System.out.println("글 삭제에 실패했습니다.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "글 삭제에 실패했습니다."));
+                }
+            }
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>(null, "글이 존재하지 않습니다."));
     }
 }
