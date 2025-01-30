@@ -91,4 +91,22 @@ public class MemberStatisticsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류"));
         }
     }
+
+    @ResponseBody
+    @GetMapping("/statistics/height/{height}")
+    public ResponseEntity<Response<Object>> addMemberHeight(@PathVariable Double height, Model model,
+                                                            @SessionAttribute(name = "loginId", required = false) String loginId){
+        model.addAttribute("loginId", loginId);
+
+        try {
+            // 소수점 첫째 자리까지 사용
+            Double roundedHeight = Math.floor(height * 10) / 10; //내림은 이용해서 첫째까지 남김
+            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
+            memberService.addMemberHeight(roundedHeight, dto);
+
+            return ResponseEntity.ok(new Response<>(dto, "키를 등록하였습니다."));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 실패하였습니다."));
+        }
+    }
 }
