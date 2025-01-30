@@ -34,9 +34,10 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
     List<Tuple> getLikeDislikeCount(@Param("recId")Long recId);
 
     // 검색에 사용
-    @Query("SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
+    @Query(value= "SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
         "FROM RecommendEntity r " +
-        "WHERE r.recStore LIKE %:recStore%")
+        "WHERE r.recStore LIKE %:recStore% " +
+        "ORDER BY r.recId DESC")
     List<RecommendEntity> getRecommendationByStoreName(@Param("recStore") String recStore);
 
     @Query("SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
