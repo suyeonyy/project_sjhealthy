@@ -15,12 +15,6 @@
             background-color: #007bff;
             color: white;
         }
-        .detail-div {
-            display: none; /* 기본적으로 숨기기 */
-            margin-top: 10px;
-            padding: 15px;
-            border-top: 1px solid #dee2e6;
-        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"  th:inline="javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=/*[[${js_appKey}]]*/&autoload=false"></script>
@@ -52,12 +46,18 @@
         </tr>
         </thead>
 
-        <tbody id="tableBody">
-        <!-- <tr>
-            <tr th:each="board : ${list}"> -->
-                <!-- <td>
+        <tbody>
+            <tr th:each="board : ${list}">
+                <td>
+                    <!-- th:attr로 HTML속성인 onclick을 동적 바인딩 
+                        onclick 속성을 "" 문자열로 감싸고 ${}를 + 연산자로 감싸 JavaScript로 처리 -->
                     <input type="button" class="detailBtn" value="상세보기">
                 </td>
+                <!-- <td th:text="${board.recId}" th:value="${board.recId}" id="recId"></td> -->
+                    <!-- td에는 value가 없다. 그래서 js에서 읽지 못하고 서버로 보내 null로 보내지는 오류가 있었다.
+                    td는 value가 아니라 textContent 나 innerText로 읽어야 한다.
+                    아니면 input 태그를 넣어 value로 읽는다-->
+                <!-- <td><input type="text" th:value="${board.recId}" class="recId" readonly></td> -->
                  <td>
                     <p th:text="${board.recId}" class="recId"></p>
                  </td>
@@ -71,12 +71,12 @@
                 </td>
                 <td>
                     <input type="button" class="recN" value="싫어요">
-                </td> 
-            </tr>-->
+                </td>
+            </tr>
 
             <!-- 선택한 글만 열려서 좋아요싫어요 개수 보이게 만들기(그때 개수 서버에서 구해서 전달) -->
             <!-- 상세 페이지 / iterStat은 th:each에서 사용하는 반복 인덱스--> 
-            <!-- <tr th:each="board, iterStat : ${list}" th:id="'detailRow-' + ${board.recId}" class="detail" style="display: none;">
+            <tr th:each="board, iterStat : ${list}" th:id="'detailRow-' + ${board.recId}" class="detail" style="display: none;">
                 <td colspan="10">
                     <div>
                         <p><strong>가게 이름: </strong><span th:text="${board.recStore}"></span></p>
@@ -88,17 +88,14 @@
                         <button class="btn btn-light">삭제</button>
                     </a>
                 </td>    
-            </tr> -->
+            </tr>
         </tbody>
     </table>
-    <div id="detail">
-
-    </div>
 </div>
 
 <div>
     <input type="hidden" th:value="${loginId}" id="loginId">
-    <input type="hidden" th:value="${administrator}" id="admin">
+    <input type="hidden" th:value="${admin}" id="admin">
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
 </div>
 <div class="text-center mt-4">
@@ -108,8 +105,58 @@
 
 <div class="text-center mt-4" id="pagination">
 
+
 </main>
-<div th:replace="~{fragment/footer :: main-foot}"></div>
 <script th:inline="javascript" th:src="@{/js/recList.js}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // 게시글 관리
+        let currentPage = 1;
+        const pageSize = 10;
+        
+        // 페이지 열면 자동으로 로드(1페이지로)
+        loadRecommendData(currentPage);
+
+
+        async function loadRecommendData(page){
+            const recommendListTr = document.getElementById("content");
+
+            recommendListTr.innerText = ""; // 내용 초기화
+            
+            try {
+                const response = await fetch("/sjhealthy/recommend/list?page=" + page);
+                const data = await response.json();
+    
+                if (response.status === 200){
+                    const array = Array.isArray(data) ? data : [data];
+                    // const tableTd = recommendListTr.getElementsByTagName("td")[0];
+                    
+                    
+
+
+
+                    // 만드는 . html도 수정 필요. 아예 테이블까지 만들자
+                    array.forEach((item, index) => {
+                        const row = tableTd.insertRow();
+
+                        const cell1 = row.insertCell(0);
+                    });
+
+
+
+
+                    
+                } else if (response.status === 204){
+                    alert("추천글이 존재하지 않습니다.");
+                }
+            } catch (error) {
+                console.log(error);
+                alert("시스템 오류로 글을 불러오지 못했습니다.");
+            }
+        }
+    });
+</script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
