@@ -245,7 +245,7 @@ public class RecommendController {
 //    }
 
     @ResponseBody
-    @GetMapping("/recommend/count/{recId}")
+    @GetMapping("/recommend/detail/{recId}")
     public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable Long recId, HttpServletRequest request,
                                                                 @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                 HttpServletResponse response, Model model){
