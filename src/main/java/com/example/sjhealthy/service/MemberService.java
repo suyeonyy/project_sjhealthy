@@ -83,6 +83,21 @@ public class MemberService {
         }
     }
 
+    public void addMemberHeight(Double height, MemberDTO memberDTO){
+        // 기존 엔티티 조회
+        Optional<MemberEntity> entity = memberRepository.findByMemberId(memberDTO.getMemberId());
+
+        if (entity.isPresent()){
+            MemberEntity memberEntity = entity.get();
+
+            // 키 추가
+            memberEntity.setMemberHeight(height);
+
+            // 교체한 걸로 등록
+            memberRepository.save(memberEntity);
+        }
+    }
+
     /* 회원가입 아이디 중복체크 */
     public int memberIdCheck(String memberId) {
         if (memberId == null || memberId.trim().isEmpty()) {
