@@ -36,6 +36,7 @@ public class MemberStatisticsMapper {
         return entity;
     }
 
+    // 순위 출력용
     public static List<MemberStatisticsDTO> memberStatisticsDTOFromTuple(List<Tuple> tuples){
         List<MemberStatisticsDTO> dtoList = new ArrayList<>();
 
@@ -46,8 +47,10 @@ public class MemberStatisticsMapper {
             // 따라서 추가로 변환하여 받아준다.
             // 근데 내가 쓴 쿼리의 반환값은 퍼센트가 BigDecimal로 나오고 Rank()가 Long 으로 나옴..
             BigDecimal mAP = tuple.get("memberAchievementPercentage", BigDecimal.class);
-            Double memberAchievementPercentage = mAP.doubleValue();
-
+            Double memberAchievementPercentage = 0.0;
+            if (mAP != null){ // 목표달성도 없으면 0.0 으로, 있으면 그 값을 double로 하여 사용
+                memberAchievementPercentage = mAP.doubleValue();
+            }
             Long memberRankBefore = tuple.get("memberRank", Long.class);
             int memberRank = memberRankBefore.intValue();
 
@@ -57,6 +60,7 @@ public class MemberStatisticsMapper {
         return dtoList;
     }
 
+    // 개인 데이터용
     public static MemberStatisticsDTO statisticsDTOFromTuple(Tuple tuple) {
         String memberId = tuple.get("memberId", String.class);
 
