@@ -10,9 +10,14 @@
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
         #myChart {
-            width: 100%;
-            height: 400px;
+            width: 1000px !important;
+            height: 500px; /* 차트 크기를 키움 */
         }
 
         .btn {
@@ -20,7 +25,15 @@
         }
 
         .container {
-            margin-top: 30px;
+            height: 100%; /* 컨테이너가 화면에 꽉 차도록 설정 */
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh; /* 뷰포트 전체 높이 */
+            padding: 10px;
         }
 
         .graph-controls {
@@ -32,8 +45,9 @@
         }
 
         .graph-controls button {
-            width: 120px;
-            padding: 10px;
+            width: 120px;       /* 월별 버튼 크기와 동일한 너비 */
+            height: 50px;       /* 높이를 월별 버튼과 동일하게 맞춤 */
+            padding: 0;         /* 패딩을 없애서 버튼 크기 일관성 유지 */
         }
 
         h3#now {
@@ -49,19 +63,36 @@
             background-color: #6c757d;
             border: none;
         }
+
+        .content {
+            flex-grow: 1; /* 콘텐츠가 화면을 꽉 채우도록 */
+            display: flex;
+            justify-content: center; /* 차트를 화면 중앙에 배치 */
+            align-items: center;
+            overflow: hidden; /* 콘텐츠가 넘칠 경우 스크롤 숨김 */
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #btn {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 
-<main class="container">
+<main>
     <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">체중 변화 그래프</span>
 
     <!-- 그래프 제어 버튼들 -->
     <div class="graph-controls">
-        <button id="before" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> 이전</button>
+        <button id="before" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> <</button>
         <h3 id="now" class="text-center">현재</h3>
-        <button id="after" class="btn btn-outline-primary"><i class="bi bi-arrow-right"></i> 이후</button>
+        <button id="after" class="btn btn-outline-primary"><i class="bi bi-arrow-right"></i> ></button>
     </div>
 
     <div id="btn" class="text-center">
@@ -70,12 +101,12 @@
     </div>
 
     <!-- 차트 캔버스 -->
-    <div class="text-center">
+    <div class="text-center content">
         <canvas id="myChart"></canvas>
     </div>
 
     <!-- 홈 버튼 -->
-    <div class="text-center mt-4">
+    <div class="footer">
         <a href="/sjhealthy/statistics" class="btn btn-secondary">목록</a>
     </div>
 </main>
@@ -135,8 +166,6 @@
                 now.innerText = Number(yearNow) + minus + "년";
             }
         });
-
-
         after.addEventListener("click", (e) => {
             //console.log("increase");
             minus = 0;
@@ -161,9 +190,9 @@
             }
         });
 
-
         // 버튼 안 누르면 기본으로 일 단위로 정렬
         sortByMonth();
+
 
         sortBtnByMonth.addEventListener("click", (e) => {
             //console.log("Month");
@@ -185,6 +214,14 @@
                 sortByYear(); // 아니라면 연 단위 정렬
             }
         });
+
+
+
+
+
+
+
+
 
         // 데이터 요청 함수
         async function requestData(){
