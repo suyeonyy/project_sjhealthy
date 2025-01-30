@@ -78,7 +78,7 @@
 
     <div id="content" class="container justify-content-center" style="margin-top:18px;">
         <!-- 순위 테이블 -->
-        <span class="top-title">Top 5</span>
+        <span class="top-title">Top 3</span>
 
         <table class="table text-center table-bordered mt-4">
             <thead>
@@ -149,6 +149,7 @@
                     </div>
                 </div>
             </div>
+            <input type="hidden" id="height" th:value="${memberHeight}">
 
             <div class="col-md-4" style="margin-top: -35px;">
                 <div class="card text-center shadow-sm mb-4">
@@ -174,6 +175,31 @@
         <a href="/sjhealthy" class="btn btn-secondary">홈</a>
     </div>
 </main>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        
+        // 키를 입력했는지 확인하여 연결
+        const height = document.getElementById("height").value;
+
+        if (height == null || height == 0.0) { // 키를 입력하지 않았을 때, 입력 받아 추가하여 값을 가져옴
+            let memberHeight = prompt("키를 입력해주세요.");
+
+            try {
+                const response = await fetch("/sjhealthy/statistics/height/" + memberHeight);
+                const data = await response.json();
+    
+                if (response.ok){
+                    alert(data.message);
+                    window.location.href = "/sjhealthy/statistics";
+                }
+            } catch(error){
+                alert(data.message);
+            }
+        } else {
+            console.log("키 " + height);
+        }
+    });
+</script>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>
