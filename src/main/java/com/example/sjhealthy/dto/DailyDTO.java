@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data //@Data: @Getter, @Setter, @ToString, @EqualsAndHashCode, @RequiredArgsConstructor 를 합쳐놓은
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,6 +16,7 @@ public class DailyDTO {         // 일지
     //private MemberDTO member;
     private String dailyTitle;  //제목
     private String dailyDate;   //작성일
+    //private double dailyCurWt;  //현재 체중
     private double dailyCurWt;  //현재 체중
     private double dailyGoalWt; //목표 체중
     private String dailyGoalSf; //목표 만족도
