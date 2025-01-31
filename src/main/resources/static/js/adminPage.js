@@ -1,14 +1,19 @@
     document.addEventListener("DOMContentLoaded", ()=>{
+
         // 네비게이션바
         const memberNav = document.getElementById("memberNav");
         const postNav = document.getElementById("postNav");
         const reportNav = document.getElementById("reportNav");
         const content = document.getElementById("content");
 
+        
         // 회원 관리창
-        memberNav.addEventListener("click", async (e)=> {
-            e.preventDefault();
+        memberNav.addEventListener("click", (e)=> {
+            loadMemberData();
+        });
 
+        // 멤버 관리창
+        async function loadMemberData(){
             content.innerHTML = ""; // 기존 내용 비움
 
             try {
@@ -19,7 +24,7 @@
                     const memberList = data.data;
 
                     const table = document.createElement("table");
-                    table.border = "1";
+                    table.className ="table table-hover text-center table-bordered mt-4";
 
                     const thead = document.createElement("thead");
                     thead.innerHTML = `
@@ -37,13 +42,18 @@
                     table.appendChild(thead);
 
                     const tbody = document.createElement("tbody");
-                    memberList.forEach(member =>{
+                    memberList.forEach((member, index) =>{
                         const row = document.createElement("tr");
 
-                        const deleteCell = document.createElement("td");
+                        const deleteCell = row.insertCell(0);
+                        const deleteBtn = document.createElement("input");
                         // deleteCell.className = "adminButton";
-                        deleteCell.innerHTML = `<a href="/sjhealthy/admin/member/delete/${member.memberId}"><button class="adminButton">X</button></a>`;
-                        row.append(deleteCell);
+                        deleteBtn.type = "button";
+                        deleteBtn.id = "deleteMemberBtn"+index;
+                        deleteBtn.value = "삭제";
+                        deleteBtn.onclick = (e) => deleteMember(index, member.memberId);
+                        deleteCell.appendChild(deleteBtn);
+                        // row.append(deleteCell);
 
                         const memberId = document.createElement("td");
                         memberId.textContent = member.memberId;
@@ -73,57 +83,56 @@
 
                     });
                     table.appendChild(tbody);
-
                     content.appendChild(table);
-
-                    // 회원 탈퇴 버튼
-                    const adminButtons = document.querySelectorAll(".adminButton");
-
-                    adminButtons.forEach((adminButton, index) => {
-                        adminButton.addEventListener("click", async (e)=> {
-                            if (!window.confirm("정말로 삭제하시겠습니까?")){
-                                e.preventDefault();
-                                return false;
-                            }
-
-                            try {
-                                const deleteMemberId = memberList[index].memberId;
-                                const response = await fetch("/sjhealthy/admin/member/delete/" + deleteMemberId);
-                                const data = await response.json();
-
-                                if (!data){
-                                    alert(data.message);
-                                } else {
-                                    alert(data.message);
-                                }
-                            } catch(error){
-                                console.log("Error = " + error);
-                            }
-                        });
-                    });
                 } else {
                     alert(data.message);
                 }
             } catch(error){
                 console.log("Error = " + error);
             }
-        });
+        }
 
-        
+        function deleteMember(index, memberId){
+            // 회원 탈퇴 버튼
+            const deleteMemberBtn = document.getElementById("deleteMemberBtn"+index);
+
+            deleteMemberBtn.addEventListener("click", async (e)=> {
+                if (!window.confirm("정말로 삭제하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                }
+
+                try {
+                    const response = await fetch("/sjhealthy/admin/member/delete/" + memberId);
+                    const data = await response.json();
+
+                    if (!data){
+                        alert(data.message);
+                    } else {
+                        alert(data.message);
+                        loadMemberData();
+                    }
+                } catch(error){
+                    console.log("Error = " + error);
+                }
+            });
+        }
+        // 기본으로 회원 관리창
+        loadMemberData();
+
         // 게시글 관리
         let currentPage = 1;
         const pageSize = 10;
         
         // post 네비버튼 누르면 자동으로 로드(1페이지로)
         postNav.addEventListener("click", (e)=> {
-            loadBoardData(currentPage, e);
+            loadBoardData(currentPage);
         });
 
         // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로 
-        async function loadBoardData(page, e){
-            e.preventDefault();
-
+        async function loadBoardData(page){
             content.innerHTML = ""; // 기존 내용 비움
+            currentPage = page;
 
             try {
                 // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
@@ -138,7 +147,7 @@
                     console.log(boardList);
 
                     const table = document.createElement("table");
-                    table.border = "1";
+                    table.className ="table table-hover text-center table-bordered mt-4";
 
                     const thead = document.createElement("thead");
                     thead.innerHTML = `
@@ -156,13 +165,18 @@
 
                     const tbody = document.createElement("tbody");
 
-                    boardList.forEach(board => {
+                    boardList.forEach((board, index) => {
                         const row = document.createElement("tr");
 
-                        const deleteCell = document.createElement("td");
-                        deleteCell.innerHTML = `<a href="/sjhealthy/board/delete?boardId=${board.boardId}"><button class="deletePost">X</button></a>`;
-                        // deleteCell.className = "deletePost";
-                        row.appendChild(deleteCell);
+                        const deleteCell = row.insertCell(0);
+                        const deleteBtn = document.createElement("input");
+                        // deleteCell.className = "adminButton";
+                        deleteBtn.type = "button";
+                        deleteBtn.id = "deletePostBtn"+index;
+                        deleteBtn.value = "삭제";
+                        deleteBtn.onclick = (e) => deletePost(index, board.boardId);
+                        deleteCell.appendChild(deleteBtn);
+                        // row.append(deleteCell);
 
                         const postNumber = document.createElement("td");
                         postNumber.textContent = board.boardId;
@@ -214,22 +228,36 @@
                 pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
                 
                 pageButton.addEventListener("click", (e) => {
-                    loadBoardData(i, e); // 클릭한 페이지 데이터 요청하고 html 생성
+                    loadBoardData(i); // 클릭한 페이지 데이터 요청하고 html 생성
                     currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
                 });
                 pagination.appendChild(pageButton); 
             }
         }
         // 게시물 삭제 버튼
-        const deletePosts = document.querySelectorAll(".deletePost");
+        function deletePost(index, boardId){
+            // const deletePosts = document.querySelectorAll(".deletePost");
+            const deleteBtn = document.getElementById("deletePostBtn"+index);
 
-        deletePosts.forEach((deletePost, index) => {
-            deletePost.addEventListener("click", async (e)=> {
+            deleteBtn.addEventListener("click", async (e)=> {
                 if (!window.confirm("정말로 삭제하시겠습니까?")){
                     e.preventDefault();
                     return false;
                 }
-            });
-        });
+
+                try {
+                    const response = await fetch("/sjhealthy/board/delete/"+boardId);
+                    const data = await response.json();
     
+                    if (response.ok){
+                        alert(data.message);
+                        loadBoardData(currentPage);
+                    }
+
+                } catch (error){
+                    alert(data.message);
+                }
+            });
+
+        }
     });
