@@ -46,7 +46,7 @@ public class MemberEntity {
     @Column(columnDefinition = "VARCHAR(2) DEFAULT 'U'", nullable = false)
     private String memberAuth;
 
-    @Column(columnDefinition = "VARCHAR(2) DEFAULT 'N'", nullable = false)
+    @Column(columnDefinition = "VARCHAR(1) DEFAULT 'N'", nullable = false)
     private String isDeleted;
 
     @Column(name="create_date", columnDefinition = "VARCHAR(8)", nullable = false)
