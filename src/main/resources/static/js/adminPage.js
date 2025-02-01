@@ -50,6 +50,7 @@
                         // deleteCell.className = "adminButton";
                         deleteBtn.type = "button";
                         deleteBtn.id = "deleteMemberBtn"+index;
+                        deleteBtn.className = "adminButton";
                         deleteBtn.value = "삭제";
                         deleteBtn.onclick = (e) => deleteMember(index, member.memberId);
                         deleteCell.appendChild(deleteBtn);
@@ -173,6 +174,7 @@
                         // deleteCell.className = "adminButton";
                         deleteBtn.type = "button";
                         deleteBtn.id = "deletePostBtn"+index;
+                        deleteBtn.className = "adminButton";
                         deleteBtn.value = "삭제";
                         deleteBtn.onclick = (e) => deletePost(index, board.boardId);
                         deleteCell.appendChild(deleteBtn);
