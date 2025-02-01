@@ -53,6 +53,24 @@
         #pagination button:focus {
             outline: none;
         }
+
+        .adminButton {
+            background-color: #f8f9fa;
+            color: black;
+            border: 2px solid #dee2e6;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .adminButton:hover {
+            background-color: #e9ecef;
+        }
+
+        .adminButton:focus {
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -102,14 +120,15 @@
 </table> -->
 </div>
 
-<div class="text-center mt-4">
-    <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
-</div>
+    <!-- 페이징 -->
+    <div id="pagination" class="text-center mt-4">
 
-<!-- 페이징 -->
-<div id="pagination" class="text-center mt-4">
-    
-</div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
+    </div>
+
 </main>
 <script th:inline="javascript" th:src="@{/js/adminPage.js}"></script>
 
