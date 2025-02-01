@@ -8,6 +8,9 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +68,10 @@ public class RecommendMapper {
                 // 프랜차이즈는 지점명 빼고 보냄
                 String recStore = entity.getRecStore().contains(" ") ? entity.getRecStore().split(" ")[0] : entity.getRecStore();
 
+                // 날짜는 yyyy/MM/dd 형식으로 변환
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+//                String createDate = String.format(entity.getCreateDate(), "yyyy/MM/dd");
+//                System.out.println(createDate);
 
                 return new RecommendDTO(
                     entity.getRecId(),
@@ -78,6 +85,7 @@ public class RecommendMapper {
                     entity.getRecViews(),
                     entity.getIsDeleted(),
                     entity.getCreateDate(),
+//                    createDate,
                     entity.getUpdateDate(),
                     entity.getCreateUser(),
                     entity.getUpdateUser()
