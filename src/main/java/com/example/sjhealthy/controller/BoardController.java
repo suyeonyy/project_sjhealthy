@@ -39,6 +39,8 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -311,10 +313,18 @@ public class BoardController {
                              @RequestParam("boardId") Long boardId, @RequestParam("file") MultipartFile file){
         model.addAttribute("loginId", loginId);
 
+        // 업데이트일로 저장할 날짜 불러오기
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String today = LocalDate.now().format(formatter);
+
         try {
+            // 기존 게시글 데이터에 변경된 데이터 추가
             BoardDTO postDTO = boardService.read(boardId);
             postDTO.setBoardTitle(boardDTO.getBoardTitle());
             postDTO.setBoardContent(boardDTO.getBoardContent());
+            postDTO.setUpdateUser(loginId);
+            postDTO.setUpdateDate(today);
+
             if (!file.isEmpty()){ // 첨부파일이 존재한다면
                 // 기존에 첨부되었던 파일은 삭제해준다.
                 File before = new File(postDTO.getBoardFilePath());
