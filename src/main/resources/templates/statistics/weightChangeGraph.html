@@ -13,6 +13,7 @@
         body, html {
             height: 100%;
             margin: 0;
+            overflow: hidden; /* 스크롤을 숨김 */
         }
 
         #myChart {
@@ -27,13 +28,31 @@
         .container {
             height: 100%; /* 컨테이너가 화면에 꽉 차도록 설정 */
         }
-
+/*
         main {
-            display: flex;
+            display: revert;
             flex-direction: column;
             justify-content: space-between;
-            height: 100vh; /* 뷰포트 전체 높이 */
+            height: 100vh; // 뷰포트 전체 높이
             padding: 10px;
+        }
+*/
+        main {
+            display: flex; /* flexbox 사용 */
+            flex-direction: column;
+            justify-content: flex-start; /* 내용이 위에서부터 쌓이도록 */
+            height: 100vh; /* 전체 화면 크기 */
+            padding: 10px;
+        }
+
+        span {
+            background: #F9F7F6;
+            border-left: 0.5em solid rgb(30,136,255);
+            padding: 0.5em;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 20px; /* 아래쪽에 간격 추가 */
+            align-self: flex-start; /* 좌측 정렬 */
         }
 
         .graph-controls {
