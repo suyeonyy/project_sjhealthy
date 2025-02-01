@@ -9,11 +9,21 @@
     <link rel="stylesheet" href="/css/style.css">
     <style>
         /* 기본 스타일링 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%; /* 전체 화면을 채우도록 */
+            overflow: hidden; /* 스크롤 방지 */
+        }
+
         main {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
             padding: 20px;
             background-color: #f9fafb; /* 연한 파스텔 톤 */
+            height: 100%; /* 화면 높이에 맞게 */
+            overflow: hidden; /* 내부 스크롤 방지 */
+            display: flex;
+            flex-direction: column;
         }
 
         /* 환영 메시지 스타일 */
@@ -31,6 +41,8 @@
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, auto);
             gap: 30px;
+            flex-grow: 1;
+            overflow: auto; /* 내부 콘텐츠에 스크롤을 허용 */
         }
 
         /* 각 구역 공통 스타일 */
@@ -163,7 +175,6 @@
         .card-body.bg-warning { background-color: #ffc107; color: white; }
         .card-body.bg-danger { background-color: #dc3545; color: white; }
     </style>
-
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
@@ -172,7 +183,7 @@
     <!-- 로그인 세션 아이디에 따라 환영 메시지 표시 -->
     <div class="welcome-message">
         <p th:if="${loginId != null}" th:text="${loginId + '님 환영합니다.'}"></p>
-        <p th:if="${loginId == null}">로그인 해주세요.</p>
+        <p th:if="${loginId == null}">Healthy Diet에 오신걸 환영합니다.</p>
     </div>
 
     <!-- 4개의 구역으로 나누기 -->
