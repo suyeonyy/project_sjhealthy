@@ -85,6 +85,7 @@ public class MemberEntity {
         this.updateDate = LocalDate.now().format(formatter);   // 수정일 저장
 //        this.updateDate = this.createDate; 이렇게 해도 됨
 
+        this.memberBirth = String.format(memberBirth, "yyyy/MM/dd");
 
         // memberId 넣어줌 (memberId null 값 확인 후, defaultUser 설정)
         if (this.createUser == null){
