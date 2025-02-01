@@ -7,28 +7,288 @@
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* 기본 스타일링 */
+        main {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9fafb; /* 연한 파스텔 톤 */
+        }
+
+        /* 환영 메시지 스타일 */
+        .welcome-message {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2980b9; /* 건강하고 활기찬 느낌의 파란색 */
+            margin-bottom: 40px;
+        }
+
+        /* 4개의 구역을 나누기 */
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
+            gap: 30px;
+        }
+
+        /* 각 구역 공통 스타일 */
+        .content-box {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .content-box:hover {
+            transform: translateY(-5px); /* 호버시 살짝 올라오는 효과 */
+        }
+
+        /* 구역별 제목 스타일 */
+        .content-box h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* 좌측 상단: 메뉴 설명 */
+        .left-top {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+        }
+
+        .left-top ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 10px;
+        }
+
+        .left-top li {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #34495e; /* 부드러운 회색 블루 */
+        }
+
+        .left-top li strong {
+            font-weight: bold;
+            color: #2980b9; /* 파란색 강조 */
+        }
+
+        /* 좌측 하단: 내 기록 */
+        .left-bottom {
+            grid-column: 1 / 2;
+            grid-row: 2 / 3;
+        }
+
+        /* 우측 상단: 커뮤니티 내용 */
+        .right-top {
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+        }
+
+        .right-top ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .right-top li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .right-top li a {
+            color: #2980b9; /* 파란색 링크 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .right-top li a:hover {
+            text-decoration: underline;
+        }
+
+        /* 우측 하단: 추천 게시판 내용 */
+        .right-bottom {
+            grid-column: 2 / 3;
+            grid-row: 2 / 3;
+        }
+
+        .right-bottom ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .right-bottom li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .right-bottom li a {
+            color: #2980b9; /* 파란색 링크 */
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .right-bottom li a:hover {
+            text-decoration: underline;
+        }
+
+        /* 내 기록의 카드 스타일 */
+        .top-title {
+            background-color: #e9ecef;  /* 부드러운 회색 배경 */
+            padding: 0.5em;
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;  /* 어두운 글자 색 */
+            text-align: center;
+            border-radius: 5px;  /* 둥근 모서리 */
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 가벼운 그림자 */
+        }
+
+        .card {
+            margin-bottom: 15px;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-body.bg-info { background-color: #17a2b8; color: white; }
+        .card-body.bg-success { background-color: #28a745; color: white; }
+        .card-body.bg-primary { background-color: #007bff; color: white; }
+        .card-body.bg-warning { background-color: #ffc107; color: white; }
+        .card-body.bg-danger { background-color: #dc3545; color: white; }
+    </style>
+
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
+
 <main>
-    <h1>메인</h1>
+    <!-- 로그인 세션 아이디에 따라 환영 메시지 표시 -->
+    <div class="welcome-message">
+        <p th:if="${loginId != null}" th:text="${loginId + '님 환영합니다.'}"></p>
+        <p th:if="${loginId == null}">로그인 해주세요.</p>
+    </div>
+
+    <!-- 4개의 구역으로 나누기 -->
+    <div class="main-content">
+        <!-- 좌측 상단: 메뉴 설명 -->
+        <div class="content-box left-top">
+            <h2>메뉴 설명</h2>
+            <ul>
+                <li><strong>커뮤니티</strong>: 다양한 사람들과 다이어트 경험을 공유하는 공간입니다.</li>
+                <li><strong>추천 게시판</strong>: 유용한 다이어트 팁과 추천 정보를 제공하는 게시판입니다.</li>
+                <li><strong>내 주변 보기</strong>: 근처의 헬스장, 건강 카페 등의 위치를 확인할 수 있는 기능입니다.</li>
+                <li><strong>일지</strong>: 나만의 다이어트 일지를 작성하고 기록을 관리하는 공간입니다.</li>
+                <li><strong>광장</strong>: 다양한 다이어트 관련 소식과 이벤트 정보를 제공하는 게시판입니다.</li>
+            </ul>
+        </div>
+
+        <!-- 좌측 하단: 내 기록 -->
+        <div class="content-box left-bottom">
+            <h2>내 기록</h2>
+
+            <!-- 본인 기록 (회원별 통계) -->
+            <div th:if="${statistics}">
+                <span class="top-title">내 기록</span>
+
+                <!-- 상단 카드 영역 (순위, 아이디, 목표달성도) -->
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card text-center shadow-sm mb-4">
+                            <div class="card-body bg-info">
+                                <h5 class="card-title"><i class="bi bi-person-circle"></i> 아이디</h5>
+                                <p class="card-text" th:text="${statistics.memberId}"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card text-center shadow-sm mb-4">
+                            <div class="card-body bg-success">
+                                <h5 class="card-title"><i class="bi bi-bar-chart-line"></i> 목표 달성도</h5>
+                                <p class="card-text" th:text="${statistics.memberAchievementPercentage} + ' %'"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card text-center shadow-sm mb-4">
+                            <div class="card-body bg-primary">
+                                <h5 class="card-title"><i class="bi bi-trophy"></i> 순위</h5>
+                                <p class="card-text" th:text="${statistics.memberRank}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 하단 카드 영역 (현재 몸무게, BMI) -->
+                <div class="row mt-4 justify-content-center">
+                    <div class="col-md-4" style="margin-top: -35px;">
+                        <div class="card text-center shadow-sm mb-4">
+                            <div class="card-body bg-warning">
+                                <h5 class="card-title"><i class="bi bi-weight"></i> 현재 몸무게 / 키</h5>
+                                <p class="card-text" th:text="${memberWeight} + ' kg / ' + ${memberHeight} + ' cm'"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="height" th:value="${memberHeight}">
+
+                    <div class="col-md-4" style="margin-top: -35px;">
+                        <div class="card text-center shadow-sm mb-4">
+                            <div class="card-body bg-danger">
+                                <h5 class="card-title"><i class="bi bi-heart-pulse"></i> BMI</h5>
+                                <p class="card-text" th:text="${statistics.memberBmi}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 데이터가 없을 경우 -->
+            <div th:if="${statistics == null}">
+                <p class="text-center">데이터가 존재하지 않습니다.</p>
+            </div>
+
+            <!-- 내 다이어트 기록 (기존 기록들) -->
+            <p>내 다이어트 기록을 여기에 표시합니다.</p>
+            <ul>
+                <li>2025-02-01: 1kg 감소</li>
+                <li>2025-01-30: 운동 30분</li>
+                <li>2025-01-29: 2kg 감소</li>
+            </ul>
+        </div>
+
+        <!-- 우측 상단: 커뮤니티 내용 (5개 게시물) -->
+        <div class="content-box right-top">
+            <h2>커뮤니티</h2>
+            <ul>
+                <li><a href="/sjhealthy/board/post1">커뮤니티 글 1</a></li>
+                <li><a href="/sjhealthy/board/post2">커뮤니티 글 2</a></li>
+                <li><a href="/sjhealthy/board/post3">커뮤니티 글 3</a></li>
+                <li><a href="/sjhealthy/board/post4">커뮤니티 글 4</a></li>
+                <li><a href="/sjhealthy/board/post5">커뮤니티 글 5</a></li>
+            </ul>
+        </div>
+
+        <!-- 우측 하단: 추천 게시판 내용 (5개 게시물) -->
+        <div class="content-box right-bottom">
+            <h2>추천 게시판</h2>
+            <ul>
+                <li><a href="/sjhealthy/recommend/post1">추천 게시글 1</a></li>
+                <li><a href="/sjhealthy/recommend/post2">추천 게시글 2</a></li>
+                <li><a href="/sjhealthy/recommend/post3">추천 게시글 3</a></li>
+                <li><a href="/sjhealthy/recommend/post4">추천 게시글 4</a></li>
+                <li><a href="/sjhealthy/recommend/post5">추천 게시글 5</a></li>
+            </ul>
+        </div>
+    </div>
 </main>
-<!--
-    <a href="/sjhealthy/member/join" th:if="${loginId == null}"><button>회원가입</button></a>
-    <a href="/sjhealthy/member/login" th:if="${loginId == null}"><button>로그인</button></a>
-
-    <a href="/sjhealthy/member/mypage" th:if="${loginId != null}"><button>내 정보</button></a>
-    <a href="/sjhealthy/member/logout" th:if="${loginId != null}"><button>로그아웃</button></a>
-
-    <a href="/sjhealthy/board"><button>커뮤니티</button></a>
-    <a href="/sjhealthy/recommend"><button>추천 게시판</button></a>
-    <a href="/sjhealthy/map"><button>내 주변 보기</button></a>
-    <a href="/sjhealthy/daily/dailyList"><button>일지</button></a>
-    <a href="/sjhealthy/statistics"><button>광장</button></a>
-    <a href="/sjhealthy/info/infoList"><button>정보</button></a>
-    <a href="/sjhealthy/admin"><button>관리자 기능</button></a>
--->
-<!-- 내 정보는 아직 안 만듦 -->
 
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
