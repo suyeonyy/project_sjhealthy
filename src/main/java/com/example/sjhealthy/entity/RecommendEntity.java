@@ -68,7 +68,7 @@ public class RecommendEntity {
         if (recN == null){ this.recN = ""; }
 
         if (this.createDate == null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             this.createDate = LocalDate.now().format(formatter);
         }
 
