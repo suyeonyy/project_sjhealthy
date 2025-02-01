@@ -14,13 +14,24 @@
         .btn-custom {
             background-color: #007bff;
             color: white;
+            border: 2px solid #007bff;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
         }
+        .btn-custom:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
         .detail-div {
             display: none; /* 기본적으로 숨기기 */
             margin-top: 10px;
             padding: 15px;
             border-top: 1px solid #dee2e6;
         }
+
         #pagination {
             display: flex;
             justify-content: center;
@@ -58,8 +69,38 @@
         #pagination button:focus {
             outline: none;
         }
+
+
+
+        .detailBtn, .recY, .recN, .btn-light {
+            background-color: #f8f9fa;
+            color: black;
+            border: 2px solid #dee2e6;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .detailBtn:hover, .recY:hover, .recN:hover, .btn-light:hover {
+            background-color: #e9ecef;
+        }
+
+        .detailBtn:focus, .recY:focus, .recN:focus, .btn-light:focus {
+            outline: none;
+        }
+
+        .recY, .recN, .btn-light {
+            background-color: #f8f9fa;
+            color: black;
+            border: 2px solid #dee2e6;
+        }
+
+        .recY:hover, .recN:hover, .btn-light:hover {
+            background-color: #e9ecef;
+        }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript"  th:inline="javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=/*[[${js_appKey}]]*/&autoload=false"></script>
  <!-- th:inline="javascript"로 thymleaf가 js 안에서 변수를 제대로 처리하게 함. 근데 내부에서만 해당. 이거는 왜 되지?-->
 </head>
@@ -71,8 +112,8 @@
     <br>
     <div id="content" class="container justify-content-center">
         <!--검색하여 정렬-->
-        <span>가게이름: </span><input type="search" id="searchByStoreName">
-        <input type="button" id="searchButton" value="검색" class="btn btn-custom">
+        <span style="font-weight: 600;">가게이름: </span><input type="search" id="searchByStoreName" style="border: 2px solid lightgray; padding: 5px;">
+        <input type="button" id="searchButton" value="검색" class="btn btn-custom" style="margin-bottom: 3px;">
     <!-- 테이블 -->
     <table class="table table-hover text-center table-bordered mt-4" id="recTable">
         <thead>
@@ -108,23 +149,23 @@
                 </td>
                 <td>
                     <input type="button" class="recN" value="싫어요">
-                </td> 
+                </td>
             </tr>-->
 
             <!-- 선택한 글만 열려서 좋아요싫어요 개수 보이게 만들기(그때 개수 서버에서 구해서 전달) -->
-            <!-- 상세 페이지 / iterStat은 th:each에서 사용하는 반복 인덱스--> 
+            <!-- 상세 페이지 / iterStat은 th:each에서 사용하는 반복 인덱스-->
             <!-- <tr th:each="board, iterStat : ${list}" th:id="'detailRow-' + ${board.recId}" class="detail" style="display: none;">
                 <td colspan="10">
                     <div>
                         <p><strong>가게 이름: </strong><span th:text="${board.recStore}"></span></p>
                         <p><strong>메뉴: </strong><span th:text="${board.recMenu}"></span></p>
-                        <p><strong>좋아요: </strong><span th:id="'detail-like'+ ${iterStat.index}"></span></p> 
+                        <p><strong>좋아요: </strong><span th:id="'detail-like'+ ${iterStat.index}"></span></p>
                         <p><strong>싫어요: </strong><span th:id="'detail-dislike'+ ${iterStat.index}"></span></p>
-                    </div> 
+                    </div>
                     <a th:href="@{/sjhealthy/recommend/delete/{recId}(recId=${board.recId})}" th:if="${administrator}" class="delete" th:id="'delete'+${iterStat.index}">
                         <button class="btn btn-light">삭제</button>
                     </a>
-                </td>    
+                </td>
             </tr> -->
         </tbody>
     </table>
@@ -138,12 +179,13 @@
     <input type="hidden" th:value="${administrator}" id="admin">
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
 </div>
+
+    <div class="text-center mt-4" id="pagination"></div>
+
 <div class="text-center mt-4">
     <a href="/sjhealthy/recommend/write" id="writeButton"><button class="btn btn-custom">추천글 작성</button></a>
     <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
 </div>
-
-<div class="text-center mt-4" id="pagination">
 
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
