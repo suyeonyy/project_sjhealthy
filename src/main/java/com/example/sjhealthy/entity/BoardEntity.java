@@ -62,7 +62,7 @@ public class BoardEntity {
 
     @JsonIgnore // 무한 재귀 방지
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
     @PrePersist // 날짜 기본 형식 지정하여 DB로
