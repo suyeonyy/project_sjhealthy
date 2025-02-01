@@ -21,7 +21,7 @@ public class CommentEntity {
     //Comment는 Board를 참조하는 관계로 지정한다.
 //    cascade = CascadeType.ALL, orphanRemoval = true
     @ManyToOne(fetch = FetchType.LAZY) //댓글 기준
-    @JoinColumn(name="boardId")
+    @JoinColumn(name="boardId", nullable = false)
     private BoardEntity boardEntity;
 
     @Column(columnDefinition = "VARCHAR(500)", nullable = false)
