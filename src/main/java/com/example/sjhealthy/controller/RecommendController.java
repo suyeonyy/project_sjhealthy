@@ -96,6 +96,19 @@ public class RecommendController {
         }
     }
 
+    @GetMapping("/recommend/best")
+    public ResponseEntity<Response<Object>> getRecommendListTop5LikeCount(){
+        try {
+            List<RecommendDTO> dtoList = recommendService.getListTop5();
+            if (dtoList != null){
+                return ResponseEntity.ok(new Response<>(dtoList, "추천글을 불러왔습니다."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "추천글이 존재하지 않습니다."));
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 실패하였습니다."));
+        }
+    }
     @GetMapping("/recommend/write")
     public String getRecommendForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
         model.addAttribute("loginId", loginId);
