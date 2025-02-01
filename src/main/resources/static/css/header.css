@@ -48,3 +48,23 @@
 .main-head-a:hover {
     color:rgb(12,100,230);
 }
+
+
+
+.main-head-a-join {
+    border-left: none;
+    font:bold 18px Dotum;
+    padding:0 10px;
+    display:inline-block;
+    margin-top:5px;
+    font-family: Courier, "Courier New", "Andale Mono", monospace;
+}
+
+.main-head-a-join {
+    text-decoration:none;
+    color:#000000;
+}
+
+.main-head-a-join:hover {
+    color:rgb(12,100,230);
+}
