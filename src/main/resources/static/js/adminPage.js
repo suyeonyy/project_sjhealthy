@@ -61,7 +61,11 @@
                         row.append(memberId);
 
                         const createDate = document.createElement("td");
-                        createDate.textContent = member.createDate;
+                        const date = member.createDate;
+                        const year = date.substring(0, 4);
+                        const month = date.substring(4, 6);
+                        const day = date.substring(6, 8);
+                        createDate.textContent = year + "/" + month + "/" + day;
                         row.append(createDate);
 
                         const memberName = document.createElement("td");
@@ -77,7 +81,11 @@
                         row.appendChild(memberGender);
 
                         const memberBirth = document.createElement("td");
-                        memberBirth.textContent = member.memberBirth;
+                        const date2 = member.memberBirth;
+                        const year2 = date2.substring(0, 4);
+                        const month2 = date2.substring(4, 6);
+                        const day2 = date2.substring(6, 8);
+                        memberBirth.textContent = year2 + "/" + month2 + "/" + day2;
                         row.appendChild(memberBirth);
 
                         tbody.appendChild(row);
@@ -194,7 +202,11 @@
                         row.appendChild(writer);
 
                         const createDate = document.createElement("td");
-                        createDate.textContent = board.createDate;
+                        const date = board.createDate;
+                        const year = date.substring(0, 4);
+                        const month = date.substring(4, 6);
+                        const day = date.substring(6, 8);
+                        createDate.textContent = year + "/" + month + "/" + day;
                         row.appendChild(createDate);
 
                         const hits = document.createElement("td");
