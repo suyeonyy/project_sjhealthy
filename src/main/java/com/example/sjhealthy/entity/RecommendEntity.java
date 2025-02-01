@@ -58,7 +58,7 @@ public class RecommendEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY) // 지연
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity member;
 
 
