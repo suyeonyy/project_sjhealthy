@@ -4,6 +4,7 @@ import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.CommentDTO;
 import com.example.sjhealthy.dto.MemberDTO;
 import com.example.sjhealthy.dto.Response;
+import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.repository.BoardRepository;
 import com.example.sjhealthy.service.BoardService;
 import com.example.sjhealthy.service.CommentService;
@@ -101,6 +102,22 @@ public class BoardController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    @GetMapping("/board/current") // 메인페이지에 최근글 5개 출력
+    public ResponseEntity<Response<Object>> getBoardListForMain(){
+        List<BoardDTO> boardList = boardService.getListTop5();
+
+        try {
+            if (boardList != null){
+                return ResponseEntity.ok(new Response<>(boardList, "게시물을 불러왔습니다."));
+            } else {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "게시물이 존재하지 않습니다."));
+            }
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 실패하였습니다."));
+        }
+
     }
     @GetMapping("/board/write")
     public String writeForm(@SessionAttribute(name = "loginId", required = false) String loginId,
