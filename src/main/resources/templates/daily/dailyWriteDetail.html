@@ -124,6 +124,13 @@
     // 콘솔에 출력
     //console.log(dailyDate);
 
+    var year = dailyDate.substring(0,4);
+    var month = dailyDate.substring(4,6);
+    var day = dailyDate.substring(6,8);
+    var title = year + "/" + month + "/" + day + " 일지";
+
+    //제목이 페이지에 자동으로 디폴값 설정되도록 처리
+    $("#dailyTitle").val(title);
     //작성일이 페이지에 자동으로 디폴값 설정되도록 처리
     $("#dailyDate").val(dailyDate);
   });
