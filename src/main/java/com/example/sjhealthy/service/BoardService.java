@@ -50,6 +50,16 @@ public class BoardService {
         return BoardMapper.convertToBoardDTOPage(entity);
 
     }
+
+    public List<BoardDTO> getListTop5(){
+        List<BoardEntity> entity = boardRepository.findTop5ByOrderByCreateDateDesc();
+        List<BoardDTO> dtoList = new ArrayList<>();
+
+        for (BoardEntity e : entity){
+            dtoList.add(BoardMapper.toBoardDTO(e, e.getMember().getMemberId()));
+        }
+        return dtoList;
+    }
     public BoardDTO write(BoardDTO boardDTO){ // update도 이걸로 사용
         Optional<MemberEntity> entity = memberRepository.findByMemberId(boardDTO.getMemberId());
         if (entity.isPresent()){

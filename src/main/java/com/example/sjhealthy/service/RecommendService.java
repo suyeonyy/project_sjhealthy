@@ -47,6 +47,16 @@ public class RecommendService {
         return RecommendMapper.convertToRecommendDTOPage(list);
     }
 
+    public List<RecommendDTO> getListTop5(){
+        List<RecommendEntity> list = recommendRepository.findTop5();
+        List<RecommendDTO> dtoList = new ArrayList<>();
+
+        for (RecommendEntity r : list){
+            dtoList.add(RecommendMapper.toRecommendDTO(r, r.getMember().getMemberId()));
+        }
+        return dtoList;
+    }
+
     public RecommendDTO addRecommendation(RecommendDTO recommendDTO){
         Optional<MemberEntity> entity = memberRepository.findByMemberId(recommendDTO.getMemberId());
 
