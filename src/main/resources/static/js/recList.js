@@ -58,7 +58,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                     cell3.textContent = item.recStore;
                     cell4.textContent = item.recMenu;
                     cell5.textContent = item.memberId;
-                    cell6.textContent = item.createDate;
+
+                    const date = item.createDate;
+                    const year = date.substring(0, 4);
+                    const month = date.substring(4, 6);
+                    const day = date.substring(6, 8);
+                    cell6.textContent = year + "/" + month + "/" + day;
+
                     cell7.textContent = item.recViews;
                     cell7.className = "recView";
 
