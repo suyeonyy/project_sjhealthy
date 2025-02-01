@@ -138,12 +138,13 @@
     <input type="hidden" th:value="${administrator}" id="admin">
     <!-- th:text는 html 요소의 텍스트 내용을 설정. 따라서 value로 읽으려면 th:value로 해야 한다 -->
 </div>
+
+    <div class="text-center mt-4" id="pagination"></div>
+
 <div class="text-center mt-4">
     <a href="/sjhealthy/recommend/write" id="writeButton"><button class="btn btn-custom">추천글 작성</button></a>
     <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
 </div>
-
-<div class="text-center mt-4" id="pagination">
 
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
