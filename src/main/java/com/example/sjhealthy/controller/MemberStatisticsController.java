@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,4 +110,46 @@ public class MemberStatisticsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 실패하였습니다."));
         }
     }
+
+
+
+
+    @PostMapping("/statistics/statMain")
+    @ResponseBody  // 이 어노테이션을 추가하여 JSON 형식으로 응답을 반환
+    public ResponseEntity<Map<String, Object>> getStatisticsData(@SessionAttribute(name = "loginId", required = false) String loginId) {
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("loginId", loginId);
+
+        if (loginId != null) {  // 로그인 했을 때
+            System.out.println("로그인 멤버");
+            MemberStatisticsDTO achievement = service.getStatisticsByMemberId(loginId);
+
+            if (achievement == null) {
+                System.out.println("데이터가 존재하지 않습니다.");
+                response.put("statistics", null);
+            } else {
+                System.out.println("통계 가져오기 성공");
+                Double memberWeight = service.getMemberWeight(loginId);  // 몸무게
+                Double memberHeight = memberService.findMemberIdAtPassFind(loginId).getMemberHeight();
+
+                response.put("statistics", achievement);
+                response.put("memberWeight", memberWeight);
+                response.put("memberHeight", memberHeight);
+            }
+        } else {
+            response.put("statistics", null);
+        }
+
+        // 순위 리스트도 추가로 보내기
+        List<MemberStatisticsDTO> list = service.getRankList();
+        if (list.size() > 3) {
+            list = list.subList(0, 3);  // 첫 3개만 선택
+        }
+        System.out.println("통계 리스트 받아옴");
+        response.put("rankList", list);
+
+        return ResponseEntity.ok(response);  // JSON 형태로 응답 반환
+    }
+
 }
