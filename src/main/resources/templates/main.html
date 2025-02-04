@@ -41,11 +41,12 @@
         .main-content {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, auto);
+            grid-template-rows: repeat(2, 1fr);
             gap: 30px;
             flex-grow: 1;
             overflow: auto; /* 내부 콘텐츠에 스크롤을 허용 */
         }
+
 
         /* 각 구역 공통 스타일 */
         .content-box {
@@ -301,7 +302,7 @@
 
                 <div class="card">
                     <h5 class="card-title"><i class="bi bi-bar-chart-line"></i> 목표 달성도</h5>
-                    <p class="card-text" id="memberAchievementPercentage"></p>
+                    <p class="card-text" id="memberAchievementPercentage">%</p>
                 </div>
 
                 <div class="card">
