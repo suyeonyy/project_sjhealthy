@@ -102,7 +102,9 @@ public class RecommendController {
     public ResponseEntity<Response<Object>> getRecommendListTop5LikeCount(){
         try {
             List<RecommendDTO> dtoList = recommendService.getListTop5();
-            if (dtoList != null){
+            System.out.println("게시글 조회 = " + dtoList);
+//            if (dtoList != null){ 이걸로 검색하면 List는 걸러지지 않는다
+            if (!dtoList.isEmpty()){
                 return ResponseEntity.ok(new Response<>(dtoList, "추천글을 불러왔습니다."));
             } else {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "추천글이 존재하지 않습니다."));
