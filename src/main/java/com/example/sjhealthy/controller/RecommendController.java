@@ -63,7 +63,7 @@ public class RecommendController {
     @GetMapping("/recommend/list")
     public ResponseEntity<PagedModel<EntityModel<RecommendDTO>>> getRecommendList(
             @SessionAttribute(name = "loginId", required = false)String loginId, Model model,
-            @RequestParam(defaultValue = "1") int page, PagedResourcesAssembler<RecommendDTO> assembler){
+            @RequestParam(name="page",defaultValue = "1") int page, PagedResourcesAssembler<RecommendDTO> assembler){
         model.addAttribute("loginId", loginId);
 
         int size = 10;
@@ -81,13 +81,15 @@ public class RecommendController {
                 }
             }
 
-            if (list != null){
+            if (!list.isEmpty()){
                 // 추천글이 있을 때
                 System.out.println(list);
                 PagedModel<EntityModel<RecommendDTO>> recList = assembler.toModel(list);
                 return ResponseEntity.ok(recList);
             } else {
                 // 추천글이 없을 때
+                System.out.println("추천글 없음");
+                System.out.println(list);
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
         } catch (Exception e){
