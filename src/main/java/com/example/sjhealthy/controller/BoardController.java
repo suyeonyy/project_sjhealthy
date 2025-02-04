@@ -39,6 +39,8 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -83,7 +85,7 @@ public class BoardController {
     @GetMapping("/board/list")
     public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getBoardList(
         @SessionAttribute(name = "loginId", required = false) String loginId, Model model,
-        @RequestParam(defaultValue = "1") int page, PagedResourcesAssembler<BoardDTO> assembler) {
+        @RequestParam(name="page", defaultValue = "1") int page, PagedResourcesAssembler<BoardDTO> assembler) {
         model.addAttribute("loginId", loginId);
 
         int pageSize = 10;
@@ -136,7 +138,8 @@ public class BoardController {
 
     @PostMapping("/board/write")
     public String writeNewPost(@SessionAttribute(name = "loginId", required = false) String loginId,
-                               @ModelAttribute BoardDTO boardDTO, RedirectAttributes ra, Model model, MultipartFile file){
+                               @ModelAttribute BoardDTO boardDTO, RedirectAttributes ra, Model model,
+                               @RequestParam("file") MultipartFile file){
         model.addAttribute("loginId", loginId);
 
         try {
@@ -207,13 +210,14 @@ public class BoardController {
     }
 
     @RequestMapping("/board/read")
-    public String readPost(@RequestParam("boardId") Long boardId, Model model,
+    public String readPost(@RequestParam(name="boardId") Long boardId, Model model,
                            @SessionAttribute(name = "loginId", required = false) String loginId,
                            HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
 
         try {
             BoardDTO result = boardService.read(boardId);
+
             if (result.getBoardFileName() != null && !result.getBoardFileName().isEmpty()) { // 첨부파일 있을 때 출력
                 model.addAttribute("attachedFile", result.getBoardFileName());
             }
@@ -262,6 +266,7 @@ public class BoardController {
             // 쿠키가 없다면 생성
             Cookie newCookie = new Cookie("view_count", boardId.toString());
             newCookie.setPath("/");
+            newCookie.setMaxAge(24 * 60 * 60); // 24시간
             return newCookie;
         } else {
             for (Cookie cookie : cookies){
@@ -270,6 +275,7 @@ public class BoardController {
                         // 조회 기록 없을시 조회수 1 증가
                         boardService.countBoardView(boardDTO);
                         cookie.setValue(cookie.getValue() + "_" + boardId);
+                        System.out.println(cookie.getValue());
                         return cookie;
                     } else return null;
                 }
@@ -279,6 +285,7 @@ public class BoardController {
         boardService.countBoardView(boardDTO);
         Cookie newCookie = new Cookie("view_count", boardId.toString());
         newCookie.setPath("/");
+        newCookie.setMaxAge(24 * 60 * 60); // 24시간
         return newCookie;
     }
 
@@ -311,18 +318,29 @@ public class BoardController {
                              @RequestParam("boardId") Long boardId, @RequestParam("file") MultipartFile file){
         model.addAttribute("loginId", loginId);
 
+        // 업데이트일로 저장할 날짜 불러오기
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        String today = LocalDate.now().format(formatter);
+
         try {
+            // 기존 게시글 데이터에 변경된 데이터 추가
             BoardDTO postDTO = boardService.read(boardId);
             postDTO.setBoardTitle(boardDTO.getBoardTitle());
             postDTO.setBoardContent(boardDTO.getBoardContent());
-            if (!file.isEmpty()){ // 첨부파일이 존재한다면
-                // 기존에 첨부되었던 파일은 삭제해준다.
-                File before = new File(postDTO.getBoardFilePath());
+            postDTO.setUpdateUser(loginId);
+            postDTO.setUpdateDate(today);
 
-                if (before.exists()){
-                    if (before.delete()){
-                        System.out.println("기존 첨부 파일이 삭제되었습니다.");
-                    } else System.out.println("첨부파일이 삭제되지 않았습니다.");
+            assert file != null; // nullPointerException 발생 막기 위해
+            if (!file.isEmpty()){ // 첨부파일이 존재한다면
+                // 기존에 첨부되었던 파일이 있다면 삭제해준다.
+                if (postDTO.getBoardFileName() != null){
+                    File before = new File(postDTO.getBoardFilePath());
+
+                    if (before.exists()){
+                        if (before.delete()){
+                            System.out.println("기존 첨부 파일이 삭제되었습니다.");
+                        } else System.out.println("첨부파일이 삭제되지 않았습니다.");
+                    }
                 }
                 saveFile(file, postDTO); // postDTO에 MultipartFile로 읽어온 첨부파일 저장
             }
@@ -355,17 +373,19 @@ public class BoardController {
     @RequestMapping("/board/delete")
     public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra) throws NullPointerException{
         BoardDTO data = boardService.read(boardId);
+
         File file = null;
         if (data != null){
             //첨부파일 있는지 확인하기 위해
-            file = new File(data.getBoardFilePath());
+            if (data.getBoardFileName() != null){
+               file = new File(data.getBoardFilePath());
+            }
         }
 
         boolean isDeleted = boardService.delete(boardId);
         if (isDeleted){
             System.out.println("글 삭제가 완료되었습니다.");
-            assert file != null; // nullPointerException 발생 막기 위해
-            if (file.exists()){ // 있으면 저장소에서도 삭제
+            if (file != null && file.exists()){ // 있으면 저장소에서도 삭제
                 if (file.delete()){
                     System.out.println("첨부파일이 삭제되었습니다.");
                 } else System.out.println("첨부파일이 삭제되지 않았습니다.");
