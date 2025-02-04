@@ -144,8 +144,9 @@
                 return;
             } else if (!content){
                 // 내용이 비어있을 경우 추가 검증 (필요 시)
-                // alert("내용을 입력해 주세요.");
-                // e.preventDefault();
+                alert("내용을 입력해 주세요.");
+                $("#boardContent").focus();
+                e.preventDefault();
             }
 
             // 수정일 때
