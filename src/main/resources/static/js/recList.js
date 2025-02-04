@@ -8,22 +8,28 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     loadRecommendData(currentPage);
 
     async function loadRecommendData(page){
-        console.log("로드");
         // const recommendListTr = document.getElementById("content");
 
         // recommendListTr.innerText = ""; // 내용 초기화
         
         try {
             const response = await fetch("/sjhealthy/recommend/list?page=" + page);
-            const data = await response.json();
 
-            if (response.status === 200){
+            if (response.status === 204){
+                alert("추천글이 존재하지 않습니다.");
+                const content = document.getElementById("content");
+
+                const message = document.createElement("h1");
+                message.textContent = "추천글이 존재하지 않습니다.";
+
+                content.appendChild(message);
+                
+            } else if (response.ok){ // ok는 200~299를 포함해서 204 검사는 먼저 해준다
+                const data = await response.json();
                 const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
                 
                 const tableBody = document.getElementById("tableBody");
                 tableBody.innerHTML = "";
-
-                console.log(data);
 
                 // td를 생성해 tr에 넣어줌
                 array.forEach((item, index) => {
@@ -97,9 +103,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 });
                 displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
 
-            } else if (response.status === 204){
-                alert("추천글이 존재하지 않습니다.");
-            }
+            } 
         } catch (error) {
             console.log(error);
             alert("시스템 오류로 글을 불러오지 못했습니다.");
