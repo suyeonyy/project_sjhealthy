@@ -195,7 +195,7 @@
             padding: 0;
             margin: 0;
             max-height: 100px;  /* 최대 높이 설정 */
-            overflow-y: auto;  /* 세로 스크롤 가능 */
+            /*overflow-y: auto;*/  /* 세로 스크롤 가능 */
             scrollbar-width: thin;  /* 크롬, 파이어폭스에서 스크롤바 크기 조정 */
             scrollbar-color: #888 #f1f1f1; /* 스크롤바 색상 설정 (활성/비활성) */
         }
@@ -299,7 +299,7 @@
 
                 <div class="card">
                     <h5 class="card-title"><i class="bi bi-bar-chart-line"></i> 목표 달성도 (%)</h5>
-                    <p class="card-text" id="memberAchievementPercentage">%</p>
+                    <p class="card-text" id="memberAchievementPercentage"></p>
                 </div>
 
                 <div class="card">
@@ -374,8 +374,8 @@
                 if(data.statistics != null){
                     //1.데이터 있음
                     var memberId = data.statistics.memberId;
-                    var memberAchievementPercentage = data.statistics.memberAchievementPercentage;
-                    var memberRank = data.statistics.memberRank;
+                    var memberAchievementPercentage = data.statistics.memberAchievementPercentage + "%";
+                    var memberRank = data.statistics.memberRank + "위";
                     var memberWeight_Height = data.memberWeight + " kg / " + data.memberHeight + " cm";
                     var memberBmi = data.statistics.memberBmi;
                     /*
