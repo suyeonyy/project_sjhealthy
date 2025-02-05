@@ -123,7 +123,7 @@ public class RecommendController {
 
     @ResponseBody
     @GetMapping("/recommend/read")
-    public ResponseEntity<Response<Object>> readRecommendation(@RequestParam Long recId,
+    public ResponseEntity<Response<Object>> readRecommendation(@RequestParam("recId") Long recId,
                                               @SessionAttribute(name = "loginId", required = false)String loginId, Model model,
                                               HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
@@ -263,7 +263,7 @@ public class RecommendController {
 
     @ResponseBody
     @GetMapping("/recommend/detail/{recId}")
-    public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable Long recId, HttpServletRequest request,
+    public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable("recId") Long recId, HttpServletRequest request,
                                                                 @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                 HttpServletResponse response, Model model){
         model.addAttribute("loginId", loginId);
@@ -405,7 +405,7 @@ public class RecommendController {
     }
 
     @RequestMapping("/recommend/delete/{recId}")
-    public String deleteRecommend(@PathVariable Long recId, RedirectAttributes ra){
+    public String deleteRecommend(@PathVariable("recId") Long recId, RedirectAttributes ra){
         try {
             System.out.println("게시글 번호 = " + recId);
             boolean result = recommendService.delete(recId);
