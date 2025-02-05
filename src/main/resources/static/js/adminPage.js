@@ -193,8 +193,10 @@
                         row.appendChild(postNumber);
 
                         const title = document.createElement("td");
-                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}"></a>`;
-                        title.textContent = board.boardTitle;
+                        const link = document.createElement("a");
+                        link.href = "/sjhealthy/board/read?boardId=" + board.boardId;
+                        link.textContent = board.boardTitle;
+                        title.appendChild(link);
                         row.appendChild(title);
 
                         const writer = document.createElement("td");
