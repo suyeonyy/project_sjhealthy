@@ -52,7 +52,7 @@ public class MemberStatisticsController {
 
         List<MemberStatisticsDTO> list = service.getRankList();
         if (list.size() > 3) {
-            list = list.subList(0, 3); // 첫 5개만 선택
+            list = list.subList(0, 3); // 첫 3개만 선택
         }
         System.out.println("통계 리스트 받아옴");
         model.addAttribute("list", list);
