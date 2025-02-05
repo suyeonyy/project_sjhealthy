@@ -27,7 +27,6 @@ public class MemberStatisticsController {
     @Autowired
     private MemberService memberService;
 
-//    TODO: 회원가입 후 회원 키, 몸무게 입력 칸 추가
     @GetMapping({"/statistics", "/statistics/"})
     public String getStatistics(@SessionAttribute(name = "loginId", required = false) String loginId,
                                      Model model){
@@ -55,6 +54,7 @@ public class MemberStatisticsController {
             list = list.subList(0, 3); // 첫 3개만 선택
         }
         System.out.println("통계 리스트 받아옴");
+        System.out.println(list);
         model.addAttribute("list", list);
 
         return "statistics/statMain";
