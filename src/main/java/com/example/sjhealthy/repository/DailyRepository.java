@@ -62,13 +62,15 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
                 "FROM daily_table d " + // nativeQuery를 쓰면 테이블로 표기
                 "JOIN member_table m ON m.member_id = d.member_id " + // member_table과 조인
                 "LEFT JOIN " + // 셀프조인으로 해당 회원의 처음 체중을 가져와 계산에 사용
-                "   daily_table first ON first.member_id = m.member_id AND first.daily_id = ( " +
-                "       SELECT MIN(daily_id) FROM daily_table WHERE member_id = m.member_id) " +
-                "WHERE d.daily_id = (SELECT " + // 현재 체중은 멤버별 가장 최근 데이터 사용
-                "                       MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = m.member_id) " +
-            ") AS ranked_data " +
-            "WHERE memberRank <= 3 " +  // 3위까지만
-            "ORDER BY memberRank ASC", nativeQuery = true) // 내림차순으로 조회
+                "   daily_table first ON first.member_id = m.member_id AND first.daily_date = ( " +
+                "       SELECT MIN(daily_date * 1) FROM daily_table WHERE member_id = m.member_id) " +
+                "WHERE d.daily_date = (SELECT " + // 현재 체중은 멤버별 가장 최근 데이터 사용
+//        "                       MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = m.member_id) " +
+                "                       MAX(d2.daily_date * 1) FROM daily_table d2 WHERE d2.member_id = m.member_id) " +
+                                        // MySQL에서는 문자열을 숫자로 자동 변환 = 문자열에 * 1 을 해서 숫자로 변환
+                ") AS ranked_data " +
+                "WHERE memberRank <= 3 " +  // 3위까지만
+                "ORDER BY memberRank ASC", nativeQuery = true) // 내림차순으로 조회
     List<Tuple> getRankList();
 
     @Query(value= "SELECT " + // 특정 멤버의 목표 달성도, 순위, BMI를 구해 가져옴(해당 회원 통계 출력용)
@@ -79,20 +81,21 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
             "FROM daily_table d " + // nativeQuery를 쓰면 테이블로 표기
             "JOIN member_table m ON m.member_id = d.member_id " + // member_table과 조인
             "LEFT JOIN " + // 셀프조인으로 해당 회원의 처음 체중을 가져와 계산에 사용
-            "   daily_table first ON first.member_id = m.member_id AND first.daily_id = ( " +
-            "       SELECT MIN(daily_id) FROM daily_table WHERE member_id = :memberId) " +
+            "   daily_table first ON first.member_id = m.member_id AND first.daily_date = ( " +
+//            "       SELECT MIN(daily_id) FROM daily_table WHERE member_id = :memberId) " +
+            "       SELECT MIN(daily_date * 1) FROM daily_table WHERE member_id = :memberId) " +
             "JOIN ( " + // 순위 계산
             "       SELECT " +
             "           d.member_id AS memberId, " +
             "           DENSE_RANK() OVER (ORDER BY ((first.daily_cur_wt - d.daily_cur_wt) / (first.daily_cur_wt - d.daily_goal_wt)) DESC) AS memberRank " +
             "       FROM daily_table d " +
             "       JOIN member_table m ON m.member_id = d.member_id " +
-            "       LEFT JOIN daily_table first ON first.member_id = m.member_id AND first.daily_id = ( " +
-            "           SELECT MIN(daily_id) FROM daily_table WHERE member_id = m.member_id) " +
-            "       WHERE d.daily_id = (SELECT MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = d.member_id) " +
+            "       LEFT JOIN daily_table first ON first.member_id = m.member_id AND first.daily_date = ( " +
+            "           SELECT MIN(daily_date * 1) FROM daily_table WHERE member_id = m.member_id) " +
+            "       WHERE d.daily_date = (SELECT MAX(d2.daily_date * 1) FROM daily_table d2 WHERE d2.member_id = d.member_id) " +
             ") ranked ON ranked.memberId = d.member_id " +
-            "WHERE d.member_id = :memberId AND d.daily_id = (SELECT " + // 현재 체중은 멤버별 가장 최근 데이터 사용
-            "                       MAX(d2.daily_id) FROM daily_table d2 WHERE d2.member_id = :memberId)"
+            "WHERE d.member_id = :memberId AND d.daily_date = (SELECT " + // 현재 체중은 멤버별 가장 최근 데이터 사용
+        "                       MAX(d2.daily_date * 1) FROM daily_table d2 WHERE d2.member_id = m.member_id) "
             , nativeQuery = true)
     Tuple getStatisticsByMemberId(@Param("memberId") String memberId);
 
