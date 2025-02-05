@@ -117,7 +117,7 @@ public class RecommendService {
             // 좋아요 처리
             if (!recommendEntity.getRecY().contains(memberId)){
                 // 좋아요를 누른 적 없을 때
-                recommendEntity.setRecY(memberId + "_");
+                recommendEntity.setRecY(recommendEntity.getRecY() + memberId + "_");
             } else {
                 // 좋아요를 이미 눌렀을 때
                 return false;
@@ -132,7 +132,7 @@ public class RecommendService {
             // 싫어요 처리
             if (!recommendEntity.getRecN().contains(memberId)){
                 // 싫어요를 누른 적 없을 때
-                recommendEntity.setRecN(memberId + "_");
+                recommendEntity.setRecN(recommendEntity.getRecN() + memberId + "_");
             } else {
                 // 싫어요를 이미 눌렀을 때
                 return false;
