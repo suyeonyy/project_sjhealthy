@@ -102,7 +102,9 @@ public class RecommendController {
     public ResponseEntity<Response<Object>> getRecommendListTop5LikeCount(){
         try {
             List<RecommendDTO> dtoList = recommendService.getListTop5();
-            if (dtoList != null){
+            System.out.println("게시글 조회 = " + dtoList);
+//            if (dtoList != null){ 이걸로 검색하면 List는 걸러지지 않는다
+            if (!dtoList.isEmpty()){
                 return ResponseEntity.ok(new Response<>(dtoList, "추천글을 불러왔습니다."));
             } else {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "추천글이 존재하지 않습니다."));
@@ -121,7 +123,7 @@ public class RecommendController {
 
     @ResponseBody
     @GetMapping("/recommend/read")
-    public ResponseEntity<Response<Object>> readRecommendation(@RequestParam Long recId,
+    public ResponseEntity<Response<Object>> readRecommendation(@RequestParam("recId") Long recId,
                                               @SessionAttribute(name = "loginId", required = false)String loginId, Model model,
                                               HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
@@ -261,7 +263,7 @@ public class RecommendController {
 
     @ResponseBody
     @GetMapping("/recommend/detail/{recId}")
-    public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable Long recId, HttpServletRequest request,
+    public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable("recId") Long recId, HttpServletRequest request,
                                                                 @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                 HttpServletResponse response, Model model){
         model.addAttribute("loginId", loginId);
@@ -403,7 +405,7 @@ public class RecommendController {
     }
 
     @RequestMapping("/recommend/delete/{recId}")
-    public String deleteRecommend(@PathVariable Long recId, RedirectAttributes ra){
+    public String deleteRecommend(@PathVariable("recId") Long recId, RedirectAttributes ra){
         try {
             System.out.println("게시글 번호 = " + recId);
             boolean result = recommendService.delete(recId);
