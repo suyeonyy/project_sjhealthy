@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 
                 detailDiv.innerHTML = ""; 
                 detailDiv.innerHTML = `
-                    <p><strong>가게 이름: </strong><span id="storeName"></span></p>
+                    <p><strong>업체 명: </strong><span id="storeName"></span></p>
                     <p><strong>메뉴: </strong><span id="storeMenu"></span></p>
                     <p><strong>좋아요: </strong><span id="detail-like"></span></p> 
                     <p><strong>싫어요: </strong><span id="detail-dislike"></span></p>
@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
         try {
             const url = "/sjhealthy/recommend/sort/" + encodeURIComponent(search);
-            // 한글(가게 이름)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
+            // 한글(업체 명)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
 
             const response = await fetch(url);
             const data = await response.json(); // 응답을 json으로 변환

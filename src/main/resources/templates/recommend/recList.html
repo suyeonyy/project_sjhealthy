@@ -112,7 +112,7 @@
     <br>
     <div id="content" class="container justify-content-center">
         <!--검색하여 정렬-->
-        <span style="font-weight: 600;">가게이름: </span><input type="search" id="searchByStoreName" style="border: 2px solid lightgray; padding: 5px;">
+        <span style="font-weight: 600;">업체 명: </span><input type="search" id="searchByStoreName" style="border: 2px solid lightgray; padding: 5px;">
         <input type="button" id="searchButton" value="검색" class="btn btn-custom" style="margin-bottom: 3px;">
     <!-- 테이블 -->
     <table class="table table-hover text-center table-bordered mt-4" id="recTable">
@@ -120,7 +120,7 @@
         <tr>
             <th>상세보기</th> <!-- 상세보기 버튼-->
             <th>글 번호</th>
-            <th>가게 이름</th>
+            <th>업체 명</th>
             <th>추천 메뉴</th>
             <th>작성자</th>
             <th>작성일</th>
@@ -157,7 +157,7 @@
             <!-- <tr th:each="board, iterStat : ${list}" th:id="'detailRow-' + ${board.recId}" class="detail" style="display: none;">
                 <td colspan="10">
                     <div>
-                        <p><strong>가게 이름: </strong><span th:text="${board.recStore}"></span></p>
+                        <p><strong>업체 명: </strong><span th:text="${board.recStore}"></span></p>
                         <p><strong>메뉴: </strong><span th:text="${board.recMenu}"></span></p>
                         <p><strong>좋아요: </strong><span th:id="'detail-like'+ ${iterStat.index}"></span></p>
                         <p><strong>싫어요: </strong><span th:id="'detail-dislike'+ ${iterStat.index}"></span></p>
