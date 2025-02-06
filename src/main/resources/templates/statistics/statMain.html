@@ -181,19 +181,20 @@
         // 키를 입력했는지 확인하여 연결
         const height = document.getElementById("height").value;
 
-        if (height == null || height == 0.0) { // 키를 입력하지 않았을 때, 입력 받아 추가하여 값을 가져옴
-            let memberHeight = prompt("키를 입력해주세요.");
+        if (height == null || height == 0.0) { // 키를 입력하지 않았을 때, 입력 받아 추가하여 값을 가져옴, 첫째자리까지 받음
+            let memberHeight = parseFloat(prompt("키를 입력해주세요. (소수점 첫째자리까지 입력)", "예: 160.0")).toFixed(1);
+            // parseFloat으로 문자열을 숫자로 변경하여 toFixed로 첫째자리까지 입력하도록 제한
 
             try {
                 const response = await fetch("/sjhealthy/statistics/height/" + memberHeight);
-                const data = await response.json();
-    
+
                 if (response.ok){
+                    const data = await response.json();
                     alert(data.message);
                     window.location.href = "/sjhealthy/statistics";
                 }
             } catch(error){
-                alert(data.message);
+                alert("시스템 오류로 실패하였습니다.");
             }
         } else {
             console.log("키 " + height);
