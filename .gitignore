@@ -38,3 +38,10 @@ out/
 
 ### AppKey & code ###
 /src/main/resources/properties/env.properties
+
+### backup ###
+project-backup/
+project_sjhealthy.git.bfg-report/
+.git-rewrite/
+project_sjhealthy.git/
+
