@@ -8,22 +8,28 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     loadRecommendData(currentPage);
 
     async function loadRecommendData(page){
-        console.log("로드");
         // const recommendListTr = document.getElementById("content");
 
         // recommendListTr.innerText = ""; // 내용 초기화
         
         try {
             const response = await fetch("/sjhealthy/recommend/list?page=" + page);
-            const data = await response.json();
 
-            if (response.status === 200){
+            if (response.status === 204){
+                alert("추천글이 존재하지 않습니다.");
+                const content = document.getElementById("content");
+
+                const message = document.createElement("h1");
+                message.textContent = "추천글이 존재하지 않습니다.";
+
+                content.appendChild(message);
+
+            } else if (response.ok){ // ok는 200~299를 포함해서 204 검사는 먼저 해준다
+                const data = await response.json();
                 const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
                 
                 const tableBody = document.getElementById("tableBody");
                 tableBody.innerHTML = "";
-
-                console.log(data);
 
                 // td를 생성해 tr에 넣어줌
                 array.forEach((item, index) => {
@@ -97,8 +103,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 });
                 displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
 
-            } else if (response.status === 204){
-                alert("추천글이 존재하지 않습니다.");
             }
         } catch (error) {
             console.log(error);
@@ -202,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 
                 detailDiv.innerHTML = ""; 
                 detailDiv.innerHTML = `
-                    <p><strong>가게 이름: </strong><span id="storeName"></span></p>
+                    <p><strong>업체 명: </strong><span id="storeName"></span></p>
                     <p><strong>메뉴: </strong><span id="storeMenu"></span></p>
                     <p><strong>좋아요: </strong><span id="detail-like"></span></p> 
                     <p><strong>싫어요: </strong><span id="detail-dislike"></span></p>
@@ -291,7 +295,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
         try {
             const url = "/sjhealthy/recommend/sort/" + encodeURIComponent(search);
-            // 한글(가게 이름)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
+            // 한글(업체 명)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
 
             const response = await fetch(url);
             const data = await response.json(); // 응답을 json으로 변환

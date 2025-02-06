@@ -33,12 +33,12 @@
                 <div class="mb-1">
                     <label for="memberId" class="form-label">
                     아이디:
-                    </label> 
+                    </label>
                     <input type="text" class="form-control" name="memberId" id="memberId"><br>
                 </div>
                 <div class="mb-3">
                     <label for="memeberPassword" class="form-label">
-                    비밀번호: 
+                    비밀번호:
                     </label>
                     <input type="password" class="form-control" name="memberPassword" id="memberPassword">
                 </div>
@@ -91,26 +91,6 @@
         const submit = document.getElementById("submit");
         const google = document.getElementById("googleOAuth");
 
-
-        // const loginForm = document.getElementById("loginForm");
-        // console.log("로그인폼확인"); // 올바르게 참조되는지 확인
-        // console.log(loginForm); // 올바르게 참조되는지 확인
-
-        // 로그인 유효성 검사
-        // loginForm.addEventListener("submit", (e) => {
-        //     const id = document.getElementById("memberId").value;
-        //     const password = document.getElementById("memberPassword").value;
-
-        //     if (!id){
-        //         alert("아이디를 입력해 주세요.");
-        //         event.preventDefault();
-        //     } else if (!password){
-        //         alert("비밀번호를 입력해 주세요.");
-        //         event.preventDefault();
-        //     }
-        // });
-        
-        // 새로 만든 거 아까워서 씀..ㅎ
         submit.addEventListener("click", (e) => {
             e.preventDefault();
 
@@ -127,7 +107,7 @@
                 submitLoginForm(id, password);
             }
         });
-        
+
 
         // 로그인 데이터 제출 후 로그인 처리
         async function submitLoginForm(id, password){
@@ -142,7 +122,7 @@
                      memberId: id,
                      memberPassword: password
                  })
-                }); 
+                });
                 const data = await response.json();
                 if (response.status === 200){
                     alert(data.message);
@@ -154,25 +134,7 @@
             } catch (error){
                 console.log("Error: " + error);
             }
-
         }
-
-        // // 구글 로그인 버튼
-        // google.addEventListener("click", (e)=>{
-        //     e.preventDefault();
-
-        //     googleOAuthLogin();
-        // });
-
-        // function googleOAuthLogin(){
-        //     const client_id = /*[[${client_id}]]*/'';
-        //     const redirect_uri = /*[[${redirect_uri}]]*/'';
-    
-        //     const url = "https://accounts.google.com/o/oauth2/v2/auth?client_id=" + client_id
-        //         + "&redirect_uri=" + redirect_uri
-        //         + "&response_type=code&scope=email+profile"; // scope 에 요청 정보
-        //     window.location.href = url; // 로그인 페이지로 리다이렉트
-        // }
 });
 </script>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
