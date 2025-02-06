@@ -40,7 +40,7 @@ out/
 /src/main/resources/properties/env.properties
 
 ### 커밋 내역 수정용 백업 ###
-.git-rewrite
-project_sjhealthy.git.bfg-report
-project_sjhealthy.git
-project-backup
+.git-rewrite/
+project_sjhealthy.git.bfg-report/
+project_sjhealthy.git/
+project-backup/
