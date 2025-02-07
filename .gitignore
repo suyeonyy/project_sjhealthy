@@ -38,10 +38,13 @@ out/
 
 ### AppKey & code ###
 /src/main/resources/properties/env.properties
+/src/main/resources/properties/key.properties
+/src/main/resources/properties/*
+### 마지막 건 폴더 내 모든 파일. 위에 걸로 이미 적용되지만 그냥 썼다###
 
-### backup ###
-project-backup/
-project_sjhealthy.git.bfg-report/
+
+### 커밋 내역 수정용 백업 ###
 .git-rewrite/
+project_sjhealthy.git.bfg-report/
 project_sjhealthy.git/
-
+project-backup/
