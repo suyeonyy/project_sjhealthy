@@ -187,7 +187,7 @@
 
             try {
                 const response = await fetch("/sjhealthy/statistics/height/" + memberHeight);
-                
+
                 if (response.ok){
                     const data = await response.json();
                     alert(data.message);
