@@ -237,7 +237,7 @@ public class LoginController {
 
     // 구글 로그인 연동
     @GetMapping("/member/login/oauth/google")
-    public String OAuthGoogle(String code, HttpServletRequest request, RedirectAttributes ra, Model model) throws JsonProcessingException {
+    public String OAuthGoogle(@RequestParam("code") String code, HttpServletRequest request, RedirectAttributes ra, Model model) throws JsonProcessingException {
         OAuthToken token = getAccessTokenWithGoogle(code, request);
         System.out.println("토큰 " + token);
         GoogleProfile profile = requestGoogleAccountProfile(token);
@@ -510,7 +510,7 @@ public class LoginController {
     // 구글 연동 회원 탈퇴
     @ResponseBody
     @GetMapping("/member/delete/google/{memberId}")
-    public ResponseEntity<?> deleteGoogleMember(@PathVariable String memberId, HttpServletRequest request,
+    public ResponseEntity<?> deleteGoogleMember(@PathVariable ("memberId") String memberId, HttpServletRequest request,
                                                 @SessionAttribute(name = "accessToken_google", required = false)String accessToken){
         if (memberId == null || memberId.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 존재하지 않습니다."));
