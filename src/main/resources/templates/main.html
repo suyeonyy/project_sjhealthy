@@ -341,7 +341,7 @@
 
         <!-- 우측 하단: 추천 게시판 내용 (5개 게시물) -->
         <div class="content-box right-bottom">
-            <h2>추천 게시판 - <span class="sub-heading">추천 메뉴</span></h2>
+            <h2>추천 게시판 - <span class="sub-heading">추천 메뉴</span></h2>            
             <ul id="recommend">
                 <!-- <li><a href="/sjhealthy/recommend/post1">추천 게시글 1</a></li>
                 <li><a href="/sjhealthy/recommend/post2">추천 게시글 2</a></li>
@@ -406,14 +406,14 @@
 
         getBoardList();
         getRecommendList();
-
+        
         async function getBoardList(){
             const board = document.getElementById("board");
-
+    
             try {
                 const response = await fetch("/sjhealthy/board/current");
                 const data = await response.json();
-
+                
                 if (response.status === 204){
                     // 게시글이 존재하지 않을 때
                     const li = document.createElement("li");
@@ -442,10 +442,10 @@
 
         async function getRecommendList(){
             const recommend= document.getElementById("recommend");
-
+    
             try {
                 const response = await fetch("/sjhealthy/recommend/best");
-
+                
                 if (response.status === 204){
                     // 게시글이 존재하지 않을 때
                     const li = document.createElement("li");
