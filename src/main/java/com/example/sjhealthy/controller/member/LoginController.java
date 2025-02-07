@@ -137,7 +137,6 @@ public class LoginController {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode rootNode = objectMapper.readTree(userInfo);  // JSON 문자열을 JsonNode로 파싱
 
-
         // kakao_account에서 이메일을 추출
         JsonNode kakaoAccountNode = rootNode.path("kakao_account");  // "kakao_account" 필드 추출
         String email = kakaoAccountNode.path("email").asText();  // 이메일 추출

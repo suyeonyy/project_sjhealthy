@@ -51,5 +51,9 @@ spring:
 
 
   kakao:
+<<<<<<< HEAD
     client_id: 7cddfea0ec0190490569dbcc959a263e #{REST API KEY}
+=======
+    client_id: ***REMOVED*** #{REST API KEY}
+>>>>>>> 4c15b6d384f74e4e977ef3aeaccf9ab39a7e6ad1
     redirect_uri: http://localhost:8081/oauth/kakao/callback
