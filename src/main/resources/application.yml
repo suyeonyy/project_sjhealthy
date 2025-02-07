@@ -48,8 +48,3 @@ spring:
           type:
             descriptor:
               sql: trace
-
-
-  kakao:
-    client_id: ***REMOVED*** #{REST API KEY}
-    redirect_uri: http://localhost:8081/oauth/kakao/callback
