@@ -38,6 +38,7 @@ out/
 
 ### AppKey & code ###
 /src/main/resources/properties/env.properties
+/src/main/resources/properties/
 
 ### 커밋 내역 수정용 백업 ###
 .git-rewrite/
