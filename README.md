@@ -32,4 +32,8 @@ Healthy Diet
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Github.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
 </div>
-    </div>
+노션 접속링크<br>
+https://pewter-emperor-943.notion.site/1341a6f4c99380bfa22fe7729a82bc4b?v=1341a6f4c99381a1b4f6000c14ba6364&pvs=4 (진행내용)
+https://pewter-emperor-943.notion.site/1341a6f4c99380299f6ee08c64cb8707?v=1341a6f4c99380b8aaa4000cbaa8b774&pvs=4 (회의내용)
+https://pewter-emperor-943.notion.site/1341a6f4c9938098a367ccc42215a8a4?v=1341a6f4c9938042872c000ccd9c9c0c&pvs=4 (문서)
+</div>
