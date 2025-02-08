@@ -294,7 +294,11 @@
 
         // 데이터 요청 함수
         async function requestData(year, month, type){
-            now.textContent = year + "년 " + month + "월"
+            if (type === "year"){
+                now.textContent = year + "년";
+            } else if (type === "month"){
+                now.textContent = year + "년 " + month + "월";
+            }
 
             try{
                 const response = await fetch("/sjhealthy/statistics/graph/" + type, {
