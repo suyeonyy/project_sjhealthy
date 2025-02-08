@@ -1,10 +1,15 @@
 package com.example.sjhealthy.service;
 
+import com.example.sjhealthy.component.BoardMapper;
 import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.entity.MemberEntity;
 import com.example.sjhealthy.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,13 @@ public class MemberService {
             dtoList.add(dto);
         }
         return dtoList;
+    }
+
+    public Page<MemberDTO> getMemberListWithPage(int page, int size){
+        Pageable pageable = PageRequest.of(page-1, size); // page는 1부터 시작하니까 -1 해서 가져옴
+
+        Page<MemberEntity> entity = memberRepository.findAllByOrderByCreateDateDesc(pageable);
+        return MemberMapper.convertToMemberDTOPage(entity);
     }
 
     public MemberDTO login(MemberDTO memberDTO) {
