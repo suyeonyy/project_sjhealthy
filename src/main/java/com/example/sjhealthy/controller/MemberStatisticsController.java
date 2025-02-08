@@ -14,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +67,16 @@ public class MemberStatisticsController {
     public String openWeightGraph(@SessionAttribute(name = "loginId", required = false) String loginId,
                                   Model model){
         model.addAttribute("loginId", loginId);
+
         return "statistics/weightChangeGraph";
     }
 
     @ResponseBody
-    @PostMapping("/statistics/graph")
+    @PostMapping("/statistics/graph/{type}")
     public ResponseEntity<Response<Object>> createWeightChangeGraph(
-        @SessionAttribute(name = "loginId", required = false) String loginId,
-        Model model, @RequestBody Map<String, Integer> data){
+                                    @PathVariable("type") String type,
+                                    @SessionAttribute(name = "loginId", required = false) String loginId,
+                                    Model model, @RequestBody Map<String, Integer> data){
         model.addAttribute("loginId", loginId);
         System.out.println("그래프 요청");
 
@@ -81,12 +86,17 @@ public class MemberStatisticsController {
         System.out.println("year: " + year);
 
         try {
-            List<Map<String, Double>> weightList = service.getWeightListByMemberIdAndMonth(loginId, month, year);
-            System.out.println("weightList = " + weightList);
+            List<Map<String, Double>> weightList = null;
+            if (type.equals("month")){
+                weightList = service.getWeightListByMemberIdAndMonth(loginId, month, year);
+            } else if (type.equals("year")){
+                weightList = service.getWeightListByMemberIdAndYear(loginId, year);
+            }
+
             if (weightList.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "데이터가 존재하지 않습니다."));
             }
-            return ResponseEntity.ok(new Response<>(weightList, null));
+            return ResponseEntity.ok(new Response<>(weightList, "데이터를 성공적으로 보냈습니다."));
         } catch (Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류"));
