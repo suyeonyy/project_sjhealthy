@@ -57,28 +57,38 @@ public class AdminController {
 
     @ResponseBody
     @GetMapping("/admin/member")
-    public ResponseEntity<Response<Object>> getMemberList(Model model, @SessionAttribute(name = "loginId", required = false)String loginId) {
+    public ResponseEntity<Response<Object>> getMemberList(Model model, @RequestParam(name="page", defaultValue = "1") int page,
+                                                          PagedResourcesAssembler<MemberDTO> assembler,
+                                                          @SessionAttribute(name = "loginId", required = false)String loginId) {
         model.addAttribute("loginId", loginId);
-        if (loginId != null) {
-            MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
-            System.out.println(loginMember);
 
-            if (loginMember.getMemberAuth().equals("A")) {
-                // 관리자인지 확인
-                List<MemberDTO> dtoList = memberService.getMemberList();
+        int pageSize = 10;
 
-                List<MemberEntity> memberList = new ArrayList<>();
-                for (MemberDTO dto : dtoList){
-                    memberList.add(MemberMapper.toMemberEntity(dto));
+        try {
+            if (loginId != null) {
+                MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
+
+                if (loginMember.getMemberAuth().equals("A")) {
+                    // 관리자인지 확인
+                    Page<MemberDTO> dtoList = memberService.getMemberListWithPage(page, pageSize);
+                    if (dtoList == null || dtoList.isEmpty()){
+                        // 게시물 없을 때
+                        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "게시물이 없습니다."));
+                    } else {
+                        PagedModel<EntityModel<MemberDTO>> memberList = assembler.toModel(dtoList);
+                        return ResponseEntity.ok().body(new Response<>(memberList, "리스트를 가져왔습니다."));
+                    }
+                } else { // HTTP 코드 403 반환
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
+                        "관리자만 접근 가능한 페이지입니다."));
                 }
-                return ResponseEntity.ok(new Response<>(memberList, null));
-            } else { // HTTP 코드 403 반환
+            } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
                     "관리자만 접근 가능한 페이지입니다."));
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-                "관리자만 접근 가능한 페이지입니다."));
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null,
+                "시스템 오류"));
         }
     }
 
@@ -95,33 +105,6 @@ public class AdminController {
         return ResponseEntity.ok().body(new Response<>(null, "탈퇴를 완료하였습니다."));
     }
 
-    // 페이지 없는 거
-//    @ResponseBody
-//    @GetMapping("/admin/post")
-//    public ResponseEntity<Response<Object>> getAllPost(Model model, @SessionAttribute(name = "loginId", required = false)String loginId) {
-//        model.addAttribute("loginId", loginId);
-//        if (loginId != null) {
-//            MemberDTO loginMember = memberService.findMemberIdAtPassFind(loginId);
-//            System.out.println(loginMember);
-//
-//            if (loginMember.getMemberAuth().equals("A")) {
-//                // 관리자인지 확인
-//                List<BoardDTO> dtoList = boardService.getList();
-//
-//                List<BoardEntity> boardList = new ArrayList<>();
-//                for (BoardDTO boardDTO : dtoList) {
-//                    boardList.add(BoardMapper.toBoardEntity(boardDTO, memberService.findMemberEntity(loginId)));
-//                }
-//                return ResponseEntity.ok(new Response<>(boardList, null));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-//                    "관리자만 접근 가능한 페이지입니다."));
-//            }
-//        } else {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null,
-//                "관리자만 접근 가능한 페이지입니다."));
-//        }
-//    }
     @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
     public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getAllPost(@RequestParam(defaultValue = "1", name = "page") int page, Model model,
