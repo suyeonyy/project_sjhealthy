@@ -55,6 +55,7 @@
     <div id='calendar-container'>
         <div id='calendar'></div>
     </div>
+    <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
 </main>
 <!-- jquery CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -74,20 +75,11 @@
                 var selected = dailyList[i];
                 var dailyDate = selected.dailyDate;
                 var dailyTitle = selected.dailyTitle;
-
-                //console.log("dailyDate",dailyDate);
-                //console.log("dailyTitle",dailyTitle);
             }
         }
         */
 
-        console.log("zzz");
-        console.log(dailyList);
-
         if(dailyList.length > 0){
-            console.log("진입1?");
-
-
             var events = [];
             for(var i = 0; i < dailyList.length; i++){
                 var selected = dailyList[i];
@@ -107,9 +99,6 @@
 
                 // 날짜 형식을 출력
                 var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
-
-                //console.log("결과");
-                //console.log(startDate);
 
                 // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
                 var event = {
@@ -133,8 +122,6 @@
             initializeFullCalendar(events);
        }
     });
-
-
 
     function initializeFullCalendar(event1) {
         var calendarEl = $('#calendar')[0];
@@ -165,13 +152,19 @@
                 calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
             },
             select: function(arg) { // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
-                //클릭한 날짜
-                var dailyDate = arg.startStr;
-                dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
-                window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+                var memberId = $("#memberId").val();
+
+                if(memberId != ""){
+                    //클릭한 날짜
+                    var dailyDate = arg.startStr;
+                    dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
+                    window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+                }else{
+                    alert("글은 회원만 작성할 수 있습니다.");
+                    return;
+                }
             },
             eventClick : function(info){
-                //console.log("등록된 일정 클릭");
                 //console.log(info.event.start);
                 var date = info.event.start;
                 var year = date.getFullYear() + "";
@@ -180,7 +173,6 @@
 
                 // 원하는 형식으로 출력
                 var dailyDate = year + month + day;
-                //console.log("최종",dailyDate);
 
                 window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
             },
@@ -205,58 +197,51 @@
                    },
                    dataType: 'json',  // 응답 데이터 형식을 JSON으로 설정
                    success : function(response) {
-                      console.log("success");
-
+                      //console.log("success");
                       var dailyList = response.dailyList; // dailyList 배열을 추출
 
-                      console.log("음");
-                      console.log(dailyList);
-
                       var events = [];  // 새로운 이벤트 배열을 초기화
+                      if(dailyList != null){
+                            if(dailyList.length > 0){
 
-                      if(dailyList.length > 0){
-                            console.log("진입2?");
+                                for(var i = 0; i < dailyList.length; i++){
+                                    var selected = dailyList[i];
+                                    var dailyDate = selected.dailyDate;
+                                    var dailyTitle = selected.dailyTitle;
 
-                            for(var i = 0; i < dailyList.length; i++){
-                                var selected = dailyList[i];
-                                var dailyDate = selected.dailyDate;
-                                var dailyTitle = selected.dailyTitle;
+                                    //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
+                                    //console.log(typeof dateString);
 
-                                //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
-                                //console.log(typeof dateString);
+                                    // 문자열을 연, 월, 일로 분리
+                                    var year = dailyDate.substring(0, 4);
+                                    var month = dailyDate.substring(4, 6) - 1; // 월은 0부터 시작
+                                    var day = dailyDate.substring(6, 8);
 
-                                // 문자열을 연, 월, 일로 분리
-                                var year = dailyDate.substring(0, 4);
-                                var month = dailyDate.substring(4, 6) - 1; // 월은 0부터 시작
-                                var day = dailyDate.substring(6, 8);
+                                    // 새로운 Date 객체 생성
+                                    var date = new Date(year, month, day);
 
-                                // 새로운 Date 객체 생성
-                                var date = new Date(year, month, day);
+                                    // 날짜 형식을 출력
+                                    var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
 
-                                // 날짜 형식을 출력
-                                var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
+                                    // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
+                                    var event = {
+                                        title: dailyTitle,
+                                        start: dailyDate
+                                    };
+                                    events.push(event);
+                               }
 
-                                //console.log("결과");
-                                //console.log(startDate);
+                                // 이전 이벤트를 제거하고 새로운 이벤트로 업데이트
+                                calendar.removeAllEvents();
+                                calendar.addEventSource(events);  // 새 이벤트 배열을 이벤트 소스로 추가
 
-                                // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
-                                var event = {
-                                    title: dailyTitle,
-                                    start: dailyDate
-                                };
-                                events.push(event);
-                           }
+                                calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
+                          }else{
+                                var events = [];
+                                calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
+                          }
 
-                            // 이전 이벤트를 제거하고 새로운 이벤트로 업데이트
-                            calendar.removeAllEvents();
-                            calendar.addEventSource(events);  // 새 이벤트 배열을 이벤트 소스로 추가
-
-                            calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
-                      }else{
-                            var events = [];
-                            calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
                       }
-
                    }, error : function() {
                       //console.log("fail");
                    }
