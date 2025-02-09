@@ -154,11 +154,27 @@
             select: function(arg) { // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
                 var memberId = $("#memberId").val();
 
+                var selectedDate = arg.startStr;  // 선택된 날짜 (yyyy-mm-dd 형식)
+                // 현재 보이는 캘린더에 있는 모든 이벤트 가져오기
+                var events = calendar.getEvents();
+                // 선택된 날짜에 해당하는 이벤트가 있는지 확인
+                var eventExists = events.some(function(event) {
+                    return event.startStr === selectedDate; // 이벤트의 시작 날짜가 선택된 날짜와 일치하는지 확인
+                });
+
+                var clickedDate = arg.startStr;  //'yyyy-mm-dd'
+                var dailyDate = clickedDate.replaceAll("-", "");  //'yyyyMMdd' 형식으로 변환
+
                 if(memberId != ""){
-                    //클릭한 날짜
-                    var dailyDate = arg.startStr;
-                    dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
-                    window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+                    if(!eventExists){
+                        //클릭한 날짜
+                        var dailyDate = arg.startStr;
+                        dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
+                        window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+                    }else{ //이미 등록된 일지있음
+                        //alert("이미 등록된 일지가 있습니다.");
+                        window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
+                    }
                 }else{
                     alert("글은 회원만 작성할 수 있습니다.");
                     return;
