@@ -6,22 +6,27 @@
         const reportNav = document.getElementById("reportNav");
         const content = document.getElementById("content");
 
+        let currentPageM = 1;
+        const pageSizeM = 10;
         
         // 회원 관리창
         memberNav.addEventListener("click", (e)=> {
-            loadMemberData();
+            loadMemberData(currentPageM);
         });
 
         // 멤버 관리창
-        async function loadMemberData(){
+        async function loadMemberData(page){
             content.innerHTML = ""; // 기존 내용 비움
+            currentPageM = page;
 
             try {
-                const response = await fetch("/sjhealthy/admin/member");
-                const data = await response.json();
-
-                if (!data.message){ // 성공적으로 데이터를 받았을 때(message가 null로 응답됨)
-                    const memberList = data.data;
+                const response = await fetch("/sjhealthy/admin/member?page=" + page);
+                
+                console.log("데이터 요청");
+                if (response.ok){ // 성공적으로 데이터를 받았을 때(message가 null로 응답됨)
+                    const data = await response.json();
+                    console.log(data);
+                    const memberList = data.data.content;
 
                     const table = document.createElement("table");
                     table.className ="table table-hover text-center table-bordered mt-4";
@@ -93,6 +98,8 @@
                     });
                     table.appendChild(tbody);
                     content.appendChild(table);
+
+                    displayPagination(data.data.page.totalPages, page); // 페이지 버튼 생성
                 } else {
                     alert(data.message);
                 }
@@ -119,7 +126,7 @@
                         alert(data.message);
                     } else {
                         alert(data.message);
-                        loadMemberData();
+                        loadMemberData(currentPage);
                     }
                 } catch(error){
                     console.log("Error = " + error);
@@ -127,7 +134,7 @@
             });
         }
         // 기본으로 회원 관리창
-        loadMemberData();
+        loadMemberData(currentPageM);
 
         // 게시글 관리
         let currentPage = 1;

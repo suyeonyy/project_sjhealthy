@@ -34,20 +34,7 @@ public class MemberDTO {
         this.memberId = memberId;
         this.memberPassword = memberPassword;
     }
-
-//    public static MemberDTO toMemberDTO(MemberEntity memberEntity){
-//        MemberDTO memberDTO = new MemberDTO();
-//
-//        memberDTO.setMemberId(memberEntity.getMemberId());
-//        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
-//        memberDTO.setMemberName(memberEntity.getMemberName());
-//        memberDTO.setMemberPnum(memberEntity.getMemberPnum());
-//        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
-//        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
-//        memberDTO.setMemberGender(memberEntity.getMemberGender());
-//        memberDTO.setMemberAuth(memberEntity.getMemberAuth());
-//        memberDTO.setIsDeleted(memberEntity.getIsDeleted());
-//
-//        return memberDTO;
-//    }
+    public MemberDTO(String memberId, String memberName, String memberEmail, String createDate, String memberGender, String memberBirth){
+        this(memberId, null, memberName, null, memberEmail, null, null, memberBirth,memberGender, null, null, null, createDate, null, null, null);
+    }
 }
