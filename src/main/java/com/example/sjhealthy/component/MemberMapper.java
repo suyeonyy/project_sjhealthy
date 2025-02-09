@@ -1,8 +1,15 @@
 package com.example.sjhealthy.component;
 
+import com.example.sjhealthy.dto.BoardDTO;
 import com.example.sjhealthy.dto.MemberDTO;
+import com.example.sjhealthy.entity.BoardEntity;
 import com.example.sjhealthy.entity.MemberEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class MemberMapper {
@@ -47,6 +54,25 @@ public class MemberMapper {
 
         return memberDTO;
 
+    }
+
+    public static Page<MemberDTO> convertToMemberDTOPage(Page<MemberEntity> memberEntities){
+        List<MemberDTO> memberDTOList = memberEntities.stream()
+            .map(entity -> {
+                String memberId = entity.getMemberId() != null ? entity.getMemberId() : null;
+
+                return new MemberDTO(
+                    entity.getMemberId(),
+                    entity.getMemberName(),
+                    entity.getMemberEmail(),
+                    entity.getCreateDate(),
+                    entity.getMemberGender(),
+                    entity.getMemberBirth()
+                );
+            })
+            .collect(Collectors.toList());
+
+        return new PageImpl<>(memberDTOList, memberEntities.getPageable(), memberEntities.getTotalElements());
     }
 
     /*

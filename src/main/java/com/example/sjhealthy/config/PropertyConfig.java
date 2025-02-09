@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySources;
 // https://naturecancoding.tistory.com/96 참고
 @Configuration
 @PropertySources({
-    @PropertySource("classpath:properties/env.properties") // env.properties 파일 소스 등록
+    @PropertySource("classpath:properties/key.properties") // key.properties 파일 소스 등록
 })
 public class PropertyConfig {
 }
