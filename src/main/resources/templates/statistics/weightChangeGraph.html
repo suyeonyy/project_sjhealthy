@@ -48,16 +48,6 @@
             padding: 10px;
         }
 
-        span {
-            background: #F9F7F6;
-            border-left: 0.5em solid rgb(30,136,255);
-            padding: 0.5em;
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 20px; /* 아래쪽에 간격 추가 */
-            align-self: flex-start; /* 좌측 정렬 */
-        }
-
         .graph-controls {
             display: flex;
             justify-content: center;
@@ -120,13 +110,24 @@
         #btn {
             margin-bottom: 10px;
         }
+
+        /*span {*/
+        #page_title {
+            background: #F9F7F6;
+            border-left: 0.5em solid rgb(30,136,255);
+            padding: 0.5em;
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 20px; /* 아래쪽에 간격 추가 */
+            align-self: flex-start; /* 좌측 정렬 */
+        }
     </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 
 <main>
-    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">몸무게 변화 그래프</span>
+    <span id="page_title" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">몸무게 변화 그래프</span>
 
     <!-- 그래프 제어 버튼들 -->
     <div class="graph-controls">
