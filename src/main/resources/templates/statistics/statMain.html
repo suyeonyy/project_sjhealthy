@@ -162,6 +162,8 @@
         </div>
     </div>
 
+    <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+
     <!-- 데이터가 없을 경우 -->
     <div th:if="${statistics == null}" class="container">
         <span class="top-title">내 기록</span>
@@ -171,10 +173,11 @@
 
     <!-- 버튼들 -->
     <div class="container mt-4 text-center">
-        <a href="/sjhealthy/statistics/graph" class="btn btn-primary">몸무게 변화</a>
+        <a href="/sjhealthy/statistics/graph" class="btn btn-primary" id="weightChangeBtn">몸무게 변화</a>
         <a href="/sjhealthy" class="btn btn-secondary">홈</a>
     </div>
 </main>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     document.addEventListener("DOMContentLoaded", async () => {
         
@@ -197,7 +200,20 @@
                 alert("시스템 오류로 실패하였습니다.");
             }
         } else {
-            console.log("키 " + height);
+            //console.log("키 " + height);
+        }
+    });
+
+    document.getElementById('weightChangeBtn').addEventListener('click', function(event) {
+        var memberId = $("#memberId").val();
+
+        if(memberId != ""){
+            // memberId가 null이 아니면 정상적으로 링크 이동
+            window.location.href = this.href;
+        } else {
+            event.preventDefault(); //링크 이동 방지
+            alert("회원 전용 기능입니다.");
+            return;
         }
     });
 </script>

@@ -96,6 +96,8 @@
                     <a href="../board" class="btn btn-secondary" style="text-decoration: none;">목록</a>
                 </div>
 
+                <input type="hidden" name="memberId" id="memberId" th:value="${loginId}">
+
                 <!-- 댓글 작성 부분 -->
                 <div id="comment-write" class="mt-4">
                     <input type="text" id="commentWriter" class="form-control mb-2" placeholder="작성자">
@@ -185,69 +187,74 @@
 
     /* 댓글 작성 */
     function commentWriteClick(){
-        //console.log("함수 들어와");
+        var memberId = $("#memberId").val();
 
-        const writer = document.getElementById("commentWriter").value;
-        const contents = document.getElementById("commentContent").value;
+        if(memberId != ""){
+            const writer = document.getElementById("commentWriter").value;
+            const contents = document.getElementById("commentContent").value;
 
-        const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
-        var loginId = $("#loginId").val();
+            const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
+            var loginId = $("#loginId").val();
 
-        if(writer.trim() == ''){
-            alert("작성자를 입력해주세요.");
-            $("#commentWriter").focus();
-            return;
-        }
+            if(writer.trim() == ''){
+                alert("작성자를 입력해주세요.");
+                $("#commentWriter").focus();
+                return;
+            }
 
-        if(contents.trim() == ''){
-            alert("내용을 입력해주세요.");
-            $("#commentContent").focus();
-            return;
-        }
+            if(contents.trim() == ''){
+                alert("내용을 입력해주세요.");
+                $("#commentContent").focus();
+                return;
+            }
 
-        if(confirm("댓글을 작성하시겠습니까?")){
-            $.ajax({
-                //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
-                type: "post",
-                url: "../comment/save",
-                data: {
-                    "commentWriter": writer,
-                    "commentContent": contents,
-                    "boardId": id,
-                    "memberId": loginId
-                },
-                success: function(res){
-                    //console.log("요청성공", res);
-                    //console.log(res);
-                    //console.log(res.data);
+            if(confirm("댓글을 작성하시겠습니까?")){
+                $.ajax({
+                    //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
+                    type: "post",
+                    url: "../comment/save",
+                    data: {
+                        "commentWriter": writer,
+                        "commentContent": contents,
+                        "boardId": id,
+                        "memberId": loginId
+                    },
+                    success: function(res){
+                        //console.log("요청성공", res);
+                        //console.log(res);
+                        //console.log(res.data);
 
-                    alert("댓글 작성이 완료되었습니다.");
+                        alert("댓글 작성이 완료되었습니다.");
 
-                    /* 댓글 목록을 표현하는 테이블 */
-                    let output = "<table class='table'>";
-                    output += "<tr><th>댓글번호</th>";
-                    output += "<th>작성자</th>";
-                    output += "<th>내용</th>";
-                    output += "<th>작성일</th>";
+                        /* 댓글 목록을 표현하는 테이블 */
+                        let output = "<table class='table'>";
+                        output += "<tr><th>댓글번호</th>";
+                        output += "<th>작성자</th>";
+                        output += "<th>내용</th>";
+                        output += "<th>작성일</th>";
 
-                    for(var i in res.data){
-                        output += "<tr>";
-                        output += "<td>" + res.data[i].commentOrder + "</td>";
-                        output += "<td>" + res.data[i].commentWriter + "</td>";
-                        output += "<td>" + res.data[i].commentContent + "</td>";
-                        output += "<td>" + res.data[i].formattedCreateDate + "</td>";
-                        output += "</tr>";
+                        for(var i in res.data){
+                            output += "<tr>";
+                            output += "<td>" + res.data[i].commentOrder + "</td>";
+                            output += "<td>" + res.data[i].commentWriter + "</td>";
+                            output += "<td>" + res.data[i].commentContent + "</td>";
+                            output += "<td>" + res.data[i].formattedCreateDate + "</td>";
+                            output += "</tr>";
+                        }
+                        output += "</table>";
+
+                        document.getElementById('comment-list').innerHTML = output;
+                        document.getElementById('commentWriter').value = '';
+                        document.getElementById('commentContent').value = '';
+                    },
+                    error: function(err){
+                        //console.log("요청실패", err);
                     }
-                    output += "</table>";
-
-                    document.getElementById('comment-list').innerHTML = output;
-                    document.getElementById('commentWriter').value = '';
-                    document.getElementById('commentContent').value = '';
-                },
-                error: function(err){
-                    //console.log("요청실패", err);
-                }
-            });
+                });
+            }
+        }else{
+            alert("회원 전용 기능입니다.");
+            return;
         }
     }
 </script>

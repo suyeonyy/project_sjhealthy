@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             const response = await fetch("/sjhealthy/recommend/list?page=" + page);
 
             if (response.status === 204){
-                alert("추천글이 존재하지 않습니다.");
+                //alert("추천글이 존재하지 않습니다.");
                 const content = document.getElementById("content");
 
                 const message = document.createElement("h1");
