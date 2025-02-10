@@ -412,7 +412,6 @@
     
             try {
                 const response = await fetch("/sjhealthy/board/current");
-                const data = await response.json();
                 
                 if (response.status === 204){
                     // 게시글이 존재하지 않을 때
@@ -421,6 +420,7 @@
                     board.appendChild(li);
                     //console.log(data.message);
                 } else if (response.ok){
+                    const data = await response.json();
                     //console.log(data);
                     const boardList = data.data;
 

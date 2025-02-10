@@ -56,37 +56,20 @@ public class BoardController {
 
     @GetMapping("/board")
     public String openBoardForm(@SessionAttribute(name = "loginId", required = false) String loginId,
-                               Model model){
+                               Model model, @RequestParam(name="page", defaultValue = "1") int page){
         model.addAttribute("loginId", loginId);
+        model.addAttribute("page", page);
+
         return "board/list";
     }
-    // 페이지 기능 X
-//    @GetMapping("/board/list")
-//    public String getBoardList(@SessionAttribute(name = "loginId", required = false) String loginId,
-//                               Model model){
-//        model.addAttribute("loginId", loginId);
-//
-//        List<BoardDTO> boardList = boardService.getList();
-//        model.addAttribute("boardList", boardList);
-//
-//        // 로그인 했을 때
-//        if (loginId != null){
-//            MemberDTO dto = memberService.findMemberIdAtPassFind(loginId);
-//            if (dto.getMemberAuth().equals("A")){ // 관리자
-//                model.addAttribute("admin", dto.getMemberAuth());
-//            }
-//        }
-//
-//
-//        return "board/list";
-//    }
+
     // 페이징 추가
     @ResponseBody
     @GetMapping("/board/list")
     public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getBoardList(
         @SessionAttribute(name = "loginId", required = false) String loginId, Model model,
         @RequestParam(name="page", defaultValue = "1") int page, PagedResourcesAssembler<BoardDTO> assembler) {
-        model.addAttribute("loginId", loginId);
+//        model.addAttribute("loginId", loginId); 이 형태에선 model도 못 쓴다
 
         int pageSize = 10;
 
@@ -123,12 +106,11 @@ public class BoardController {
     }
     @GetMapping("/board/write")
     public String writeForm(@SessionAttribute(name = "loginId", required = false) String loginId,
-                            Model model){
+                            Model model, RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
         // 회원인지 확인
         if (loginId == null){
-            // 회원이 아니라면 로그인 창으로 연결
-            return "login";
+            return "redirect:/sjhealthy/board";
         } else {
             // 회원은 글 작성 뷰로 연결
             model.addAttribute("loginId", loginId);
@@ -172,6 +154,29 @@ public class BoardController {
         }
     }
 
+//    @PostMapping("/board/write")
+//    public ResponseEntity<Response<Object>> writeNewPost(@SessionAttribute(name = "loginId", required = false) String loginId,
+//                                                         @ModelAttribute BoardDTO boardDTO, Model model,
+//                                                         @RequestParam("file") MultipartFile file){
+//        model.addAttribute("loginId", loginId);
+//
+//        try {
+//            if (!file.isEmpty()){ // 첨부파일이 존재한다면
+//                saveFile(file, boardDTO); // boardDTO에 MultipartFile로 읽어온 첨부파일 추가
+//            }
+//            BoardDTO writeResult = boardService.write(boardDTO);
+//
+//            if (writeResult != null) {
+//                return ResponseEntity.ok(new Response<>(writeResult, "글이 작성되었습니다."));
+//            } else {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "글이 작성되었습니다."));
+//            }
+//        } catch (Exception e){
+//            e.printStackTrace(); // 오류 떠서 이유 확인용
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 글 작성에 실패했습니다."));
+//        }
+//    }
+
     public void saveFile(MultipartFile file, BoardDTO boardDTO) throws IOException {
         String projectPath = System.getProperty("user.dir") + "/uploads/files";
 //            "/src/main/resources/static/files"; // 이렇게 하면 내부라 웹에서 직접 접근 못함
@@ -210,8 +215,8 @@ public class BoardController {
     }
 
     @RequestMapping("/board/read")
-    public String readPost(@RequestParam(name="boardId") Long boardId, Model model,
-                           @SessionAttribute(name = "loginId", required = false) String loginId,
+    public String readPost(@RequestParam(name="boardId") Long boardId, Model model, @RequestParam(name= "page", defaultValue = "1") int page,
+                           @SessionAttribute(name = "loginId", required = false) String loginId, RedirectAttributes ra,
                            HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
 
@@ -250,11 +255,13 @@ public class BoardController {
 
             model.addAttribute("boardDTO", result);
             model.addAttribute("createDate", sendDate);
+            model.addAttribute("page", page);
             return "board/read";
         } catch (Exception e){
             System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
             e.printStackTrace();
-            return "redirect:/sjhealthy/board/list";
+            ra.addFlashAttribute("page", page);
+            return "redirect:/sjhealthy/board";
         }
     }
 
@@ -291,16 +298,19 @@ public class BoardController {
 
     @GetMapping("/board/update")
     public String getUpdateForm(@RequestParam("boardId") Long boardId, Model model,
-                             @SessionAttribute(name = "loginId", required = false) String loginId){
+                                @SessionAttribute(name = "loginId", required = false) String loginId,
+                                @RequestParam("page") int page, RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
 
         if (loginId == null){
-            return "board/login";
+            ra.addFlashAttribute("message", "로그인 후 이용해 주세요");
+            return "redirect:/sjhealthy/board";
         } else {
             // 회원은 글 수정 뷰로 연결
             BoardDTO dto = boardService.read(boardId);
             model.addAttribute("loginId", loginId);
             model.addAttribute("isUpdate", dto);
+            model.addAttribute("page", page);
 
             // 첨부파일 존재하면
             String fileName = dto.getBoardFileName();
@@ -315,7 +325,8 @@ public class BoardController {
     @PostMapping("/board/update")
     public String updatePost(@ModelAttribute BoardDTO boardDTO, Model model, RedirectAttributes ra,
                              @SessionAttribute(name = "loginId", required = false) String loginId,
-                             @RequestParam("boardId") Long boardId, @RequestParam("file") MultipartFile file){
+                             @RequestParam("boardId") Long boardId, @RequestParam("file") MultipartFile file,
+                             @RequestParam(name = "page") int page){
         model.addAttribute("loginId", loginId);
 
         // 업데이트일로 저장할 날짜 불러오기
@@ -352,12 +363,14 @@ public class BoardController {
                 //ra.addAttribute("message", "글이 수정되었습니다.");
                 ra.addFlashAttribute("message", "글이 수정되었습니다.");
                 ra.addFlashAttribute("boardDTO", boardDTO);
+                ra.addAttribute("page", page);
                 System.out.println("글 수정 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
                 //ra.addAttribute("message", "글 수정에 실패했습니다.");
                 ra.addFlashAttribute("message", "글 수정에 실패했습니다.");
+                ra.addAttribute("page", page);
                 System.out.println("글 수정 실패");
                 return "redirect:/sjhealthy/board/read";
             }
@@ -371,7 +384,8 @@ public class BoardController {
     }
 
     @RequestMapping("/board/delete")
-    public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra) throws NullPointerException{
+    public String deletePost(@RequestParam("boardId") Long boardId, RedirectAttributes ra,
+                             @RequestParam(name="page", defaultValue = "1")int page) throws NullPointerException{
         BoardDTO data = boardService.read(boardId);
 
         File file = null;
@@ -390,12 +404,14 @@ public class BoardController {
                     System.out.println("첨부파일이 삭제되었습니다.");
                 } else System.out.println("첨부파일이 삭제되지 않았습니다.");
             } else System.out.println("첨부파일이 존재하지 않습니다.");
-
-            ra.addAttribute("message", "글 삭제가 완료되었습니다.");
+//            ra.addAttribute("message", "글 삭제가 완료되었습니다.");
+            ra.addFlashAttribute("message", "글 삭제가 완료되었습니다.");
+            ra.addFlashAttribute("page", page);
             return "redirect:/sjhealthy/board";
         } else {
             System.out.println("글 삭제에 실패했습니다.");
-            ra.addAttribute("message", "글 삭제에 실패했습니다.");
+//            ra.addAttribute("message", "글 삭제에 실패했습니다.");
+            ra.addFlashAttribute("message", "글 삭제에 실패했습니다.");
             ra.addAttribute("boardId", boardId);
             return "redirect:/sjhealthy/board/read";
         }
