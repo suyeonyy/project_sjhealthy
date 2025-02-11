@@ -95,20 +95,20 @@
 </div>
 
 </main>
-<script>
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
         // 글 작성/수정하면서 리다이렉트한 메시지 띄움
-        const message = /*[[${message}]]*/'';
-        if (message) {
+        const message = [[${message}]] || "empty";
+        if (message !== "empty") {
             alert(message);
         }
         
         // 작성 버튼은 회원 전용 기능
-        const loginId = [[${loginId}]];
+        const loginId = [[${loginId}]] || "empty";
         console.log("ID=" + loginId);
         const writeBtn = document.getElementById("writeBtn");
         writeBtn.addEventListener("click", (e) => {
-            if (!loginId){
+            if (loginId === "empty"){
                 alert("글은 회원만 작성할 수 있습니다.");
                 e.preventDefault();
             }
@@ -121,10 +121,13 @@
         const pageSize = 10;
         
         // 만약 서버에서 보낸 페이지가 있다면 그걸로 사용
-        const pageBefore = /*[[${page}]]*/'';
-        if (pageBefore){
-            currentPage = pageBefore;
-        } else if (localStorage.getItem("boardPage")){
+        const pageBefore = [[${page}]] || "empty";
+        // if (pageBefore !== "empty"){
+        //     console.log("이전 페이지 = " + pageBefore);
+        //     currentPage = pageBefore;
+        // } else 
+        if (localStorage.getItem("boardPage")){
+            console.log("로컬 페이지" + localStorage.getItem("boardPage"));
             // 목록, 수정, 삭제 버튼 눌러서 왔을 땐 해당 글의 페이지로 이동
             currentPage = localStorage.getItem("boardPage") ? parseInt(localStorage.getItem("boardPage")) : currentPage;
             localStorage.clear(); // 앞으로의 사용을 위해 페이지 저장을 초기화 해줌.
