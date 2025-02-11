@@ -27,7 +27,15 @@ public class MyPageController {
         if (loginId != null){
             // 회원
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
+
+            String memberBirth = member.getMemberBirth();
+            String year = memberBirth.substring(0, 4);
+            String month = memberBirth.substring(4, 6);
+            String day = memberBirth.substring(6, 8);
+            String sendDate = year + "/" + month + "/" + day;
+
             model.addAttribute("memberDTO", member);
+            model.addAttribute("sendDate", sendDate);
         }
         return "mypage";
     }
