@@ -91,7 +91,10 @@
           <strong>목표만족도</strong>
         </div>
         <div class="col-md-9">
+          <!--
           <span th:text="${dailyDTO.dailyGoalSf}"></span>
+          -->
+          <span th:text="${dailyDTO.dailyGoalSf eq '10' ? '😊' : (dailyDTO.dailyGoalSf eq '20' ? '😐' : (dailyDTO.dailyGoalSf eq '30' ? '😢' : dailyDTO.dailyGoalSf))}"></span>
         </div>
       </div>
       <hr>
