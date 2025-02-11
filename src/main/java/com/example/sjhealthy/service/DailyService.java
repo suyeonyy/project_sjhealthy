@@ -61,9 +61,10 @@ public class DailyService {
         for (Object[] result : queryResults) {
             String dailyDate = (String) result[0]; // 첫 번째 결과는 dailyDate
             String dailyTitle = (String) result[1]; // 두 번째 결과는 dailyTitle
+            String dailyGoalSf = (String) result[2]; // 두 번째 결과는 dailyTitle
 
             // DTO 객체 생성
-            DailyDTO dailyDTO = new DailyDTO(dailyDate, dailyTitle);
+            DailyDTO dailyDTO = new DailyDTO(dailyDate, dailyTitle, dailyGoalSf);
 
             // DTO 리스트에 추가
             dailyList.add(dailyDTO);
