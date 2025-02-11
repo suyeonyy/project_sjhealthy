@@ -18,14 +18,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             const response = await fetch("/sjhealthy/recommend/list?page=" + page);
 
             if (response.status === 204){
-                //alert("추천글이 존재하지 않습니다.");
-                const content = document.getElementById("content");
-
-                const message = document.createElement("h1");
-                message.textContent = "추천글이 존재하지 않습니다.";
-
-                content.appendChild(message);
-                
+                alert("추천글이 존재하지 않습니다.");
+  
             } else if (response.ok){ // ok는 200~299를 포함해서 204 검사는 먼저 해준다
                 const data = await response.json();
                 const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
@@ -104,6 +98,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
                 });
                 displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
+                console.log("페이지 생성");
+                console.log(data);
 
             } 
         } catch (error) {
@@ -111,26 +107,40 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             alert("시스템 오류로 글을 불러오지 못했습니다.");
         }
     }
+
+        
+ 
     // 페이지 버튼
     function displayPagination(totalPages, currentPage){
         const pagination = document.getElementById("pagination");
+        console.log("0");
 
         pagination.innerHTML = ""; // 기존 내용 초기화
 
         for (let i = 1; i <= totalPages; i++){
+            console.log("1");
             const pageButton = document.createElement("button");
             pageButton.textContent = i;
             pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
             
             pageButton.addEventListener("click", () => {
+                console.log("2");
+
                 loadRecommendData(i); // 클릭한 페이지 데이터 요청하고 html 생성
                 window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
                 console.log("p " + window.currentPage);
+
+                // 페이지 이동 시, 열려있는 상세보기 접어줌
+                const detailDiv = document.getElementById("detail");
+                detailDiv.style.display = "none";
+
             });
             pagination.appendChild(pageButton); 
         }
     }
-    
+
+
+      
     // 맨 밑에 상세페이지 html 추가, tbody 하나 더 만들어서 추가(내용은 버튼 누를 때 추가)
     const detail = document.createElement("tbody");
     detail.id = "detailTbody";
@@ -167,12 +177,12 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             }
         });
 
-    }
+    }   
     // 마지막으로 열린 상세페이지 추적용
     let lastOpendRec = null;
     let lastOpenRecId = 0;
 
-    
+  
     async function toggleDetail(index, postId) {
         // 상세 페이지 펼침 접음
         // const detail = document.createElement("tbody");
@@ -223,7 +233,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                     const deleteB = document.getElementById("deleteB");
                     deleteB.id = "delete" + postId;
                     deleteB.onclick = () => deletePost(postId);
-                    
+                    } 
                     // 요소의 최종 스타일 / detailDiv.style.display로 접근했더니 style을 읽지 못함
                     // getComputedStyle: 스타일 속성을 객체로 반환
                     const computedStyle = window.getComputedStyle(detailDiv);
@@ -268,8 +278,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                         block: 'start'      // 화면의 상단에 맞춰서 스크롤
                     });
                 } }
-
-            }
         } catch (error){
             if (error.message.includes("403")) {
                 alert("회원 전용 기능입니다.");
