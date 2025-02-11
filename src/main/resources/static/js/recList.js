@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     // 페이지 열면 자동으로 로드(1페이지로)
     loadRecommendData(currentPage);
 
+
+
     async function loadRecommendData(page){
         // const recommendListTr = document.getElementById("content");
 
@@ -122,7 +124,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             
             pageButton.addEventListener("click", () => {
                 loadRecommendData(i); // 클릭한 페이지 데이터 요청하고 html 생성
-                currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                console.log("p " + window.currentPage);
             });
             pagination.appendChild(pageButton); 
         }
@@ -148,25 +151,19 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             // 상세 페이지 펼침 접음 & 좋아요 싫어요
             toggleDetail(index, recId);  
 
-            // 조회수 1 증가
-            const response = await fetch("/sjhealthy/recommend/read?recId=" + recId);
-            const data = await response.json();
-            if (response.ok){
-                recView.textContent = data.data.recViews;
-            } else console.log(data.message);
-
-            // 상세 페이지 삭제 버튼(관리자만)
-            // const admin = document.getElementById("admin");
-            const deleteBtn = document.getElementById("delete" + index);
-            if (deleteBtn){
-                // const deleteBtn = deleteBtns[index];
-                deleteBtn.addEventListener("click", async (e) => {
-                    
-                    if (!window.confirm("정말로 삭제하시겠습니까?")){
-                        e.preventDefault();
-                        return false;
-                    }
-                });
+            try {
+                // 조회수 1 증가
+                const response = await fetch("/sjhealthy/recommend/read?recId=" + recId);
+                if (response.ok){
+                    const data = await response.json();
+                    recView.textContent = data.data.recViews;
+                } 
+            } catch(error){
+                if (error.message.includes("403")) {
+                    alert("회원 전용 기능입니다.");
+                } else {
+                    console.error("오류 발생:", error);
+                }
             }
         });
 
@@ -185,98 +182,124 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         console.log(postId);
         try {
             const response = await fetch("/sjhealthy/recommend/detail/" + postId);
-            const data = await response.json();
-            
-            const likeTotal = data.likeCount;
-            const dislikeTotal = data.dislikeCount;
-            const item = data.data;
-            
-            // 상세정보용 tbody
-            // const detailTbody = document.getElementById("detailTbody"); // 기본은 안 보이게 none으로 해둠
-            const detailDiv = document.getElementById("detail");
-            detailDiv.className = "detail-div";
-
-            if (detailDiv){
-                if (lastOpendRec != null && lastOpenRecId === postId){ // null이면 접혀있는 것
-                    lastOpendRec.style.display = "none"; // 
-                    lastOpenRecId = 0;
-                    lastOpendRec = null;
-                    return;
-                }
+            if (response.status === 403) {
+                throw new Error("403");  // 강제로 예외 발생, fetchAPI에선 403을 catch에서 감지하지 못해서.
+            } else if (response.ok){
+                const data = await response.json();
                 
-                detailDiv.innerHTML = ""; 
-                detailDiv.innerHTML = `
-                    <p><strong>업체 명: </strong><span id="storeName"></span></p>
-                    <p><strong>메뉴: </strong><span id="storeMenu"></span></p>
-                    <p><strong>좋아요: </strong><span id="detail-like"></span></p> 
-                    <p><strong>싫어요: </strong><span id="detail-dislike"></span></p>
-                `;
+                const likeTotal = data.likeCount;
+                const dislikeTotal = data.dislikeCount;
+                const item = data.data;
+                const admin = data.data2 ? data.data : "";
+                console.log(data);
                 
-                // 관리자는 삭제 버튼 표시
-                const admin = document.getElementById("admin");
-                if (admin != null){
-                    detailDiv.innerHTML += `
-                        <dr>
-                        <a class="delete" id="deleteB">
-                            <button class="btn btn-light">삭제</button>
-                        </a>
+                // 상세정보용 tbody
+                // const detailTbody = document.getElementById("detailTbody"); // 기본은 안 보이게 none으로 해둠
+                const detailDiv = document.getElementById("detail");
+                detailDiv.className = "detail-div";
+    
+                if (detailDiv){
+                    if (lastOpendRec != null && lastOpenRecId === postId){ // null이면 접혀있는 것
+                        lastOpendRec.style.display = "none"; // 
+                        lastOpenRecId = 0;
+                        lastOpendRec = null;
+                        return;
+                    }
+                    
+                    detailDiv.innerHTML = ""; 
+                    detailDiv.innerHTML = `
+                        <p><strong>업체 명: </strong><span id="storeName"></span></p>
+                        <p><strong>메뉴: </strong><span id="storeMenu"></span></p>
+                        <p><strong>좋아요: </strong><span id="detail-like"></span></p> 
+                        <p><strong>싫어요: </strong><span id="detail-dislike"></span></p>
                     `;
+                    // 관리자는 삭제 버튼 표시
+                    if (admin){
+                        detailDiv.innerHTML += `
+                            <dr>
+                            <button id="deleteB" class="btn btn-light">삭제</button>
+                        `;
 
                     const deleteB = document.getElementById("deleteB");
-                    deleteB.href = "/sjhealthy/recommend/delete/"+ postId;
-                    deleteB.id = "delete" + index;
-                }
+                    deleteB.id = "delete" + postId;
+                    deleteB.onclick = () => deletePost(postId);
+                    
+                    // 요소의 최종 스타일 / detailDiv.style.display로 접근했더니 style을 읽지 못함
+                    // getComputedStyle: 스타일 속성을 객체로 반환
+                    const computedStyle = window.getComputedStyle(detailDiv);
+           
+                    if (computedStyle.display === "none"){ // 이건 읽기만 가능이라 바꾸는 건 인라인 속성으로 바꿔줌
+                        // 접혀 있으면 펴줌
+                        // detailDiv.classList.add("expanded");
+    
+                        document.getElementById("storeName").textContent = item.recStore;
+                        document.getElementById("storeMenu").textContent = item.recMenu;
+                        document.getElementById("detail-like").id = "detail-like" + index;
+                        document.getElementById("detail-like" + index).textContent = likeTotal;
+                        document.getElementById("detail-dislike").id = "detail-dislike" + index;
+                        document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
+                        detailDiv.style.display = "table-row"; // tr 열기
+    
+                        lastOpendRec = detailDiv;
+                        lastOpenRecId = postId;
+                        // detailBtn.innerText = "접기";
+                    } else if (computedStyle.display !== "none" && lastOpenRecId !== postId){
+                        document.getElementById("storeName").textContent = item.recStore;
+                        document.getElementById("storeMenu").textContent = item.recMenu;
+                        document.getElementById("detail-like").id = "detail-like" + index;
+                        document.getElementById("detail-like" + index).textContent = likeTotal;
+                        document.getElementById("detail-dislike").id = "detail-dislike" + index;
+                        document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
+                        detailDiv.style.display = "table-row"; // tr 열기
+    
+                        lastOpendRec = detailDiv;
+                        lastOpenRecId = postId;
+                    } else if (lastOpenRecId === postId){
+                        // 펴져 있으면 접어줌
+                        detailDiv.style.display = "none";
+                        // detailDiv.classList.remove("expanded");
+                        lastOpendRec = null;
+                        lastOpenRecId = 0;
+                        // detailBtn.innerText = "상세보기";
+                    }
+                    // 상세보기 div로 스크롤 내리기
+                    detailDiv.scrollIntoView({
+                        behavior: 'smooth', // 부드럽게 스크롤 이동
+                        block: 'start'      // 화면의 상단에 맞춰서 스크롤
+                    });
+                } }
 
-                // 요소의 최종 스타일 / detailDiv.style.display로 접근했더니 style을 읽지 못함
-                // getComputedStyle: 스타일 속성을 객체로 반환
-                const computedStyle = window.getComputedStyle(detailDiv);
-       
-                if (computedStyle.display === "none"){ // 이건 읽기만 가능이라 바꾸는 건 인라인 속성으로 바꿔줌
-                    // 접혀 있으면 펴줌
-                    // detailDiv.classList.add("expanded");
-
-                    document.getElementById("storeName").textContent = item.recStore;
-                    document.getElementById("storeMenu").textContent = item.recMenu;
-                    document.getElementById("detail-like").id = "detail-like" + index;
-                    document.getElementById("detail-like" + index).textContent = likeTotal;
-                    document.getElementById("detail-dislike").id = "detail-dislike" + index;
-                    document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
-                    detailDiv.style.display = "table-row"; // tr 열기
-
-                    lastOpendRec = detailDiv;
-                    lastOpenRecId = postId;
-                    // detailBtn.innerText = "접기";
-                } else if (computedStyle.display !== "none" && lastOpenRecId !== postId){
-                    document.getElementById("storeName").textContent = item.recStore;
-                    document.getElementById("storeMenu").textContent = item.recMenu;
-                    document.getElementById("detail-like").id = "detail-like" + index;
-                    document.getElementById("detail-like" + index).textContent = likeTotal;
-                    document.getElementById("detail-dislike").id = "detail-dislike" + index;
-                    document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
-                    detailDiv.style.display = "table-row"; // tr 열기
-
-                    lastOpendRec = detailDiv;
-                    lastOpenRecId = postId;
-                } else if (lastOpenRecId === postId){
-                    // 펴져 있으면 접어줌
-                    detailDiv.style.display = "none";
-                    // detailDiv.classList.remove("expanded");
-                    lastOpendRec = null;
-                    lastOpenRecId = 0;
-                    // detailBtn.innerText = "상세보기";
-                }
-                // 상세보기 div로 스크롤 내리기
-                detailDiv.scrollIntoView({
-                    behavior: 'smooth', // 부드럽게 스크롤 이동
-                    block: 'start'      // 화면의 상단에 맞춰서 스크롤
-                });
-                } 
-            } catch (error){
-            console.log("오류 발생: " + error);
+            }
+        } catch (error){
+            if (error.message.includes("403")) {
+                alert("회원 전용 기능입니다.");
+            } else {
+                console.error("오류 발생:", error);
+            }
         }
     };
 
+    function deletePost(postId){
+        // const btn = document.getElementById("delete" + postId);
+        const targetId = "delete" + postId; 
+        document.addEventListener("click", (event) => {
+            if (event.target.id === targetId){
+                if (!window.confirm("정말로 삭제하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                } else {
+                    fetch("/sjhealthy/recommend/delete/"+ postId);
+                    alert("해당 게시물이 삭제되었습니다.");
+                    const tableBody = document.getElementById("tableBody");
+                    tableBody.innerHTML = "";
+                    lastOpendRec.style.display = "none"; // 열린 상세페이지 접음
+                    loadRecommendData(window.currentPage); // 게시물 다시 로드
+                }
+            }
+        });
+    }
 
+  
     // 검색 정렬
     const searchButton = document.getElementById("searchButton");
 
@@ -368,6 +391,9 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                     cell9.appendChild(dataRecN);
 
                     addOpenDetail(index); // 상세보기 버튼 기능 연결
+
+                    // TODO: 이거 받아야함!
+                    displayPagination(totalPages, currentPage);
 
                 });
         } catch (error) {
