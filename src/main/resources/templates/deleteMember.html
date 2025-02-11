@@ -29,7 +29,6 @@
                     e.preventDefault();
                     return false;
                 }
-        // 잘 작동하나 확인 필요
                 //console.log("memberID = " + memberId);
                 await fetch("/sjhealthy/member/delete/${memberId}");
         
@@ -38,6 +37,7 @@
                 console.log("Error = " + error);
             }
         });
+
 
         // 이건 따로 js파일이 있어서 confirm 메시지만
         deleteGoogle.addEventListener("click", async (e)=> {
