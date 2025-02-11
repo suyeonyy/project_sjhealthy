@@ -47,8 +47,8 @@ public class RecommendService {
         return RecommendMapper.convertToRecommendDTOPage(list);
     }
 
-    public List<RecommendDTO> getListTop5(){
-        List<RecommendEntity> list = recommendRepository.findTop5();
+    public List<RecommendDTO> getListTop4(){
+        List<RecommendEntity> list = recommendRepository.findTop4();
         List<RecommendDTO> dtoList = new ArrayList<>();
 
         for (RecommendEntity r : list){
@@ -141,7 +141,6 @@ public class RecommendService {
 
         // 수정한 데이터를 DB에 업로드
         recommendRepository.save(recommendEntity);
-        System.out.println("좋/싫 수정 = " + recommendEntity);
         return true;
     }
 
