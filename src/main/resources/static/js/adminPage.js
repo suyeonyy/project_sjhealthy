@@ -154,9 +154,9 @@
             try {
                 // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
                 const response = await fetch("/sjhealthy/admin/post?page=" + page);
-                const data = await response.json();
-                console.log(response.status);
                 if (response.status === 200){
+                    const data = await response.json();
+                    
                     const boardListDiv = document.getElementById("content");
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
                     
