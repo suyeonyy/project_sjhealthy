@@ -43,7 +43,8 @@ public class RecommendController {
     private String js_appKey;
 
     @GetMapping({"/recommend", "/recommend/"})
-    public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+    public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model,
+                                   RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
 
         List<RecommendDTO> dto = recommendService.getList();
@@ -53,7 +54,9 @@ public class RecommendController {
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
 
             if (member.getMemberAuth().equals("A")){
-                model.addAttribute("administrator", member);
+                System.out.println("관리자");
+                model.addAttribute("administrator", true);
+
             }
         }
 
@@ -71,15 +74,15 @@ public class RecommendController {
         try {
             Page<RecommendDTO> list = recommendService.getListWithPage(page, size);
 
-            // 관리자 기능
-            if (loginId != null){
-                MemberDTO memberDTO = memberService.findMemberIdAtPassFind(loginId);
-                System.out.println("Auth--------" + memberDTO.getMemberAuth());
-                if (memberDTO.getMemberAuth().equals("A")){
-                    model.addAttribute("admin", loginId);
-                    System.out.println("관리자입니다.");
-                }
-            }
+//            // 관리자 기능
+//            if (loginId != null){
+//                MemberDTO memberDTO = memberService.findMemberIdAtPassFind(loginId);
+//                System.out.println("Auth--------" + memberDTO.getMemberAuth());
+//                if (memberDTO.getMemberAuth().equals("A")){
+//                    model.addAttribute("admin", loginId);
+//                    System.out.println("관리자입니다.");
+//                }
+//            }
 
             if (!list.isEmpty()){
                 // 추천글이 있을 때
@@ -128,10 +131,13 @@ public class RecommendController {
                                               HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
 
+        if (loginId == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         RecommendEntity result = recommendService.readRecommendationById(recId);
+        System.out.println(result);
 
         if (result == null){
-            System.out.println("정보를 읽어오지 못했습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>(null, "정보를 읽어오지 못했습니다."));
         } else {
             // 조회수, 브라우저 종료시 다시 집계됨
@@ -139,8 +145,8 @@ public class RecommendController {
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-            RecommendEntity entity = recommendService.readRecommendationById(recId);
-            return ResponseEntity.ok().body(new Response<>(entity, "정보를 읽어왔습니다."));
+            RecommendDTO dto = RecommendMapper.toRecommendDTO(result, loginId);
+            return ResponseEntity.ok().body(new Response<>(dto, "정보를 읽어왔습니다."));
         }
     }
 
@@ -240,33 +246,17 @@ public class RecommendController {
         }
     }
 
-//    @ResponseBody
-//    @GetMapping("/recommend/count/{recId}")
-//    public ResponseEntity<?> getLikeDislikeCount(@PathVariable Long recId){
-//        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도
-//        List<Tuple> list = recommendService.countLikeAndDislike(recId);
-//        Tuple tuple = list.get(0);
-//        Integer like = tuple.get("likeCount", Integer.class);
-//        Long likeCount = like.longValue();
-//        Integer dislike = tuple.get("dislikeCount", Integer.class);
-//        Long dislikeCount = dislike.longValue();
-//        System.out.println("like = " + likeCount);
-//        System.out.println("dislike = " + dislikeCount);
-//
-//        if (!list.isEmpty()){
-//            return ResponseEntity.ok(new ResponseMessage("집계 완료", likeCount, dislikeCount));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-//                "집계 오류", likeCount, dislikeCount));
-//        }
-//    }
-
     @ResponseBody
     @GetMapping("/recommend/detail/{recId}")
     public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable("recId") Long recId, HttpServletRequest request,
                                                                 @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                 HttpServletResponse response, Model model){
         model.addAttribute("loginId", loginId);
+
+        if (loginId == null) {
+            // 회원 아니면 상세보기 불가능
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null, "회원 전용 기능입니다."));
+        }
 
         // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도 + 상세페이지 내용도 포함함 ( 그냥 이걸로 다 하자)
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
@@ -275,53 +265,32 @@ public class RecommendController {
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-        System.out.println("like = " + likeCount);
-        System.out.println("dislike = " + dislikeCount);
 
-        RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId);
-        System.out.println("상세보기 = " + dto);
+
 
         if (list.isEmpty()){
-            System.out.println("정보를 읽어오지 못했습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(
                 null, "집계 오류", likeCount, dislikeCount));
         } else {
-            // 조회수, 브라우저 종료시 다시 집계됨
+            RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId);
+            MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
+
             Cookie viewCount = addViews(request, recId);
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-            return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount));
-        }
-    }
 
-    /*sy 작업*/
-    /*
-    //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
-    @PostMapping("/recommend/write")
-    public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
-                                        @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
-        model.addAttribute("loginId", loginId);
+            if (member.getMemberAuth().equals("A")){ // 관리자
+                return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount, member));
+            } else { // 일반 회원
+                // 조회수, 브라우저 종료시 다시 집계됨
 
-        try {
-            RecommendDTO result = recommendService.addRecommendation(recommendDTO);
-
-            if (result == null){
-                System.out.println("추천글 등록에 실패하였습니다.");
-            } else {
-                System.out.println("추천글을 등록하였습니다.");
+                return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount));
             }
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println("시스템 오류");
         }
 
-        //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
-        ra.addFlashAttribute("loginId", loginId);
-
-        return "redirect:/sjhealthy/recommend";
     }
-     */
+
     //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
     @PostMapping("/recommend/write")
     public ResponseEntity<String> writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
@@ -387,6 +356,7 @@ public class RecommendController {
         }
     }
 
+    // TODO: 페이지네이션 추가해서 다시 만들기
     @ResponseBody
     @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
     public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){

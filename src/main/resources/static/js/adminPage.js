@@ -110,26 +110,27 @@
 
         function deleteMember(index, memberId){
             // 회원 탈퇴 버튼
-            const deleteMemberBtn = document.getElementById("deleteMemberBtn"+index);
-
-            deleteMemberBtn.addEventListener("click", async (e)=> {
-                if (!window.confirm("정말로 삭제하시겠습니까?")){
-                    e.preventDefault();
-                    return false;
-                }
-
-                try {
-                    const response = await fetch("/sjhealthy/admin/member/delete/" + memberId);
-                    const data = await response.json();
-
-                    if (!data){
-                        alert(data.message);
-                    } else {
-                        alert(data.message);
-                        loadMemberData(currentPage);
+            const deleteMemberBtn = "deleteMemberBtn" + index; 
+            document.addEventListener("click", async (e) => {
+                if (e.target.id === deleteMemberBtn){
+                    if (!window.confirm("정말로 삭제하시겠습니까?")){
+                        e.preventDefault();
+                        return false;
                     }
-                } catch(error){
-                    console.log("Error = " + error);
+
+                    try {
+                        const response = await fetch("/sjhealthy/admin/member/delete/" + memberId);
+                        const data = await response.json();
+
+                        if (!data){
+                            alert(data.message);
+                        } else {
+                            alert(data.message);
+                            loadMemberData(currentPage);
+                        }
+                    } catch(error){
+                        console.log("Error = " + error);
+                    }
                 }
             });
         }
@@ -188,10 +189,11 @@
                         const deleteBtn = document.createElement("input");
                         // deleteCell.className = "adminButton";
                         deleteBtn.type = "button";
-                        deleteBtn.id = "deletePostBtn"+index;
+                        deleteBtn.id = "deletePostBtn"+ board.boardId;
                         deleteBtn.className = "adminButton";
                         deleteBtn.value = "삭제";
-                        deleteBtn.onclick = (e) => deletePost(index, board.boardId);
+                        deleteBtn.onclick = () => deletePost(index, board.boardId);
+                        
                         deleteCell.appendChild(deleteBtn);
                         // row.append(deleteCell);
 
@@ -252,7 +254,7 @@
                 
                 pageButton.addEventListener("click", (e) => {
                     loadBoardData(i); // 클릭한 페이지 데이터 요청하고 html 생성
-                    currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                    window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
                 });
                 pagination.appendChild(pageButton); 
             }
@@ -260,27 +262,27 @@
         // 게시물 삭제 버튼
         function deletePost(index, boardId){
             // const deletePosts = document.querySelectorAll(".deletePost");
-            const deleteBtn = document.getElementById("deletePostBtn"+index);
-
-            deleteBtn.addEventListener("click", async (e)=> {
-                if (!window.confirm("정말로 삭제하시겠습니까?")){
-                    e.preventDefault();
-                    return false;
-                }
-
-                try {
-                    const response = await fetch("/sjhealthy/board/delete/"+boardId);
-                    const data = await response.json();
-    
-                    if (response.ok){
-                        alert(data.message);
-                        loadBoardData(currentPage);
+            const deleteB = "deletePostBtn" + boardId; 
+            document.addEventListener("click", async (e) => {
+                if (e.target.id === deleteB){
+                    if (!window.confirm("정말로 삭제하시겠습니까?")){
+                        e.preventDefault();
+                        return false;
                     }
 
-                } catch (error){
-                    alert(data.message);
+                    try {
+                        const response = await fetch("/sjhealthy/board/delete/"+boardId);
+                        const data = await response.json();
+        
+                        if (response.ok){
+                            alert(data.message);
+                            loadBoardData(window.currentPage);
+                        }
+
+                    } catch (error){
+                        alert("시스템 오류로 실패하였습니다.");
+                    }
                 }
             });
-
         }
     });
