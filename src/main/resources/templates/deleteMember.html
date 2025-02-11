@@ -92,17 +92,36 @@
         
                 //console.log("탈퇴 요청");
             } catch(error){
-                console.log("Error = " + error);
+                //console.log("Error = " + error);
             }
         });
 
-
         // 이건 따로 js파일이 있어서 confirm 메시지만
-        deleteGoogle.addEventListener("click", async (e)=> {
+        //deleteGoogle.addEventListener("click", async (e)=> {
+        deleteGoogleOAuth.addEventListener("click", async (e)=> {
                 if (!window.confirm("정말로 탈퇴하시겠습니까?")){
                     e.preventDefault();
                     return false;
                 } 
+        });
+
+        //카카오 탈퇴(연동해제)
+        deleteKakaoOAuth.addEventListener("click", async (e) =>{
+            try {
+                if (!window.confirm("정말로 탈퇴하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                }
+
+                var memberId = $("#memberId").val();
+                const response = await fetch("/sjhealthy/member/delete/kakao/" + memberId, { method: "GET" });
+                const result = await response.json();
+                //console.log("카카오 연동 해제 응답: ", result);
+                alert("탈퇴가 완료되었습니다.");
+                window.location.href = "http://localhost:8081/sjhealthy";
+            } catch(error){
+                //console.log("Error = " + error);
+            }
         });
     });
 </script>
