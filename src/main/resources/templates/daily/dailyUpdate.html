@@ -105,7 +105,10 @@
           <input type="hidden" id="dailyId" name="dailyId" th:value="${dailyDTO.dailyId}">
           <div class="text-center mt-4">
             <button type="button" class="btn btn-custom" onclick="fn_dailyUpdate();">수정</button>
+            <!--
             <a href="../daily/dailyList" class="btn btn-secondary">목록</a>
+            -->
+            <a id="list" href="#" class="btn btn-secondary">목록</a>
           </div>
         </form>
         <!-- 수정 폼 끝 -->
@@ -115,6 +118,21 @@
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 <script>
+  var list = document.getElementById("list");
+
+  $(document).ready(function() {
+      // URLSearchParams를 사용하여 URL 파라미터 읽기
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialyear = urlParams.get('year');
+      let initialmonth = urlParams.get('month');
+
+      // 목록 버튼 누르면 페이지 저장해서 경로 이동
+      list.addEventListener("click", () => {
+          event.preventDefault(); // 기본 동작 방지
+          window.location.href = "/sjhealthy/daily/dailyList?year=" + initialyear + "&month=" + initialmonth;
+      });
+  });
+
   /* 숫자와 소수점만 허용하고, 다른 문자는 삭제 */
   var prev = "";
   var regexp = /^\d*(\.\d{0,2})?$/;
