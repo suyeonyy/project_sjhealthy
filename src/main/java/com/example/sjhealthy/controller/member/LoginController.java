@@ -95,6 +95,10 @@ public class LoginController {
         // 1. 카카오 토큰 API에 인증 코드로 액세스 토큰 요청
         String accessToken = getAccessToken(code);
 
+        //회원 탈퇴 시, 카카오의 “연동 해제” API를 호출하기 위해 로그인 시 받아온 액세스 토큰을 세션에 보관
+        HttpSession session = request.getSession();
+        session.setAttribute("accessToken_kakao", accessToken);
+
         // 2. 액세스 토큰을 사용하여 사용자 정보 요청
         String userInfo = getKakaoUserInfo(accessToken);
 
@@ -109,9 +113,8 @@ public class LoginController {
         MemberDTO isExist = memberService.findMemberEmail(email);
         if (isExist != null){
             // 기존 회원이라면 로그인 처리 후 메인으로 넘김
-            HttpSession session = request.getSession();
+            //HttpSession session = request.getSession();
             session.setAttribute("loginId", isExist.getMemberId());
-
             return "redirect:/sjhealthy";
         } else {
             // 비회원은 가입창으로 연결
@@ -193,6 +196,54 @@ public class LoginController {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @ResponseBody
+    @GetMapping("/member/delete/kakao/{memberId}")
+    public ResponseEntity<Response<Object>> deleteKakaoMember(
+            @PathVariable("memberId") String memberId, //요청 URL의 일부로 포함된 값을 메서드 파라미터에 바인딩
+            HttpServletRequest request, //클라이언트의 HTTP 요청에 관한 모든 정보를 담고 있는 객체
+            @SessionAttribute(name = "accessToken_kakao", required = false) String accessToken){
+
+        //1. 회원 아이디 및 액세스 토큰 유효성 확인
+        if(memberId == null || memberId.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 존재하지 않습니다."));
+        }
+        if(accessToken == null || accessToken.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>(null, "카카오 액세스 토큰이 존재하지 않습니다."));
+        }
+
+        //2. 카카오 연동 해제 API 호출
+        String unlinkUrl = "https://kapi.kakao.com/v1/user/unlink"; //카카오 계정과 애플리케이션 간의 연결을 해제하는 요청을 보내기 위한 주소
+        HttpHeaders headers = new HttpHeaders(); //인증을 위한 헤더를 설정하여 카카오 서버가 요청을 승인할 수 있도록
+        headers.set("Authorization", "Bearer " + accessToken); //"Authorization" 헤더:인증 정보를 전달하는 표준 방법, "Bearer " 접두사와 함께 액세스 토큰을 보냄
+        HttpEntity<String> entity = new HttpEntity<>(headers); //설정된 HTTP 헤더를 포함한 요청 본문(여기서는 본문이 필요 없으므로 헤더만 포함)을 하나의 엔티티로 래핑
+
+        try{
+            RestTemplate restTemplate = new RestTemplate(); //RestTemplate : 외부 HTTP 요청을 보내고 응답을 받을 때 사용하는 클라이언트
+            ResponseEntity<String> response = restTemplate.exchange(
+                    unlinkUrl, HttpMethod.POST, entity, String.class);
+                    //카카오 연동 해제 API의 엔드포인트 URL
+                    //카카오의 연동 해제 API에 POST 요청
+                    //HTTP 요청에 필요한 헤더(예: "Authorization" 헤더)가 포함
+                    //API 응답으로 받을 데이터의 타입을 지정, 응답 본문을 문자열(String)로 받겠다는 의미
+                    //exchange메서드 : HTTP POST 요청을 카카오 API에 보내고, 호출 결과는 ResponseEntity<String> 타입으로 반환
+            System.out.println("카카오 연동 해제 응답: " + response.getBody());
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response<>(null, "카카오 연동 해제에 실패하였습니다."));
+        }
+
+        //3. 3. DB에서 회원 정보 삭제 처리
+        memberService.delete(memberId);
+
+        // 4. 세션 무효화 (로그아웃)
+        HttpSession session = request.getSession();
+        session.invalidate();
+
+        return ResponseEntity.ok(new Response<>(null, "카카오 연동 회원 탈퇴가 완료되었습니다."));
     }
 
     // 구글 로그인 연동
