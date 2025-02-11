@@ -187,6 +187,7 @@
         // 비밀번호 변경 버튼을 클릭 시, 비밀번호 검증 후 변경 페이지로 연결
         async function changePass(){
 
+            let isCancled = 0; // 1이면 요청 진행, 0이면 취소
             let pass = "";
             while (true) { // 빈칸으로 넘기면 계속 다시 창 띄움
                 pass = prompt("현재 비밀번호를 입력해 주세요.", "8~16자 영문, 숫자, 특수문자를 이용하여 입력해주세요.");
@@ -195,13 +196,21 @@
 
                 // 사용자가 취소 버튼을 누르면 종료
                 if (pass === null) {
-                    alert("비밀번호를 입력해 주세요.");
-                    return; // 함수 종료
-                } else if (!passwordRegex.test(pass)){
+                    isCancled = 0;
+                    break;
+                }
+        
+                if (!passwordRegex.test(pass)){
                     alert("비밀번호 형식이 올바르지 않습니다. 다시 입력해주세요.");
+                    continue;
                 } else {
+                    isCancled = 1;
                     break; // 제대로 입력하면 반복문 종료
                 }
+            }
+            if (isCancled === 0){
+                event.preventDefault();
+                return; // 함수 중단
             }
             
             try {
@@ -241,6 +250,7 @@
             } catch (error){
                 console.log(error);
             }
+            
         }
 
 
