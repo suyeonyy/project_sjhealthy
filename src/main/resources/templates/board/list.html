@@ -84,24 +84,52 @@
             </tr>
         </tbody>
     </table>
+
 </div>
 
 <div class="text-center mt-4" id="pagination"></div>
 
 <div class="text-center mt-4">
-    <a href="/sjhealthy/board/write"><button class="btn btn-custom">글 작성</button></a>
+    <a href="/sjhealthy/board/write"><button id="writeBtn" class="btn btn-custom">글 작성</button></a>
     <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
 </div>
 
 </main>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // 글 작성/수정하면서 리다이렉트한 메시지 띄움
+        const message = /*[[${message}]]*/'';
+        if (message) {
+            alert(message);
+        }
+        
+        // 작성 버튼은 회원 전용 기능
+        const loginId = /*[[${loginId}]]*/"";
+        const writeBtn = document.getElementById("writeBtn");
+        writeBtn.addEventListener("click", (e) => {
+            if (!loginId){
+                alert("글은 회원만 작성할 수 있습니다.");
+                e.preventDefault();
+            }
+        });
+
         const boardDiv = document.getElementById("content");
 
         // 게시글 관리
         let currentPage = 1;
         const pageSize = 10;
         
+        // 만약 서버에서 보낸 페이지가 있다면 그걸로 사용
+        const pageBefore = /*[[${page}]]*/'';
+        if (pageBefore){
+            currentPage = pageBefore;
+        } else if (localStorage.getItem("boardPage")){
+            // 목록, 수정, 삭제 버튼 눌러서 왔을 땐 해당 글의 페이지로 이동
+            currentPage = localStorage.getItem("boardPage") ? parseInt(localStorage.getItem("boardPage")) : currentPage;
+            localStorage.clear(); // 앞으로의 사용을 위해 페이지 저장을 초기화 해줌.
+        }
+
+
         // 페이지 열면 자동으로 로드(1페이지로)
         loadBoardData(currentPage);
 
@@ -109,14 +137,17 @@
         async function loadBoardData(page){
             const boardListDiv = document.getElementById("content");
             content.innerHTML = ""; // 기존 내용 비움
-            
+
+            // 목록 버튼 눌러서 왔을 땐 해당 글의 페이지로 이동
             try {
                 // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
                 const response = await fetch("/sjhealthy/board/list?page=" + page);
-
-                const data = await response.json();
                 
-                if (response.status === 200){
+                if (response.status === 204){
+                    alert("게시글이 존재하지 않습니다.");
+                }
+                else if (response.ok){
+                    const data = await response.json();
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
                     
                     const boardList = data._embedded.boardDTOList;
@@ -153,7 +184,7 @@
                         row.appendChild(postNumber);
 
                         const title = document.createElement("td");
-                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}">${board.boardTitle}</a>`;
+                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}&page=${page}">${board.boardTitle}</a>`;
                         row.appendChild(title);
 
                         const writer = document.createElement("td");
