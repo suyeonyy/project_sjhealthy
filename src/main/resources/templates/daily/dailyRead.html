@@ -108,10 +108,13 @@
 
       <div class="text-center mt-4">
         <a th:if="${dailyDTO.memberId == loginId}" style="text-decoration: none;"
-           th:href="@{../daily/update?dailyId={id}(id=${dailyDTO.dailyId})}">
+           th:href="@{../daily/update?dailyId={id}(id=${dailyDTO.dailyId}, year=${#strings.substring(dailyDTO.dailyDate, 0, 4)}, month=${#strings.substring(dailyDTO.dailyDate, 4, 6)} )}">
           <button type="button" class="btn btn-custom">수정</button>
         </a>
-        <a href="../daily/dailyList" class="btn btn-secondary">목록</a>
+        <!--
+        <a id="list" href="../daily/dailyList" class="btn btn-secondary">목록</a>
+        -->
+        <a id="list" href="#" class="btn btn-secondary">목록</a>
       </div>
     </div>
   </div>
@@ -122,13 +125,27 @@
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script>
+  var dailySaveDate;
+  var list = document.getElementById("list");
+
   $(document).ready(function() {
-    var dailyDate = document.getElementById('dailyDate').innerText;
+    var dailyDate = document.getElementById('dailyDate').innerText;//목록에서 클릭한 데이터의 년,월이 담겨있음
     // 날짜 문자열을 `YYYYMMDD` 형태에서 `YYYY/MM/DD`로 변환
     var formattedDate = dailyDate.slice(0, 4) + '/' + dailyDate.slice(4, 6) + '/' + dailyDate.slice(6, 8);
     //console.log(formattedDate);  // "2025/01/08"
 
     $("#dailyDate").text(formattedDate);
+
+    dailySaveDate = dailyDate;
+
+
+    // 목록 버튼 누르면 페이지 저장해서 경로 이동
+    list.addEventListener("click", () => {
+        event.preventDefault(); // 기본 동작 방지
+        var year = dailySaveDate.slice(0, 4);
+        var month = dailySaveDate.slice(4, 6);
+        window.location.href = "/sjhealthy/daily/dailyList?year=" + year + "&month=" + month;
+    });
   });
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
