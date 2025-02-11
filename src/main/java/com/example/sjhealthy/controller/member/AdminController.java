@@ -107,9 +107,9 @@ public class AdminController {
 
     @ResponseBody // 페이지 추가
     @GetMapping("/admin/post")
-    public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getAllPost(@RequestParam(defaultValue = "1", name = "page") int page, Model model,
-                                                                        @SessionAttribute(name = "loginId", required = false)String loginId,
-                                                                        PagedResourcesAssembler<BoardDTO> assembler) {
+    public ResponseEntity<Response<Object>> getAllPost(@RequestParam(defaultValue = "1", name = "page") int page, Model model,
+                                                        @SessionAttribute(name = "loginId", required = false)String loginId,
+                                                        PagedResourcesAssembler<BoardDTO> assembler) {
         model.addAttribute("loginId", loginId);
 
         int pageSize = 10;
@@ -121,10 +121,13 @@ public class AdminController {
             if (loginMember.getMemberAuth().equals("A")) {
                 // 관리자인지 확인
                 Page<BoardDTO> board = boardService.getListWithPage(page, pageSize);
-                System.out.println(board);
-                PagedModel<EntityModel<BoardDTO>> boardList = assembler.toModel(board);
-
-                return ResponseEntity.ok().body(boardList);
+                if (board == null || board.isEmpty()){
+                    // 게시물 없을 때
+                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "게시물이 없습니다."));
+                } else {
+                    PagedModel<EntityModel<BoardDTO>> boardList = assembler.toModel(board);
+                    return ResponseEntity.ok().body(new Response<>(boardList, "리스트를 가져왔습니다."));
+                }
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
             }
