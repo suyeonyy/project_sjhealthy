@@ -3,7 +3,6 @@
         // 네비게이션바
         const memberNav = document.getElementById("memberNav");
         const postNav = document.getElementById("postNav");
-        const reportNav = document.getElementById("reportNav");
         const content = document.getElementById("content");
 
         let currentPageM = 1;
@@ -12,6 +11,8 @@
         // 회원 관리창
         memberNav.addEventListener("click", (e)=> {
             loadMemberData(currentPageM);
+            memberNav.disabled = true; // 현재 버튼 비활성화
+            postNav.disabled = false; // 나머지 버튼 활성화
         });
 
         // 멤버 관리창
@@ -22,10 +23,17 @@
             try {
                 const response = await fetch("/sjhealthy/admin/member?page=" + page);
                 
-                console.log("데이터 요청");
-                if (response.ok){ // 성공적으로 데이터를 받았을 때(message가 null로 응답됨)
+                if (response.status === 204){
+                    // 게시물이 존재하지 않을 때
+                    const h3 = document.createElement("h3");
+                    h3.textContent = "게시물이 존재하지 않습니다.";
+                    content.appendChild(h3);
+
+                    const pagination = document.getElementById("pagination");
+                    pagination.innerHTML = ""; // 기존 내용 초기화
+                } else if (response.ok){ // 성공적으로 데이터를 받았을 때(message가 null로 응답됨)
                     const data = await response.json();
-                    console.log(data);
+
                     const memberList = data.data.content;
 
                     const table = document.createElement("table");
@@ -94,15 +102,13 @@
                         row.appendChild(memberBirth);
 
                         tbody.appendChild(row);
-
                     });
                     table.appendChild(tbody);
                     content.appendChild(table);
 
                     displayPagination(data.data.page.totalPages, page); // 페이지 버튼 생성
-                } else {
-                    alert(data.message);
-                }
+                    
+                } 
             } catch(error){
                 console.log("Error = " + error);
             }
@@ -144,6 +150,8 @@
         // post 네비버튼 누르면 자동으로 로드(1페이지로)
         postNav.addEventListener("click", (e)=> {
             loadBoardData(currentPage);
+            postNav.disabled = true; // 현재 버튼 비활성화
+            memberNav.disabled = false; // 나머지 버튼 활성화
         });
 
         // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로 
@@ -154,12 +162,32 @@
             try {
                 // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
                 const response = await fetch("/sjhealthy/admin/post?page=" + page);
-                if (response.status === 200){
+                
+                if (response.status === 204){
+                    // 게시물이 존재하지 않을 때
+                    const h3 = document.createElement("h3");
+                    h3.textContent = "게시물이 존재하지 않습니다.";
+                    content.appendChild(h3);
+
+                    const pagination = document.getElementById("pagination");
+                    pagination.innerHTML = ""; // 기존 내용 초기화(글이 없으니 페이지 없는 걸로)
+
+                } else if (response.ok){
                     const data = await response.json();
-                    
                     const boardListDiv = document.getElementById("content");
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
-                    
+
+                    // if (data.data.page.totalPages === 0){
+                    //     // 게시물 0개일 경우는 여기서 걸러줌
+                    //     // 게시물이 존재하지 않을 때
+                    //     const h3 = document.createElement("h3");
+                    //     h3.textContent = "게시물이 존재하지 않습니다.";
+                    //     content.appendChild(h3);
+
+                    //     const pagination = document.getElementById("pagination");
+                    //     pagination.innerHTML = ""; // 기존 내용 초기화
+                        
+                    // } else {
                     const boardList = data._embedded.boardDTOList;
                     console.log(boardList);
 
@@ -231,10 +259,10 @@
                     content.appendChild(table);
 
                     displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
+                    
                 } else {
                     alert("관리자만 접근 가능한 페이지입니다.");
                     window.location.href = "/sjhealthy";
-
                 }
             } catch (error){
                 console.log("Error = " + error);
