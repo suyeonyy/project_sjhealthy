@@ -119,6 +119,7 @@ public interface DailyRepository extends JpaRepository<DailyEntity, Long> {
     //현재 날짜(yyyymmdd)를 기준으로, 현재 월로 등록된 데이터 유무 가져오기
     @Query(value = "SELECT  DTBL.DAILY_DATE " +
             ",DTBL.DAILY_TITLE " +
+            ",DTBL.DAILY_GOAL_SF " +
             "FROM  daily_table DTBL " +
             "WHERE  1 = 1 " +
             "AND  DTBL.MEMBER_ID = :loginId " +
