@@ -68,6 +68,11 @@
 <script th:inline="javascript">
     var dailyList = [[${dailyList}]];
     var initialDate;
+    var moodEmoticons = {
+        "상": "😊",  // 예: 상은 웃는 얼굴
+        "중": "😐",  // 중은 무표정
+        "하": "😢"   // 하는 우는 얼굴
+    };
 
     $(document).ready(function() {
         // URLSearchParams를 사용하여 URL 파라미터 읽기
@@ -88,6 +93,8 @@
                 var selected = dailyList[i];
                 var dailyDate = selected.dailyDate;
                 var dailyTitle = selected.dailyTitle;
+                var dailyGoalSf = selected.dailyGoalSf;
+                var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
 
                 //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
                 //console.log(typeof dateString);
@@ -103,9 +110,12 @@
                 // 날짜 형식을 출력
                 var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
 
+                var finalTitle = dailyTitle + " _ " + emoticon;
+
                 // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
                 var event = {
-                    title: dailyTitle,
+                    //title: dailyTitle,
+                    title: finalTitle,
                     start: dailyDate
                 };
                 events.push(event);
@@ -228,6 +238,8 @@
                                     var selected = dailyList[i];
                                     var dailyDate = selected.dailyDate;
                                     var dailyTitle = selected.dailyTitle;
+                                    var dailyGoalSf = selected.dailyGoalSf;
+                                    var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
 
                                     //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
                                     //console.log(typeof dateString);
@@ -243,9 +255,12 @@
                                     // 날짜 형식을 출력
                                     var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
 
+                                     var finalTitle = dailyTitle + " _ " + emoticon;
+
                                     // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
                                     var event = {
-                                        title: dailyTitle,
+                                        //title: dailyTitle,
+                                        title: finalTitle,
                                         start: dailyDate
                                     };
                                     events.push(event);
