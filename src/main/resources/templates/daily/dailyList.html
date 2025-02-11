@@ -67,17 +67,20 @@
 
 <script th:inline="javascript">
     var dailyList = [[${dailyList}]];
+    var initialDate;
 
     $(document).ready(function() {
-        /*
-        if(dailyList.length > 0){
-            for(var i = 0; i < dailyList.length; i++){
-                var selected = dailyList[i];
-                var dailyDate = selected.dailyDate;
-                var dailyTitle = selected.dailyTitle;
-            }
+        // URLSearchParams를 사용하여 URL 파라미터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+        let initialyear = urlParams.get('year');
+        let initialmonth = urlParams.get('month');
+
+        // year와 month가 존재하면 초기 날짜를 구성, 없으면 오늘 날짜 사용
+        if (initialyear && initialmonth) {
+            initialDate = initialyear + '-' + initialmonth + '-01';
+        } else {
+            initialDate = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
         }
-        */
 
         if(dailyList.length > 0){
             var events = [];
@@ -140,6 +143,7 @@
             },
             initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
             //initialDate: '2021-07-15', // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+            initialDate: initialDate,
             navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
             editable: true, // 수정 가능?
             selectable: true, // 달력 일자 드래그 설정가능
