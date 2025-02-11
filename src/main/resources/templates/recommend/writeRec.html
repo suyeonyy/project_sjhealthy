@@ -110,6 +110,13 @@
     
         var selectedPlace;
     
+        // 회원인지 확인
+        const loginId = document.getElementById("loginId");
+        if (!loginId){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhelathy/recommend";
+        }
+
         function map(){
             window.kakao.maps.load(()=>{
                 //해당 키워드 검색
