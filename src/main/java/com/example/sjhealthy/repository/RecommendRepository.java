@@ -23,8 +23,8 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
     @Query(value ="SELECT * " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
         "FROM recommend_table r " +
         "ORDER BY (LENGTH(r.recY) - LENGTH(REPLACE(r.recY, '_', ''))) DESC " + // 좋아요 수 기준 내림차순 정렬
-        "LIMIT 5", nativeQuery = true) // 상위 5개만 가져오기
-    List<RecommendEntity> findTop5();
+        "LIMIT 4", nativeQuery = true) // 상위 4개만 가져오기
+    List<RecommendEntity> findTop4();
 
     // 추천 게시판 글 작성 중복 체크
     @Query(value="SELECT * " +

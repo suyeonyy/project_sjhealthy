@@ -89,9 +89,9 @@ public class BoardController {
         }
     }
 
-    @GetMapping("/board/current") // 메인페이지에 최근글 5개 출력
+    @GetMapping("/board/current") // 메인페이지에 최근글 4개 출력
     public ResponseEntity<Response<Object>> getBoardListForMain(){
-        List<BoardDTO> boardList = boardService.getListTop5();
+        List<BoardDTO> boardList = boardService.getListTop4();
 
         try {
             if (boardList != null){
@@ -137,10 +137,8 @@ public class BoardController {
                 //ra.addAttribute("message", "글이 작성되었습니다.");
                 ra.addFlashAttribute("message", "글이 작성되었습니다.");
                 ra.addFlashAttribute("boardDTO", writeResult);
-                System.out.println("글 작성 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
-                System.out.println("글 작성 실패");
                 //ra.addAttribute("message", "글 작성에 실패했습니다.");
                 ra.addFlashAttribute("message", "글 작성에 실패했습니다.");
                 return "redirect:/sjhealthy/board";
@@ -149,7 +147,6 @@ public class BoardController {
             e.printStackTrace(); // 오류 떠서 이유 확인용
             //ra.addAttribute("message", "시스템 오류로 글 작성에 실패했습니다.");
             ra.addFlashAttribute("message", "시스템 오류로 글 작성에 실패했습니다.");
-            System.out.println("시스템 오류로 실패");
             return "redirect:/sjhealthy/board";
         }
     }
@@ -198,15 +195,12 @@ public class BoardController {
         // 파일 경로
 //        fileName = URLEncoder.encode(fileName, "UTF-8");
         File file = new File("uploads/files/" + fileName);
-        System.out.println("filePath = " + file);
 
         if (!file.exists()){
-            System.out.println("첨부파일 없음");
             return ResponseEntity.notFound().build();
         }
         // 파일 URL 생성
         String fileUrl = "http://localhost:8081/sjhealthy/uploads/files/" + fileName;
-        System.out.println("첨부파일 존재");
         // 파일을 resource로 감싸서 반환, URL만으로 이미지를 표시 가능
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
@@ -258,7 +252,6 @@ public class BoardController {
             model.addAttribute("page", page);
             return "board/read";
         } catch (Exception e){
-            System.out.println("시스템 오류로 글을 읽어오지 못했습니다.");
             e.printStackTrace();
             ra.addFlashAttribute("page", page);
             return "redirect:/sjhealthy/board";
@@ -282,7 +275,6 @@ public class BoardController {
                         // 조회 기록 없을시 조회수 1 증가
                         boardService.countBoardView(boardDTO);
                         cookie.setValue(cookie.getValue() + "_" + boardId);
-                        System.out.println(cookie.getValue());
                         return cookie;
                     } else return null;
                 }
@@ -360,24 +352,18 @@ public class BoardController {
 
             if (updateResult != null) {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
-                //ra.addAttribute("message", "글이 수정되었습니다.");
                 ra.addFlashAttribute("message", "글이 수정되었습니다.");
                 ra.addFlashAttribute("boardDTO", boardDTO);
                 ra.addAttribute("page", page);
-                System.out.println("글 수정 성공");
                 return "redirect:/sjhealthy/board/read";
             } else {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
-                //ra.addAttribute("message", "글 수정에 실패했습니다.");
                 ra.addFlashAttribute("message", "글 수정에 실패했습니다.");
                 ra.addAttribute("page", page);
-                System.out.println("글 수정 실패");
                 return "redirect:/sjhealthy/board/read";
             }
         } catch (Exception e){
             e.printStackTrace(); // 오류 떠서 이유 확인용
-            System.out.println("시스템 오류로 실패");
-            //ra.addAttribute("message", "시스템 오류로 글 수정에 실패했습니다.");
             ra.addFlashAttribute("message", "시스템 오류로 글 수정에 실패했습니다.");
             return "redirect:/sjhealthy";
         }
@@ -404,13 +390,10 @@ public class BoardController {
                     System.out.println("첨부파일이 삭제되었습니다.");
                 } else System.out.println("첨부파일이 삭제되지 않았습니다.");
             } else System.out.println("첨부파일이 존재하지 않습니다.");
-//            ra.addAttribute("message", "글 삭제가 완료되었습니다.");
             ra.addFlashAttribute("message", "글 삭제가 완료되었습니다.");
             ra.addFlashAttribute("page", page);
             return "redirect:/sjhealthy/board";
         } else {
-            System.out.println("글 삭제에 실패했습니다.");
-//            ra.addAttribute("message", "글 삭제에 실패했습니다.");
             ra.addFlashAttribute("message", "글 삭제에 실패했습니다.");
             ra.addAttribute("boardId", boardId);
             return "redirect:/sjhealthy/board/read";
@@ -422,7 +405,6 @@ public class BoardController {
     @RequestMapping("/board/delete/{boardId}")
     public ResponseEntity<Response<Object>> deletePostForAdmin(@PathVariable("boardId") Long boardId) throws NullPointerException{
         BoardDTO data = boardService.read(boardId);
-        System.out.println(data);
         if (data != null) {
             //첨부파일 있는지 확인하기 위해
             String filePath = data.getBoardFilePath();
