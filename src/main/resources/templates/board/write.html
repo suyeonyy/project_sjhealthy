@@ -129,11 +129,18 @@
 
         const submitButton = document.getElementById("submit");
         const form = document.querySelector(".boardForm");
+        const writer = document.getElementById("boardWriter").value;
+
+        // 회원인지 확인
+        if (!writer){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy/board";
+        }
+
 
         submitButton.addEventListener("click", (e) => {
             const title = document.getElementById("boardTitle").value;
             const content = document.getElementById("boardContent").value;
-            const writer = document.getElementById("boardWriter").value;
             const action = document.getElementById("boardTitle").value;
 
             // 제목이 없으면 폼 제출을 막고 알림
