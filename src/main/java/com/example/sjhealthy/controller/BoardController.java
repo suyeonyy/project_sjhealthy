@@ -94,7 +94,7 @@ public class BoardController {
         List<BoardDTO> boardList = boardService.getListTop4();
 
         try {
-            if (boardList != null){
+            if (!boardList.isEmpty()){
                 return ResponseEntity.ok(new Response<>(boardList, "게시물을 불러왔습니다."));
             } else {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "게시물이 존재하지 않습니다."));
@@ -151,29 +151,6 @@ public class BoardController {
         }
     }
 
-//    @PostMapping("/board/write")
-//    public ResponseEntity<Response<Object>> writeNewPost(@SessionAttribute(name = "loginId", required = false) String loginId,
-//                                                         @ModelAttribute BoardDTO boardDTO, Model model,
-//                                                         @RequestParam("file") MultipartFile file){
-//        model.addAttribute("loginId", loginId);
-//
-//        try {
-//            if (!file.isEmpty()){ // 첨부파일이 존재한다면
-//                saveFile(file, boardDTO); // boardDTO에 MultipartFile로 읽어온 첨부파일 추가
-//            }
-//            BoardDTO writeResult = boardService.write(boardDTO);
-//
-//            if (writeResult != null) {
-//                return ResponseEntity.ok(new Response<>(writeResult, "글이 작성되었습니다."));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "글이 작성되었습니다."));
-//            }
-//        } catch (Exception e){
-//            e.printStackTrace(); // 오류 떠서 이유 확인용
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Response<>(null, "시스템 오류로 글 작성에 실패했습니다."));
-//        }
-//    }
-
     public void saveFile(MultipartFile file, BoardDTO boardDTO) throws IOException {
         String projectPath = System.getProperty("user.dir") + "/uploads/files";
 //            "/src/main/resources/static/files"; // 이렇게 하면 내부라 웹에서 직접 접근 못함
@@ -193,7 +170,6 @@ public class BoardController {
     @GetMapping("/uploads/files/{fileName}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) throws UnsupportedEncodingException, MalformedURLException {
         // 파일 경로
-//        fileName = URLEncoder.encode(fileName, "UTF-8");
         File file = new File("uploads/files/" + fileName);
 
         if (!file.exists()){

@@ -104,7 +104,8 @@
         }
         
         // 작성 버튼은 회원 전용 기능
-        const loginId = /*[[${loginId}]]*/"";
+        const loginId = [[${loginId}]];
+        console.log("ID=" + loginId);
         const writeBtn = document.getElementById("writeBtn");
         writeBtn.addEventListener("click", (e) => {
             if (!loginId){
