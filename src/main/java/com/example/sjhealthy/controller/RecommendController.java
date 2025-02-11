@@ -54,6 +54,7 @@ public class RecommendController {
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
 
             if (member.getMemberAuth().equals("A")){
+
                 model.addAttribute("administrator", true);
 
             }
@@ -72,6 +73,7 @@ public class RecommendController {
 
         try {
             Page<RecommendDTO> list = recommendService.getListWithPage(page, size);
+
 
             if (!list.isEmpty()){
                 // 추천글이 있을 때
@@ -120,6 +122,7 @@ public class RecommendController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         RecommendEntity result = recommendService.readRecommendationById(recId);
+        System.out.println(result);
 
         if (result == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>(null, "정보를 읽어오지 못했습니다."));

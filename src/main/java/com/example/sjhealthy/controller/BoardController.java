@@ -355,12 +355,14 @@ public class BoardController {
                 ra.addFlashAttribute("message", "글이 수정되었습니다.");
                 ra.addFlashAttribute("boardDTO", boardDTO);
                 ra.addAttribute("page", page);
+
                 return "redirect:/sjhealthy/board/read";
             } else {
                 ra.addAttribute("boardId", boardDTO.getBoardId());
                 ra.addFlashAttribute("message", "글 수정에 실패했습니다.");
                 ra.addAttribute("page", page);
-                return "redirect:/sjhealthy/board/read";
+
+              return "redirect:/sjhealthy/board/read";
             }
         } catch (Exception e){
             e.printStackTrace(); // 오류 떠서 이유 확인용
@@ -390,6 +392,7 @@ public class BoardController {
                     System.out.println("첨부파일이 삭제되었습니다.");
                 } else System.out.println("첨부파일이 삭제되지 않았습니다.");
             } else System.out.println("첨부파일이 존재하지 않습니다.");
+
             ra.addFlashAttribute("message", "글 삭제가 완료되었습니다.");
             ra.addFlashAttribute("page", page);
             return "redirect:/sjhealthy/board";
