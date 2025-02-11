@@ -29,15 +29,12 @@ public class MainController {
         // 파일 경로
 //        fileName = URLEncoder.encode(fileName, "UTF-8");
         File file = new File("uploads/files/" + fileName);
-        System.out.println("filePath = " + file);
 
         if (!file.exists()){
-            System.out.println("첨부파일 없음");
             return ResponseEntity.notFound().build();
         }
         // 파일 URL 생성
 //        String fileUrl = "http://localhost:8081/sjhealthy/uploads/files/" + fileName;
-        System.out.println("첨부파일 존재");
         // 파일을 resource로 감싸서 반환, URL만으로 이미지를 표시 가능
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
@@ -46,7 +43,6 @@ public class MainController {
     }
     @RequestMapping("/sjhealthy")
     public String index(@SessionAttribute(name = "loginId", required = false) String loginId, Model model) {
-        System.out.println("index");
         model.addAttribute("loginId", loginId);
 
         if (loginId != null) {

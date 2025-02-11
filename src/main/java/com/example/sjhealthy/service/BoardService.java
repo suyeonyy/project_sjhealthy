@@ -51,8 +51,8 @@ public class BoardService {
 
     }
 
-    public List<BoardDTO> getListTop5(){
-        List<BoardEntity> entity = boardRepository.findTop5ByOrderByCreateDateDesc();
+    public List<BoardDTO> getListTop4(){
+        List<BoardEntity> entity = boardRepository.findTop4ByOrderByCreateDateDesc();
         List<BoardDTO> dtoList = new ArrayList<>();
 
         for (BoardEntity e : entity){
