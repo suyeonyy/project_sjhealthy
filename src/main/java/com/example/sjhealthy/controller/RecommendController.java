@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+
 @Controller
 @RequestMapping("/sjhealthy/")
 public class RecommendController {
@@ -330,21 +332,52 @@ public class RecommendController {
         }
     }
 
-    // TODO: 페이지네이션 추가해서 다시 만들기
-    @ResponseBody
-    @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
-    public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){
+//    @ResponseBody
+//    @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
+//    public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){
+//
+//        if (storeName == null || storeName.isEmpty()){
+//            return ResponseEntity.badRequest().build();
+//            // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
+//        }
+//        List<RecommendEntity> bySearch = recommendService.getListByPlaceName(storeName);
+//        List<RecommendDTO> dto = new ArrayList<>();
+//        for (RecommendEntity s : bySearch){
+//            dto.add(RecommendMapper.toRecommendDTO(s, loginId));
+//        }
+//        return ResponseEntity.ok(dto);
+//    }
+
+    @ResponseBody // 페이지네이션 추가
+    @PostMapping("/recommend/sort") // url 경로에서 storeName 추출 => @PathVariable 사용
+    public ResponseEntity<PagedModel<EntityModel<RecommendDTO>>> SearchByStoreName(@RequestBody Map<String, String> data,
+                                                                @SessionAttribute(name = "loginId", required = false)String loginId,
+                                                                PagedResourcesAssembler<RecommendDTO> assembler){
+        int size = 10 ;
+        String storeName = data.get("storeName");
+        int page = parseInt(data.get("page"));
+        System.out.println("page=" + page);
+        System.out.println("storeName=" + storeName);
 
         if (storeName == null || storeName.isEmpty()){
             return ResponseEntity.badRequest().build();
             // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
         }
-        List<RecommendEntity> bySearch = recommendService.getListByPlaceName(storeName);
-        List<RecommendDTO> dto = new ArrayList<>();
-        for (RecommendEntity s : bySearch){
-            dto.add(RecommendMapper.toRecommendDTO(s, loginId));
+        try {
+            Page<RecommendDTO> list = recommendService.getListByPlaceNameWithPage(storeName, page, size);
+            System.out.println("검색 리스트 = " + list.getContent());
+            if (!list.isEmpty()){
+                // 추천글이 있을 때
+                PagedModel<EntityModel<RecommendDTO>> recList = assembler.toModel(list);
+                return ResponseEntity.ok(recList);
+            } else {
+                // 추천글이 없을 때
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.ok(dto);
     }
 
     @RequestMapping("/recommend/delete/{recId}")
