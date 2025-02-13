@@ -95,11 +95,12 @@ public class AdminController {
     @ResponseBody
     @GetMapping("/admin/member/delete/{memberId}")
     public ResponseEntity<Response<Object>> getMemberEntityForDelete(@PathVariable String memberId){
-        if (memberId == null){
+        if (memberId == null || memberId.isBlank()){
             // 제대로 못 받았을 때
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(null, "아이디를 불러오지 못하였습니다."));
         }
 
+        // 사이트 내에서 탈퇴 진행
         memberService.delete(memberId);
         System.out.println("회원 탈퇴 = " + memberId);
         return ResponseEntity.ok().body(new Response<>(null, "탈퇴를 완료하였습니다."));

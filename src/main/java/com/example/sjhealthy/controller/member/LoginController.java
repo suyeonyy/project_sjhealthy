@@ -482,21 +482,22 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 존재하지 않습니다."));
         }
         // 연동 해제를 위한 액세스 토큰 보냄
-        // 회원 정보로 조회해서 확인하고 그런 과정 있으면 좋은데 나중에 해야지
+        MemberDTO dto = memberService.findMemberIdAtPassFind(memberId);
 
-        // 제대로 받았으면 삭제 처리
-        memberService.delete(memberId);
-        // 탈퇴하면 deleted 를 Y로 바꿔서 재가입 막든지 그런 세부사항은 의논
-        System.out.println("탈퇴 완료");
-        // 세션 무효화
-        HttpSession session = request.getSession();
-        session.invalidate();
+        if (dto != null){
+            // 제대로 받았으면 삭제 처리
+            memberService.delete(memberId);
+            // 탈퇴하면 deleted 를 Y로 바꿔서 재가입 막든지 그런 세부사항은 의논
+            System.out.println("탈퇴 완료");
+            // 세션 무효화
+            HttpSession session = request.getSession();
+            session.invalidate();
 
-
-        return ResponseEntity.ok(accessToken);
+            return ResponseEntity.ok(accessToken);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
-
-
 /*
     @GetMapping("../login/isLogged")
     public String homePage(Model model, HttpSession session) {
