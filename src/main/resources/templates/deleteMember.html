@@ -75,19 +75,35 @@
     
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script th:inline="javascript" th:src="@{/js/deleteGoogleAccount.js}"></script>
-<script>
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
-        const memberId = document.getElementById("memberId");
+        const memberId = document.getElementById("memberId").value;
+
+        if (memberId == null){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy";
+        }
+        
         const deleteMember = document.getElementById("deleteMember");
         const deleteGoogle = document.getElementById("deleteGoogleOAuth");
 
+        let d = ""; // 가입 경로 확인 후 alert 메시지 출력용
+
         deleteMember.addEventListener("click", async (e) =>{
             try {
+                // 가입 경로 확인
+                const division = await checkMemberDivision();
+                if (division !== "S"){
+                    e.preventDefault();
+                    alert("사이트 가입 회원이 아닙니다.\n" + d + " 버튼을 눌러 탈퇴를 진행해 주세요.");
+                    return false;
+                }
+
                 if (!window.confirm("정말로 탈퇴하시겠습니까?")){
                     e.preventDefault();
                     return false;
                 }
+
                 //console.log("memberID = " + memberId);
                 await fetch("/sjhealthy/member/delete/${memberId}");
         
@@ -100,15 +116,52 @@
         // 이건 따로 js파일이 있어서 confirm 메시지만
         //deleteGoogle.addEventListener("click", async (e)=> {
         deleteGoogleOAuth.addEventListener("click", async (e)=> {
-                if (!window.confirm("정말로 탈퇴하시겠습니까?")){
-                    e.preventDefault();
-                    return false;
-                } 
+            // 가입 경로 확인
+            const division = await checkMemberDivision();
+            if (division !== "G"){
+                e.preventDefault();
+                alert("구글 연동 회원이 아닙니다.\n" + d + " 버튼을 눌러 탈퇴를 진행해 주세요.");
+                return false;
+            }
+
+            if (!window.confirm("정말로 탈퇴하시겠습니까?")){
+                e.preventDefault();
+                return false;
+            } 
+
+            try {
+                // 아이디를 보내 탈퇴처리하고 액세스토큰 받아옴
+                const response = await fetch("/sjhealthy/member/delete/google/" + memberId);
+                const accessToken = await response.text(); // 토큰이 json 형태 아니라고 오류나서
+
+                try {
+                    // 액세스 토큰을 담아 구글에 연동 해제 요청
+                    const url = "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken;
+                    const response = await fetch(url);
+
+                    if (response.ok){
+                        alert("탈퇴가 완료되었습니다.");
+                        window.location.href = "http://localhost:8081/sjhealthy";
+                    }
+                } catch(error){
+                    console.log("error = ", error);
+                }
+            } catch (error){
+                console.log("error = " + error);
+            }
         });
 
         //카카오 탈퇴(연동해제)
         deleteKakaoOAuth.addEventListener("click", async (e) =>{
             try {
+                // 가입 경로 확인
+                const division = await checkMemberDivision();
+                if (division !== "K"){
+                    e.preventDefault();
+                    alert("카카오 연동 회원이 아닙니다.\n" + d + "버튼을 눌러 탈퇴를 진행해 주세요.");
+                    return false;
+                }
+
                 if (!window.confirm("정말로 탈퇴하시겠습니까?")){
                     e.preventDefault();
                     return false;
@@ -124,6 +177,41 @@
                 //console.log("Error = " + error);
             }
         });
+
+        // 가입경로 확인
+        async function checkMemberDivision(){
+            console.log(memberId);
+            try{
+                const response = await fetch("/sjhealthy/mypage/division/" + memberId);
+                
+                if (response.status === 204){
+                    console.log("존재하지 않는 아이디입니다.");
+                } else if (response.status === 400){
+                    console.log("아이디 전송에 실패하였습니다.");
+                } else if (response.ok){
+                    const data = await response.json();
+
+                    console.log(data);
+
+                    const memberDivision = data.data.memberDivision;
+
+                    if (memberDivision === "K"){
+                        d = "카카오 연동 회원";
+                        return "K";
+                    } else if (memberDivision === "G"){
+                        d = "구글 연동 회원";
+                        return "G";
+                    } else if (memberDivision === "S"){
+                        d = "사이트 가입 회원";
+                        return "S";
+                    }
+                }
+            } catch(error){
+                console.log("시스템 오류로 실패하였습니다.");
+            }
+
+    
+        } 
     });
 </script>
 
