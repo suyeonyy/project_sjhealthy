@@ -129,6 +129,9 @@ public class LoginController {
             kakaoAccount.setMemberEmailFirst(emailFirst);
             kakaoAccount.setMemberEmailLast(emailLast);
 
+            // memberDivision을 보내 같이 저장
+            model.addAttribute("memberDivision", "K");
+
             model.addAttribute("memberDTO", kakaoAccount); // 이 3가지 정보를 회원가입 창에 채워서 뷰 출력
             return "join";
         }
@@ -273,6 +276,9 @@ public class LoginController {
 
                 googleAccount.setMemberEmailFirst(emailFirst);
                 googleAccount.setMemberEmailLast(emailLast);
+
+                // memberDivision 보내 같이 저장
+                model.addAttribute("memberDivision", "G");
 
                 model.addAttribute("memberDTO", googleAccount); // 이 3가지 정보를 회원가입 창에 채워서 뷰 출력
                 return "join";
