@@ -46,6 +46,13 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
         "ORDER BY r.recId DESC")
     List<RecommendEntity> getRecommendationByStoreName(@Param("recStore") String recStore);
 
+    // 검색 & 페이지네이션
+    @Query(value= "SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
+        "FROM RecommendEntity r " +
+        "WHERE r.recStore LIKE %:recStore% " +
+        "ORDER BY r.recId DESC")
+    Page<RecommendEntity> getRecommendationByStoreNameWithPage(@Param("recStore") String recStore, Pageable pageable);
+
     @Query("SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
         "FROM RecommendEntity r " +
         "WHERE (r.recStoreId = :recStoreId " +

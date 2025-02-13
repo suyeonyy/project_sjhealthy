@@ -31,6 +31,11 @@
 
                     const pagination = document.getElementById("pagination");
                     pagination.innerHTML = ""; // 기존 내용 초기화
+                } else if(response.status === 403){
+                    // 관리자 아님
+                    alert("관리자 전용 기능입니다.");
+                    window.location.href = "/sjhealthy";
+                    return; 
                 } else if (response.ok){ // 성공적으로 데이터를 받았을 때(message가 null로 응답됨)
                     const data = await response.json();
 
@@ -65,7 +70,7 @@
                         deleteBtn.id = "deleteMemberBtn"+index;
                         deleteBtn.className = "adminButton";
                         deleteBtn.value = "삭제";
-                        deleteBtn.onclick = (e) => deleteMember(index, member.memberId);
+                        deleteBtn.onclick = (e) => deleteMember(index, member.memberId, member.memberDivision);
                         deleteCell.appendChild(deleteBtn);
                         // row.append(deleteCell);
 
@@ -114,9 +119,10 @@
             }
         }
 
-        function deleteMember(index, memberId){
+        function deleteMember(index, memberId, memberDivision){
             // 회원 탈퇴 버튼
             const deleteMemberBtn = "deleteMemberBtn" + index; 
+
             document.addEventListener("click", async (e) => {
                 if (e.target.id === deleteMemberBtn){
                     if (!window.confirm("정말로 삭제하시겠습니까?")){
@@ -124,6 +130,40 @@
                         return false;
                     }
 
+                    if (memberDivision === "G"){
+                        try {
+                            // 아이디를 보내 탈퇴처리하고 액세스토큰 받아옴
+                            const response = await fetch("/sjhealthy/member/delete/google/" + memberId);
+                            const accessToken = await response.text(); // 토큰이 json 형태 아니라고 오류나서
+                    
+                            try {
+                                // 액세스 토큰을 담아 구글에 연동 해제 요청
+                                const url = "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken;
+                                const response = await fetch(url);
+                    
+                                if (response.ok){
+                                    alert("탈퇴가 완료되었습니다.");
+                                }
+                            } catch(error){
+                                console.log("error = ", error);
+                            }
+                        } catch (error){
+                            console.log("error = " + error);
+                        }
+
+                    } else if (memberDivision === "K"){
+                        try{
+                            const response = await fetch("/sjhealthy/member/delete/kakao/" + memberId, { method: "GET" });
+                            if (response.ok){
+                                const result = await response.json();
+                                alert("탈퇴가 완료되었습니다.");
+                                window.location.href = "http://localhost:8081/sjhealthy";
+                            }
+                        } catch(error){
+                            console.log("error = ", error);
+                        }
+                    }
+                } else if (memberDivision === "S"){
                     try {
                         const response = await fetch("/sjhealthy/admin/member/delete/" + memberId);
                         const data = await response.json();
@@ -171,7 +211,11 @@
 
                     const pagination = document.getElementById("pagination");
                     pagination.innerHTML = ""; // 기존 내용 초기화(글이 없으니 페이지 없는 걸로)
-
+                } else if(response.status === 403){
+                    // 관리자 아님
+                    alert("관리자 전용 기능입니다.");
+                    window.location.href = "/sjhealthy";
+                    return; 
                 } else if (response.ok){
                     const data = await response.json();
                     const boardListDiv = document.getElementById("content");
