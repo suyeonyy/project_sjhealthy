@@ -1,3 +1,11 @@
+// memberDivision 값 없는 경로로 진입 시, 돌려보냄
+const memberDivision = document.getElementById("memberDivision").value;
+if (memberDivision == null){
+    alert("잘못된 접근입니다.");
+    window.location.href = "/sjhealthy";
+    return false;
+}
+
 /* 아이디 중복체크 */
 $("#memberId").blur(function() {
    //console.log("아이디 중복체크 진입");
@@ -236,6 +244,7 @@ function saveMember() {
     var memberPnumPass = $("#memberPnumPass").val();
     var memberEmailPass = $("#memberEmailPass").val();
     var memberBirthPass = $("#memberBirthPass").val();
+    var memberDivision = $('#memberDivision').val();
 
     //이메일 형식 생성
     var memberEmailFirst = form.elements['memberEmailFirst'].value.trim();
