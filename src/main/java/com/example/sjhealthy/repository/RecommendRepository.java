@@ -46,11 +46,18 @@ public interface RecommendRepository extends JpaRepository<RecommendEntity, Long
         "ORDER BY r.recId DESC")
     List<RecommendEntity> getRecommendationByStoreName(@Param("recStore") String recStore);
 
+    // 검색 & 페이지네이션
+    @Query(value= "SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
+        "FROM RecommendEntity r " +
+        "WHERE r.recStore LIKE %:recStore% " +
+        "ORDER BY r.recId DESC")
+    Page<RecommendEntity> getRecommendationByStoreNameWithPage(@Param("recStore") String recStore, Pageable pageable);
+
     @Query("SELECT r " + // 특정 필드만 받으면 Object[]로 반환됨. 그래서 엔티티 자체를 추출
         "FROM RecommendEntity r " +
         "WHERE (r.recStoreId = :recStoreId " +
         "   OR r.recStore LIKE %:recStore%)" +
-        "   AND r.recId = (" + // 좋아요 5개 이상인 것만 가져옴
+        "   AND r.recId IN (" + // 좋아요 5개 이상인 것만 가져옴 // = 는 1개의 값만 비교 가능해서 IN을 사용
         "           SELECT re.recId " +
         "           FROM RecommendEntity re " +
         "           WHERE (LENGTH(re.recY) - LENGTH(REPLACE(re.recY, '_', ''))) >= 5)")

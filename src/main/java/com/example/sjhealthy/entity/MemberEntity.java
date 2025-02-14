@@ -43,6 +43,9 @@ public class MemberEntity {
     @Column(columnDefinition = "NUMERIC(18, 1)")
     private Double memberHeight;   // 키(통계에 사용, 가입 후 따로 받음)
 
+    @Column(columnDefinition = "VARCHAR(1) DEFAULT 'S'", nullable = false)
+    private String memberDivision; // 가입 방법 -> S: 사이트, K: 카카오, G: 구글
+
     @Column(columnDefinition = "VARCHAR(2) DEFAULT 'U'", nullable = false)
     private String memberAuth;
 

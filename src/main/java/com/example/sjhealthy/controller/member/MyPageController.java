@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Member;
 import java.util.Map;
 
 @Controller
@@ -68,5 +69,21 @@ public class MyPageController {
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @ResponseBody
+    @GetMapping("/mypage/division/{memberId}")
+    public ResponseEntity<Response<Object>> checkMemberDivision(@PathVariable("memberId") String memberId){
+        if (memberId == null || memberId.isBlank()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(null, "아이디가 정상적으로 전송되지 않았습니다."));
+        }
+
+        MemberDTO member = memberService.findMemberIdAtPassFind(memberId);
+
+        if (member == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>(null, "존재하지 않는 아이디입니다."));
+        }
+
+        return ResponseEntity.ok().body(new Response<>(member, "데이터 조회에 성공했습니다."));
     }
 }

@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     // 페이지 열면 자동으로 로드(1페이지로)
     loadRecommendData(currentPage);
 
-
-
     async function loadRecommendData(page){
         // const recommendListTr = document.getElementById("content");
 
@@ -98,8 +96,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
                 });
                 displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
-                console.log("페이지 생성");
-                console.log(data);
 
             } 
         } catch (error) {
@@ -113,12 +109,10 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     // 페이지 버튼
     function displayPagination(totalPages, currentPage){
         const pagination = document.getElementById("pagination");
-        console.log("0");
 
         pagination.innerHTML = ""; // 기존 내용 초기화
 
         for (let i = 1; i <= totalPages; i++){
-            console.log("1");
             const pageButton = document.createElement("button");
             pageButton.textContent = i;
             pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
@@ -129,6 +123,30 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 loadRecommendData(i); // 클릭한 페이지 데이터 요청하고 html 생성
                 window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
                 console.log("p " + window.currentPage);
+
+                // 페이지 이동 시, 열려있는 상세보기 접어줌
+                const detailDiv = document.getElementById("detail");
+                detailDiv.style.display = "none";
+
+            });
+            pagination.appendChild(pageButton); 
+        }
+    }
+
+    // 페이지 버튼 검색결과
+    function displaySearchPagination(totalPages, currentPage){
+        const pagination = document.getElementById("pagination");
+
+        pagination.innerHTML = ""; // 기존 내용 초기화
+
+        for (let i = 1; i <= totalPages; i++){
+            const pageButton = document.createElement("button");
+            pageButton.textContent = i;
+            pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
+            
+            pageButton.addEventListener("click", () => {
+                search(i); // 클릭한 페이지 데이터 요청하고 html 생성
+                window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
 
                 // 페이지 이동 시, 열려있는 상세보기 접어줌
                 const detailDiv = document.getElementById("detail");
@@ -312,10 +330,10 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     const searchButton = document.getElementById("searchButton");
 
     searchButton.addEventListener("click", async ()=> {
-        search();
+        search(1);
     });
 
-    async function search(){
+    async function search(page){
         const search = document.getElementById("searchByStoreName").value;
 
         if (!search){
@@ -325,85 +343,99 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         }
 
         try {
-            const url = "/sjhealthy/recommend/sort/" + encodeURIComponent(search);
+            const url = "/sjhealthy/recommend/sort";
             // 한글(업체 명)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
+            // const encodedStoreName = encodeURIComponent(search); 페이지 넣고부터 인코딩해서 보내면 검색 안 돼서 주석처리
 
-            const response = await fetch(url);
-            const data = await response.json(); // 응답을 json으로 변환
-
-            // 검색 결과가 1개가 아닐 때(=> 엔티티 배열이 아닐 때) 배열로 바꿔 처리
-            // 안 바꾸면 forEach에서 오류가 난다.
-            const array = Array.isArray(data) ? data : [data];
-
-            // 검색 결과를 출력
-            const tableBody = document.getElementById("recTable").getElementsByTagName("tbody")[0];
-            // 이 메서드는 HtmlCollection 을 반환해서 tbody가 여러개면 뒤에 [0], [1] 등 인덱스를 사용해 접근
-            // tbody 하나면 안 써도 된다는데 안 쓰니까 tbody랑 제대로 연결 안 돼서 씀
-
-            // 내용 비움
-            tableBody.innerHTML = "";
-            // 나중에 상세페이지 추가해줘야함
-
-                array.forEach((item, index) => {
-                    // 행 추가
-                    const row = tableBody.insertRow();
-
-                    // 열 추가
-                    const cell1 = row.insertCell(0);
-                    const cell2 = row.insertCell(1);
-                    const cell3 = row.insertCell(2);
-                    const cell4 = row.insertCell(3);
-                    const cell5 = row.insertCell(4);
-                    const cell6 = row.insertCell(5);
-                    const cell7 = row.insertCell(6);
-                    const cell8 = row.insertCell(7);
-                    const cell9 = row.insertCell(8);
-
-                    // 내용 추가
-                    // cell1.value = item.recId; // td엔 value 없음
-                    const input1 = document.createElement("input");
-                    input1.type = "button";
-                    input1.className ="detailBtn";
-                    input1.value = "상세보기";
-                    input1.id = "detailBtn" + index;
-                    cell1.appendChild(input1);
-
-                    // const input2 = document.createElement("input");
-                    // input2.className = "recId";
-                    // input2.value = item.recId;
-                    // input2.type = "text";
-                    // input2.readOnly = true;
-                    // cell2.appendChild(input2);
-                    const input2 = document.createElement("p");
-                    input2.className = "recId";
-                    input2.textContent = item.recId;
-                    cell2.appendChild(input2);
-
-                    cell3.textContent = item.recStore;
-                    cell4.textContent = item.recMenu;
-                    cell5.textContent = item.memberId;
-                    cell6.textContent = item.createDate;
-                    cell7.textContent = item.recViews;
-
-                    const dataRecY = document.createElement("button");
-                    dataRecY.className = "recY";
-                    dataRecY.textContent = "좋아요";
-                    dataRecY.onclick = (e) => chooseLikeButton(e, index); // 이렇게 함수의 참조를 넘겨줘야 한다. 이벤트가 발생할 때 함수 호출
-                    // recY.onclick = chooseLikeButton(); 이렇게 하면 바로 실행되어 반환값을 넘겨주는 형태라 X
-                    cell8.appendChild(dataRecY);
-
-                    const dataRecN = document.createElement("button");
-                    dataRecN.className = "recN";
-                    dataRecN.textContent = "싫어요";
-                    dataRecN.onclick = (e) => chooseDislikeButton(e, index);
-                    cell9.appendChild(dataRecN);
-
-                    addOpenDetail(index); // 상세보기 버튼 기능 연결
-
-                    // TODO: 이거 받아야함!
-                    displayPagination(totalPages, currentPage);
-
-                });
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    storeName: search,
+                    page: page
+                })
+            });
+            
+            if (response.status === 204){
+                console.log("검색 결과 없음")
+            } else if (response.status === 500){
+                alert("시스템 오류로 불러오지 못하였습니다.");
+            } else if (response.ok){
+                const data = await response.json(); // 응답을 json으로 변환
+                // 검색 결과가 1개가 아닐 때(=> 엔티티 배열이 아닐 때) 배열로 바꿔 처리
+                // 안 바꾸면 forEach에서 오류가 난다.
+                const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
+    
+                // 검색 결과를 출력
+                const tableBody = document.getElementById("recTable").getElementsByTagName("tbody")[0];
+                // 이 메서드는 HtmlCollection 을 반환해서 tbody가 여러개면 뒤에 [0], [1] 등 인덱스를 사용해 접근
+                // tbody 하나면 안 써도 된다는데 안 쓰니까 tbody랑 제대로 연결 안 돼서 씀
+    
+                // 내용 비움
+                tableBody.innerHTML = "";
+                // 나중에 상세페이지 추가해줘야함
+    
+                    array.forEach((item, index) => {
+                        // 행 추가
+                        const row = tableBody.insertRow();
+    
+                        // 열 추가
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+                        const cell5 = row.insertCell(4);
+                        const cell6 = row.insertCell(5);
+                        const cell7 = row.insertCell(6);
+                        const cell8 = row.insertCell(7);
+                        const cell9 = row.insertCell(8);
+    
+                        // 내용 추가
+                        // cell1.value = item.recId; // td엔 value 없음
+                        const input1 = document.createElement("input");
+                        input1.type = "button";
+                        input1.className ="detailBtn";
+                        input1.value = "상세보기";
+                        input1.id = "detailBtn" + index;
+                        cell1.appendChild(input1);
+    
+                        // const input2 = document.createElement("input");
+                        // input2.className = "recId";
+                        // input2.value = item.recId;
+                        // input2.type = "text";
+                        // input2.readOnly = true;
+                        // cell2.appendChild(input2);
+                        const input2 = document.createElement("p");
+                        input2.className = "recId";
+                        input2.textContent = item.recId;
+                        cell2.appendChild(input2);
+    
+                        cell3.textContent = item.recStore;
+                        cell4.textContent = item.recMenu;
+                        cell5.textContent = item.memberId;
+                        cell6.textContent = item.createDate;
+                        cell7.textContent = item.recViews;
+    
+                        const dataRecY = document.createElement("button");
+                        dataRecY.className = "recY";
+                        dataRecY.textContent = "좋아요";
+                        dataRecY.onclick = (e) => chooseLikeButton(e, index); // 이렇게 함수의 참조를 넘겨줘야 한다. 이벤트가 발생할 때 함수 호출
+                        // recY.onclick = chooseLikeButton(); 이렇게 하면 바로 실행되어 반환값을 넘겨주는 형태라 X
+                        cell8.appendChild(dataRecY);
+    
+                        const dataRecN = document.createElement("button");
+                        dataRecN.className = "recN";
+                        dataRecN.textContent = "싫어요";
+                        dataRecN.onclick = (e) => chooseDislikeButton(e, index);
+                        cell9.appendChild(dataRecN);
+    
+                        addOpenDetail(index); // 상세보기 버튼 기능 연결
+    
+                        displaySearchPagination(data.page.totalPages, page); // 페이지 버튼 생성
+                    });
+            }
         } catch (error) {
             console.log('에러 = ' + error);
         }
@@ -447,20 +479,16 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     });
 
     async function chooseLikeButton(e, index){
-        console.log("좋아요 이벤트 리스너 연결 " + index);
         e.preventDefault();
         // 쿼리셀렉터로는 value를 가져올 수 있으나 All일 때는 이렇게 해서 가져와야 한다.
         const recIds = document.querySelectorAll(".recId");
-        console.log("recIds = " + recIds);
         // const recId = recIds[index].value; // 각 value를 가져옴
         const recId = recIds[index].textContent; // 각 textContent 가져옴
-        console.log("recId = " + recId);
 
 
         // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
         if (!loginId){
             e.preventDefault();
-            console.log("회원 전용");
             alert('회원 전용 기능입니다.');
             return false;
         }
@@ -495,7 +523,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
 
     async function chooseDislikeButton(e, index){
-        console.log("싫어요 이벤트 리스너 연결 " + index);
             e.preventDefault();
             const recIds = document.querySelectorAll(".recId");
             const recId = recIds[index].textContent;
