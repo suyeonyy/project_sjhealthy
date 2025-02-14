@@ -6,6 +6,8 @@ build/
 !**/src/test/**/build/
 sjhealthy-key.pem
 src/main/resources/application.yml
+src/application2.yml
+
 
 ### STS ###
 .apt_generated
