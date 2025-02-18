@@ -5,6 +5,7 @@ import com.example.sjhealthy.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -17,14 +18,16 @@ public class JoinController {
 
     //회원가입 페이지 출력 요청
     @GetMapping("/member/join")
-    public String joinForm(){
+    public String joinForm(Model model){
+        // memberDivision 보내 같이 저장
+        model.addAttribute("memberDivision", "S");
         return "join";
     }
 
     @PostMapping("/member/join")
     public String join(@ModelAttribute MemberDTO memberDTO, RedirectAttributes redirectAttributes){
         //System.out.println("회원가입");
-        //System.out.println(memberDTO);
+        System.out.println(memberDTO);
         memberService.join(memberDTO);
 
         // 리다이렉트 시 전달할 메시지

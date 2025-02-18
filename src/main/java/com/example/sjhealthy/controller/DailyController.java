@@ -93,8 +93,10 @@ public class DailyController {
                 ra.addFlashAttribute("loginId", loginId);
                 ra.addFlashAttribute("alertMessage", "일지가 작성되었습니다.");
 
+                //'../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
                 Map<String, String> response = new HashMap<>();
-                String redirectUrl = "/sjhealthy/daily/dailyList";
+                //String redirectUrl = "/sjhealthy/daily/dailyList";
+                String redirectUrl = "/sjhealthy/daily/dailyRead?dailyDate=" + writeResult.getDailyDate();
                 String alertMessage = "일지가 작성되었습니다."; // 알림 메시지
                 response.put("redirectUrl", redirectUrl);
                 response.put("alertMessage", alertMessage);
@@ -240,5 +242,27 @@ public class DailyController {
             System.out.println("일지 수정 실패");
             return ResponseEntity.ok(response);
         }
+    }
+
+    @PostMapping("/daily/dailyNewList")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getDailyNewList (@SessionAttribute(name = "loginId", required = false) String loginId,
+                                                                @RequestParam("year") String year, @RequestParam("month") String month, Model model) {
+        Map<String, Object> response = new HashMap<>();
+
+        model.addAttribute("loginId", loginId);
+
+        List<DailyDTO> dailyList = dailyService.getDateList(loginId, year, month);
+
+        //로그인 했을 때
+        if(loginId != null){
+            if (dailyList != null) {
+                response.put("dailyList", dailyList);
+            }
+        } else {
+            response.put("dailyList", null);
+        }
+
+        return ResponseEntity.ok(response);  // JSON 형태로 응답 반환
     }
 }

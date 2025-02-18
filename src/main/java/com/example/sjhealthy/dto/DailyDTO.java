@@ -29,8 +29,10 @@ public class DailyDTO {         // 일지
     private String updateUser;  //수정자
 
     // 필요한 필드만 포함한 생성자
-    public DailyDTO(String dailyDate, String dailyTitle) {
+
+    public DailyDTO(String dailyDate, String dailyTitle, String dailyGoalSf) {
         this.dailyDate = dailyDate;
         this.dailyTitle = dailyTitle;
+        this.dailyGoalSf = dailyGoalSf;
     }
 }

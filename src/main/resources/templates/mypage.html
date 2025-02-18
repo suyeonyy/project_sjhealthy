@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>내 정보</title>
+    <!-- 부트스트랩 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 헤더 css -->
+    <link rel="stylesheet" href="/css/header.css">
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+            margin-right: 5px;
+        }
+        #pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 20px;
+        }
+
+        #pagination button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #pagination button:hover {
+            background-color: #f0f0f0;
+        }
+
+        #pagination button:disabled {
+            background-color: white;
+            color: grey;
+            border: 2px solid grey;
+            cursor: not-allowed;
+        }
+
+        #pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border: 2px solid #007bff;
+        }
+
+        #pagination button:focus {
+            outline: none;
+        }
+
+        .adminButton {
+            background-color: #f8f9fa;
+            color: black;
+            border: 2px solid #dee2e6;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .adminButton:hover {
+            background-color: #e9ecef;
+        }
+
+        .adminButton:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+<main>
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">내 정보</span>
+
+    <div class="container col-md-6 mt-5">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <span style="font-weight: 600; font-size:22px;">내 정보</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>아이디</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text="${memberDTO.memberId}"></p>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>비밀번호</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <button id="changePass" class="btn btn-primary">비밀번호 변경</button>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>이름</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text="${memberDTO.memberName}"></p>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>생년월일</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <!--<p th:text="${memberDTO.memberBirth}"></p>-->
+                        <p th:text="${sendDate}"></p>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>키</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text="${memberDTO.memberHeight} + cm"></p>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>이메일</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text="${memberDTO.memberEmail}"></p>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>가입일</strong>
+                    </div>
+                    <div class="col-md-9">
+                        <p th:text=
+                        "${
+                            #strings.substring(memberDTO.createDate, 0, 4) + '년 ' +
+                            #strings.substring(memberDTO.createDate, 4, 6) + '월 ' +
+                            #strings.substring(memberDTO.createDate, 6, 8) + '일'
+                        }"
+                        ></p>
+                    </div>
+                </div>
+                <hr>
+
+                <input type="hidden" id="memberId" th:value="${memberDTO.memberId}">
+            </div>
+        </div>
+        <div class="text-center mt-4 col-md-12">
+            <a href="/sjhealthy"><button class="btn btn-secondary col-md-1">홈</button></a>
+            <a href="/sjhealthy/member/delete"><button class="btn btn-secondary col-md-2">회원 탈퇴</button></a>
+        </div>
+    </div>
+</main>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const memberId = document.getElementById("memberId").value;
+        const changePassword = document.getElementById("changePass");
+
+        // 회원인지 확인
+        if (!memberId){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy";
+        }
+        changePassword.addEventListener("click", () => {
+            changePass();
+        });
+
+        // 비밀번호 변경 버튼을 클릭 시, 비밀번호 검증 후 변경 페이지로 연결
+        async function changePass(){
+
+            let isCancled = 0; // 1이면 요청 진행, 0이면 취소
+            let pass = "";
+            while (true) { // 빈칸으로 넘기면 계속 다시 창 띄움
+                pass = prompt("현재 비밀번호를 입력해 주세요.", "8~16자 영문, 숫자, 특수문자를 이용하여 입력해주세요.");
+                const passwordRegex = /^[A-Za-z\d@$!%*?&]{8,16}$/; // 8~16자, 영문, 숫자, 특수문자 포함 정규식
+
+
+                // 사용자가 취소 버튼을 누르면 종료
+                if (pass === null) {
+                    isCancled = 0;
+                    break;
+                }
+        
+                if (!passwordRegex.test(pass)){
+                    alert("비밀번호 형식이 올바르지 않습니다. 다시 입력해주세요.");
+                    continue;
+                } else {
+                    isCancled = 1;
+                    break; // 제대로 입력하면 반복문 종료
+                }
+            }
+            if (isCancled === 0){
+                event.preventDefault();
+                return; // 함수 중단
+            }
+            
+            try {
+                const response = await fetch("/sjhealthy/mypage", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        password: pass,
+                        memberId: memberId
+                    })
+                });
+    
+                if (response.ok){ // 비밀번호 일치
+                    console.log("비밀번호 일치")
+                    // 비밀번호 변경 창으로 이동
+                    window.location.href = "/sjhealthy/member/set-new-password";
+    
+                } else {
+                    console.log("비밀번호 오류")
+
+                    switch (response.status){
+                        case 400:
+                            alert("잘못된 요청입니다.");
+                            break;
+                        case 401:
+                            alert("비밀번호가 일치하지 않습니다.");
+                            break;
+                        case 500:
+                            alert("시스템 오류로 실패하였습니다.");
+                            break;
+                        default:
+                            console.log("오류 발생");
+                    }
+                }
+            } catch (error){
+                console.log(error);
+            }
+            
+        }
+
+
+    });
+</script>
+
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+</body>
+</html>

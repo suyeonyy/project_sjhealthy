@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
             if (response.status === 204){
                 alert("추천글이 존재하지 않습니다.");
+<<<<<<< HEAD
                 const content = document.getElementById("content");
 
                 const message = document.createElement("h1");
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
                 content.appendChild(message);
                 
+=======
+  
+>>>>>>> JY
             } else if (response.ok){ // ok는 200~299를 포함해서 204 검사는 먼저 해준다
                 const data = await response.json();
                 const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
@@ -109,6 +113,12 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             alert("시스템 오류로 글을 불러오지 못했습니다.");
         }
     }
+<<<<<<< HEAD
+=======
+
+        
+ 
+>>>>>>> JY
     // 페이지 버튼
     function displayPagination(totalPages, currentPage){
         const pagination = document.getElementById("pagination");
@@ -121,13 +131,56 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
             
             pageButton.addEventListener("click", () => {
+<<<<<<< HEAD
                 loadRecommendData(i); // 클릭한 페이지 데이터 요청하고 html 생성
                 currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+=======
+                console.log("2");
+
+                loadRecommendData(i); // 클릭한 페이지 데이터 요청하고 html 생성
+                window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+                console.log("p " + window.currentPage);
+
+                // 페이지 이동 시, 열려있는 상세보기 접어줌
+                const detailDiv = document.getElementById("detail");
+                detailDiv.style.display = "none";
+
+>>>>>>> JY
             });
             pagination.appendChild(pageButton); 
         }
     }
+<<<<<<< HEAD
     
+=======
+
+    // 페이지 버튼 검색결과
+    function displaySearchPagination(totalPages, currentPage){
+        const pagination = document.getElementById("pagination");
+
+        pagination.innerHTML = ""; // 기존 내용 초기화
+
+        for (let i = 1; i <= totalPages; i++){
+            const pageButton = document.createElement("button");
+            pageButton.textContent = i;
+            pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
+            
+            pageButton.addEventListener("click", () => {
+                search(i); // 클릭한 페이지 데이터 요청하고 html 생성
+                window.currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
+
+                // 페이지 이동 시, 열려있는 상세보기 접어줌
+                const detailDiv = document.getElementById("detail");
+                detailDiv.style.display = "none";
+
+            });
+            pagination.appendChild(pageButton); 
+        }
+    }
+
+
+      
+>>>>>>> JY
     // 맨 밑에 상세페이지 html 추가, tbody 하나 더 만들어서 추가(내용은 버튼 누를 때 추가)
     const detail = document.createElement("tbody");
     detail.id = "detailTbody";
@@ -148,6 +201,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             // 상세 페이지 펼침 접음 & 좋아요 싫어요
             toggleDetail(index, recId);  
 
+<<<<<<< HEAD
             // 조회수 1 증가
             const response = await fetch("/sjhealthy/recommend/read?recId=" + recId);
             const data = await response.json();
@@ -171,11 +225,34 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         });
 
     }
+=======
+            try {
+                // 조회수 1 증가
+                const response = await fetch("/sjhealthy/recommend/read?recId=" + recId);
+                if (response.ok){
+                    const data = await response.json();
+                    recView.textContent = data.data.recViews;
+                } 
+            } catch(error){
+                if (error.message.includes("403")) {
+                    alert("회원 전용 기능입니다.");
+                } else {
+                    console.error("오류 발생:", error);
+                }
+            }
+        });
+
+    }   
+>>>>>>> JY
     // 마지막으로 열린 상세페이지 추적용
     let lastOpendRec = null;
     let lastOpenRecId = 0;
 
+<<<<<<< HEAD
     
+=======
+  
+>>>>>>> JY
     async function toggleDetail(index, postId) {
         // 상세 페이지 펼침 접음
         // const detail = document.createElement("tbody");
@@ -185,6 +262,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         console.log(postId);
         try {
             const response = await fetch("/sjhealthy/recommend/detail/" + postId);
+<<<<<<< HEAD
             const data = await response.json();
             
             const likeTotal = data.likeCount;
@@ -277,14 +355,139 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     };
 
 
+=======
+            if (response.status === 403) {
+                throw new Error("403");  // 강제로 예외 발생, fetchAPI에선 403을 catch에서 감지하지 못해서.
+            } else if (response.ok){
+                const data = await response.json();
+                
+                const likeTotal = data.likeCount;
+                const dislikeTotal = data.dislikeCount;
+                const item = data.data;
+                const admin = data.data2 ? data.data : "";
+                console.log(data);
+                
+                // 상세정보용 tbody
+                // const detailTbody = document.getElementById("detailTbody"); // 기본은 안 보이게 none으로 해둠
+                const detailDiv = document.getElementById("detail");
+                detailDiv.className = "detail-div";
+    
+                if (detailDiv){
+                    if (lastOpendRec != null && lastOpenRecId === postId){ // null이면 접혀있는 것
+                        lastOpendRec.style.display = "none"; // 
+                        lastOpenRecId = 0;
+                        lastOpendRec = null;
+                        return;
+                    }
+                    
+                    detailDiv.innerHTML = ""; 
+                    detailDiv.innerHTML = `
+                        <p><strong>업체 명: </strong><span id="storeName"></span></p>
+                        <p><strong>메뉴: </strong><span id="storeMenu"></span></p>
+                        <p><strong>좋아요: </strong><span id="detail-like"></span></p> 
+                        <p><strong>싫어요: </strong><span id="detail-dislike"></span></p>
+                    `;
+                    // 관리자는 삭제 버튼 표시
+                    if (admin){
+                        detailDiv.innerHTML += `
+                            <dr>
+                            <button id="deleteB" class="btn btn-light">삭제</button>
+                        `;
+
+                    const deleteB = document.getElementById("deleteB");
+                    deleteB.id = "delete" + postId;
+                    deleteB.onclick = () => deletePost(postId);
+                    } 
+                    // 요소의 최종 스타일 / detailDiv.style.display로 접근했더니 style을 읽지 못함
+                    // getComputedStyle: 스타일 속성을 객체로 반환
+                    const computedStyle = window.getComputedStyle(detailDiv);
+           
+                    if (computedStyle.display === "none"){ // 이건 읽기만 가능이라 바꾸는 건 인라인 속성으로 바꿔줌
+                        // 접혀 있으면 펴줌
+                        // detailDiv.classList.add("expanded");
+    
+                        document.getElementById("storeName").textContent = item.recStore;
+                        document.getElementById("storeMenu").textContent = item.recMenu;
+                        document.getElementById("detail-like").id = "detail-like" + index;
+                        document.getElementById("detail-like" + index).textContent = likeTotal;
+                        document.getElementById("detail-dislike").id = "detail-dislike" + index;
+                        document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
+                        detailDiv.style.display = "table-row"; // tr 열기
+    
+                        lastOpendRec = detailDiv;
+                        lastOpenRecId = postId;
+                        // detailBtn.innerText = "접기";
+                    } else if (computedStyle.display !== "none" && lastOpenRecId !== postId){
+                        document.getElementById("storeName").textContent = item.recStore;
+                        document.getElementById("storeMenu").textContent = item.recMenu;
+                        document.getElementById("detail-like").id = "detail-like" + index;
+                        document.getElementById("detail-like" + index).textContent = likeTotal;
+                        document.getElementById("detail-dislike").id = "detail-dislike" + index;
+                        document.getElementById("detail-dislike" + index).textContent = dislikeTotal;
+                        detailDiv.style.display = "table-row"; // tr 열기
+    
+                        lastOpendRec = detailDiv;
+                        lastOpenRecId = postId;
+                    } else if (lastOpenRecId === postId){
+                        // 펴져 있으면 접어줌
+                        detailDiv.style.display = "none";
+                        // detailDiv.classList.remove("expanded");
+                        lastOpendRec = null;
+                        lastOpenRecId = 0;
+                        // detailBtn.innerText = "상세보기";
+                    }
+                    // 상세보기 div로 스크롤 내리기
+                    detailDiv.scrollIntoView({
+                        behavior: 'smooth', // 부드럽게 스크롤 이동
+                        block: 'start'      // 화면의 상단에 맞춰서 스크롤
+                    });
+                } }
+        } catch (error){
+            if (error.message.includes("403")) {
+                alert("회원 전용 기능입니다.");
+            } else {
+                console.error("오류 발생:", error);
+            }
+        }
+    };
+
+    function deletePost(postId){
+        // const btn = document.getElementById("delete" + postId);
+        const targetId = "delete" + postId; 
+        document.addEventListener("click", (event) => {
+            if (event.target.id === targetId){
+                if (!window.confirm("정말로 삭제하시겠습니까?")){
+                    e.preventDefault();
+                    return false;
+                } else {
+                    fetch("/sjhealthy/recommend/delete/"+ postId);
+                    alert("해당 게시물이 삭제되었습니다.");
+                    const tableBody = document.getElementById("tableBody");
+                    tableBody.innerHTML = "";
+                    lastOpendRec.style.display = "none"; // 열린 상세페이지 접음
+                    loadRecommendData(window.currentPage); // 게시물 다시 로드
+                }
+            }
+        });
+    }
+
+  
+>>>>>>> JY
     // 검색 정렬
     const searchButton = document.getElementById("searchButton");
 
     searchButton.addEventListener("click", async ()=> {
+<<<<<<< HEAD
         search();
     });
 
     async function search(){
+=======
+        search(1);
+    });
+
+    async function search(page){
+>>>>>>> JY
         const search = document.getElementById("searchByStoreName").value;
 
         if (!search){
@@ -294,6 +497,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         }
 
         try {
+<<<<<<< HEAD
             const url = "/sjhealthy/recommend/sort/" + encodeURIComponent(search);
             // 한글(업체 명)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
 
@@ -370,6 +574,101 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                     addOpenDetail(index); // 상세보기 버튼 기능 연결
 
                 });
+=======
+            const url = "/sjhealthy/recommend/sort";
+            // 한글(업체 명)을 보내면 깨질 수 있어 인코딩 해서 보내고 디코딩 해서 읽기
+            // const encodedStoreName = encodeURIComponent(search); 페이지 넣고부터 인코딩해서 보내면 검색 안 돼서 주석처리
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json"
+                },
+                body: JSON.stringify({
+                    storeName: search,
+                    page: page
+                })
+            });
+            
+            if (response.status === 204){
+                console.log("검색 결과 없음")
+            } else if (response.status === 500){
+                alert("시스템 오류로 불러오지 못하였습니다.");
+            } else if (response.ok){
+                const data = await response.json(); // 응답을 json으로 변환
+                // 검색 결과가 1개가 아닐 때(=> 엔티티 배열이 아닐 때) 배열로 바꿔 처리
+                // 안 바꾸면 forEach에서 오류가 난다.
+                const array = Array.isArray(data._embedded.recommendDTOList) ? data._embedded.recommendDTOList : [data._embedded.recommendDTOList];
+    
+                // 검색 결과를 출력
+                const tableBody = document.getElementById("recTable").getElementsByTagName("tbody")[0];
+                // 이 메서드는 HtmlCollection 을 반환해서 tbody가 여러개면 뒤에 [0], [1] 등 인덱스를 사용해 접근
+                // tbody 하나면 안 써도 된다는데 안 쓰니까 tbody랑 제대로 연결 안 돼서 씀
+    
+                // 내용 비움
+                tableBody.innerHTML = "";
+                // 나중에 상세페이지 추가해줘야함
+    
+                    array.forEach((item, index) => {
+                        // 행 추가
+                        const row = tableBody.insertRow();
+    
+                        // 열 추가
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+                        const cell5 = row.insertCell(4);
+                        const cell6 = row.insertCell(5);
+                        const cell7 = row.insertCell(6);
+                        const cell8 = row.insertCell(7);
+                        const cell9 = row.insertCell(8);
+    
+                        // 내용 추가
+                        // cell1.value = item.recId; // td엔 value 없음
+                        const input1 = document.createElement("input");
+                        input1.type = "button";
+                        input1.className ="detailBtn";
+                        input1.value = "상세보기";
+                        input1.id = "detailBtn" + index;
+                        cell1.appendChild(input1);
+    
+                        // const input2 = document.createElement("input");
+                        // input2.className = "recId";
+                        // input2.value = item.recId;
+                        // input2.type = "text";
+                        // input2.readOnly = true;
+                        // cell2.appendChild(input2);
+                        const input2 = document.createElement("p");
+                        input2.className = "recId";
+                        input2.textContent = item.recId;
+                        cell2.appendChild(input2);
+    
+                        cell3.textContent = item.recStore;
+                        cell4.textContent = item.recMenu;
+                        cell5.textContent = item.memberId;
+                        cell6.textContent = item.createDate;
+                        cell7.textContent = item.recViews;
+    
+                        const dataRecY = document.createElement("button");
+                        dataRecY.className = "recY";
+                        dataRecY.textContent = "좋아요";
+                        dataRecY.onclick = (e) => chooseLikeButton(e, index); // 이렇게 함수의 참조를 넘겨줘야 한다. 이벤트가 발생할 때 함수 호출
+                        // recY.onclick = chooseLikeButton(); 이렇게 하면 바로 실행되어 반환값을 넘겨주는 형태라 X
+                        cell8.appendChild(dataRecY);
+    
+                        const dataRecN = document.createElement("button");
+                        dataRecN.className = "recN";
+                        dataRecN.textContent = "싫어요";
+                        dataRecN.onclick = (e) => chooseDislikeButton(e, index);
+                        cell9.appendChild(dataRecN);
+    
+                        addOpenDetail(index); // 상세보기 버튼 기능 연결
+    
+                        displaySearchPagination(data.page.totalPages, page); // 페이지 버튼 생성
+                    });
+            }
+>>>>>>> JY
         } catch (error) {
             console.log('에러 = ' + error);
         }
@@ -413,6 +712,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     });
 
     async function chooseLikeButton(e, index){
+<<<<<<< HEAD
         console.log("좋아요 이벤트 리스너 연결 " + index);
         e.preventDefault();
         // 쿼리셀렉터로는 value를 가져올 수 있으나 All일 때는 이렇게 해서 가져와야 한다.
@@ -421,12 +721,22 @@ document.addEventListener("DOMContentLoaded", async ()=>{
         // const recId = recIds[index].value; // 각 value를 가져옴
         const recId = recIds[index].textContent; // 각 textContent 가져옴
         console.log("recId = " + recId);
+=======
+        e.preventDefault();
+        // 쿼리셀렉터로는 value를 가져올 수 있으나 All일 때는 이렇게 해서 가져와야 한다.
+        const recIds = document.querySelectorAll(".recId");
+        // const recId = recIds[index].value; // 각 value를 가져옴
+        const recId = recIds[index].textContent; // 각 textContent 가져옴
+>>>>>>> JY
 
 
         // id당 1번 버튼 누르기 가능(좋아요/싫어요 중 택1)
         if (!loginId){
             e.preventDefault();
+<<<<<<< HEAD
             console.log("회원 전용");
+=======
+>>>>>>> JY
             alert('회원 전용 기능입니다.');
             return false;
         }
@@ -461,7 +771,10 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
 
     async function chooseDislikeButton(e, index){
+<<<<<<< HEAD
         console.log("싫어요 이벤트 리스너 연결 " + index);
+=======
+>>>>>>> JY
             e.preventDefault();
             const recIds = document.querySelectorAll(".recId");
             const recId = recIds[index].textContent;

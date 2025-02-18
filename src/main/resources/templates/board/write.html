@@ -92,7 +92,8 @@
                 <span th:text="${isUpdate} ? '커뮤니티 수정' : '커뮤니티 작성'"></span>
             </div>
             <div class="card-body">
-                <form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} : '/sjhealthy/board/write'"
+
+                <form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} + '&page=' + ${page} : '/sjhealthy/board/write'"
                       th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST"
                       enctype="multipart/form-data">
                     <div class="form-row">
@@ -130,10 +131,19 @@
         const submitButton = document.getElementById("submit");
         const form = document.querySelector(".boardForm");
 
+        const writer = document.getElementById("boardWriter").value;
+
+        // 회원인지 확인
+        if (!writer){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy/board";
+        }
+
+
         submitButton.addEventListener("click", (e) => {
             const title = document.getElementById("boardTitle").value;
             const content = document.getElementById("boardContent").value;
-            const writer = document.getElementById("boardWriter").value;
+
             const action = document.getElementById("boardTitle").value;
 
             // 제목이 없으면 폼 제출을 막고 알림
@@ -142,11 +152,7 @@
                 $("#boardTitle").focus();
                 e.preventDefault();  // 폼 제출을 막음
                 return;
-            } else if (!content){
-                // 내용이 비어있을 경우 추가 검증 (필요 시)
-                alert("내용을 입력해 주세요.");
-                $("#boardContent").focus();
-                e.preventDefault();
+
             }
 
             // 수정일 때
@@ -164,43 +170,11 @@
                 }
             }
         });
+
+
+        const listBtn = document.getElementById("listBtn");
     });
 </script>
-<!-- <script>
-    // 이거 submit이 안 돼서 그냥 required 속성 넣음
-    document.addEventListener("DOMContentLoaded", () => {
-        const submitBtn = document.getElementById("submit");
-        const form = document.querySelector(".boardForm");
-
-        if (submitBtn){ 
-            submitBtn.addEventListener("click", (e) => {
-                e.preventDefault();
-                const title = document.getElementById("boardTitle").value;
-                const content = document.getElementById("boardContent").value;
-                const writer = document.getElementById("boardWriter").value;
-
-                if (!title){
-                    alert("제목을 입력해 주세요.");
-                } else if (!content){
-                    alert("내용을 입력해 주세요.");
-                } else {
-                    console.log("제출");
-                    // form.submit(); // 폼을 제출. 안 되네;
-                    form.submit();
-                    // submitBtn.click(); // submit 버튼 트리거
-                    
-                    // 페이지 이동은 검증 로직 밑에.
-                    // 근데 서버에서 로그인 상태 걸러서 필요없다
-                    // if (!writer){ // 로그인 하지 않은 상태일 땐 리스트로 보냄
-                    //     alert("로그인 후 이용해 주세요.");
-                    //     window.location.href = "/sjhealthy/board/list";
-                    // }
-                }
-
-            });
-        }
-    });
-</script> -->
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 </body>
 </html>

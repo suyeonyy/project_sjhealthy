@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>readForm</title>
+
+    <title>커뮤니티 게시글</title>
     <!-- 헤더 css -->
     <link rel="stylesheet" href="/css/header.css">
     <!-- 헤더, 메인, 푸터 위치 고정 -->
@@ -85,16 +86,19 @@
                 <hr>
 
                 <div class="text-center">
-                    <a th:if="${boardDTO.memberId == loginId}" th:href="@{../board/update?boardId={id}(id=${boardDTO.boardId})}" style="text-decoration: none;">
+
+                    <a id="update" th:if="${boardDTO.memberId == loginId}" style="text-decoration: none;">
                         <button class="btn btn-primary">수정</button>
                     </a>
 
-                    <a th:if="${boardDTO.memberId == loginId || admin == 'A'}" th:href="@{../board/delete?boardId={id}(id=${boardDTO.boardId})}" style="text-decoration: none;">
+                    <a th:if="${boardDTO.memberId == loginId || admin == 'A'}" th:href="@{../board/delete?boardId={id}&page={page}(id=${boardDTO.boardId}, page=${page})}" style="text-decoration: none;">
                         <button class="btn btn-primary" id="deleteButton">삭제</button>
                     </a>
 
-                    <a href="../board" class="btn btn-secondary" style="text-decoration: none;">목록</a>
+                    <a id="list" class="btn btn-secondary" style="text-decoration: none;">목록</a>
                 </div>
+
+                <input type="hidden" name="memberId" id="memberId" th:value="${loginId}">
 
                 <!-- 댓글 작성 부분 -->
                 <div id="comment-write" class="mt-4">
@@ -133,15 +137,40 @@
 <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", ()=> {
-        const message = [[${message}]];
+
+        // 글 작성/수정하면서 리다이렉트한 메시지 띄움
+        const message = /*[[${message}]]*/'';
         if (message) {
             alert(message);
         }
+
+
+        const list = document.getElementById("list");
+        const update = document.getElementById("update");
+        const page = /*[[${page}]]*/"1";
+        const boardId = /*[[${boardDTO.boardId}]]*/""
+
+        // 목록 버튼 누르면 페이지 저장해서 경로 이동
+        list.addEventListener("click", () => {
+            if (!localStorage.getItem("boardPage")){ // 기존에 수정 버튼 눌러서 저장된 값이 없을 경우에만 새로 저장
+                localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
+            }
+            window.location.href = "/sjhealthy/board";
+        });
+
+        // 수정 버튼 누르면 페이지 저장해서 경로 이동
+        update.addEventListener("click", () => {
+            localStorage.setItem("boardPage", page);
+            window.location.href="/sjhealthy/board/update?boardId=" + boardId + "&page=" + page;
+        });
+
 
         const deleteBtn = document.getElementById("deleteButton");
 
         if (deleteBtn){
             deleteBtn.addEventListener("click", (e)=> {
+
+                localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
 
                 if (!window.confirm('정말로 삭제하시겠습니까?')){
                     e.preventDefault(); // 취소시 이벤트 발생 없음
@@ -162,136 +191,84 @@
                 const imageUrl = "/uploads/files/" + fileName;
                 attachedImage.src = imageUrl;
 
-                // try {
-                //     if (fileName){
-                //         const response = await fetch("/sjhealthy/uploads/files/" + fileName);
-                //         if (!response.ok){
-                //             //console.log("첨부된 파일이 없습니다.");
-                //         } else {
-                //             const data = await response.text();
-
-                //             // URL로 변환하여 src로
-                //             //.log("경로 " + data);
-                //             attachedImage.src = data;
-                //             // img.src = data;
-                //         }
-                //     }
-                // } catch(error){
-                //     //console.log(error);
-                // }
             }
         }
     });
 
     /* 댓글 작성 */
     function commentWriteClick(){
-        //console.log("함수 들어와");
 
-        const writer = document.getElementById("commentWriter").value;
-        const contents = document.getElementById("commentContent").value;
+        var memberId = $("#memberId").val();
 
-        const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
-        var loginId = $("#loginId").val();
+        if(memberId != ""){
+            const writer = document.getElementById("commentWriter").value;
+            const contents = document.getElementById("commentContent").value;
 
-        if(writer.trim() == ''){
-            alert("작성자를 입력해주세요.");
-            $("#commentWriter").focus();
-            return;
-        }
+            const id = /*[[${boardDTO.boardId}]]*/''; //게시글 번호
+            var loginId = $("#loginId").val();
 
-        if(contents.trim() == ''){
-            alert("내용을 입력해주세요.");
-            $("#commentContent").focus();
-            return;
-        }
+            if(writer.trim() == ''){
+                alert("작성자를 입력해주세요.");
+                $("#commentWriter").focus();
+                return;
+            }
 
-        if(confirm("댓글을 작성하시겠습니까?")){
-            $.ajax({
-                //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
-                type: "post",
-                url: "../comment/save",
-                data: {
-                    "commentWriter": writer,
-                    "commentContent": contents,
-                    "boardId": id,
-                    "memberId": loginId
-                },
-                success: function(res){
-                    //console.log("요청성공", res);
-                    //console.log(res);
-                    //console.log(res.data);
+            if(contents.trim() == ''){
+                alert("내용을 입력해주세요.");
+                $("#commentContent").focus();
+                return;
+            }
 
-                    alert("댓글 작성이 완료되었습니다.");
+            if(confirm("댓글을 작성하시겠습니까?")){
+                $.ajax({
+                    //요청방식: post, 요청주소: comment/save, 요청데이터: 작성자, 작성내용, 게시글번호
+                    type: "post",
+                    url: "../comment/save",
+                    data: {
+                        "commentWriter": writer,
+                        "commentContent": contents,
+                        "boardId": id,
+                        "memberId": loginId
+                    },
+                    success: function(res){
+                        //console.log("요청성공", res);
+                        //console.log(res);
+                        //console.log(res.data);
 
-                    /* 댓글 목록을 표현하는 테이블 */
-                    let output = "<table class='table'>";
-                    output += "<tr><th>댓글번호</th>";
-                    output += "<th>작성자</th>";
-                    output += "<th>내용</th>";
-                    output += "<th>작성일</th>";
+                        alert("댓글 작성이 완료되었습니다.");
 
-                    for(var i in res.data){
-                        output += "<tr>";
-                        output += "<td>" + res.data[i].commentOrder + "</td>";
-                        output += "<td>" + res.data[i].commentWriter + "</td>";
-                        output += "<td>" + res.data[i].commentContent + "</td>";
-                        output += "<td>" + res.data[i].formattedCreateDate + "</td>";
-                        output += "</tr>";
+                        /* 댓글 목록을 표현하는 테이블 */
+                        let output = "<table class='table'>";
+                        output += "<tr><th>댓글번호</th>";
+                        output += "<th>작성자</th>";
+                        output += "<th>내용</th>";
+                        output += "<th>작성일</th>";
+
+                        for(var i in res.data){
+                            output += "<tr>";
+                            output += "<td>" + res.data[i].commentOrder + "</td>";
+                            output += "<td>" + res.data[i].commentWriter + "</td>";
+                            output += "<td>" + res.data[i].commentContent + "</td>";
+                            output += "<td>" + res.data[i].formattedCreateDate + "</td>";
+                            output += "</tr>";
+                        }
+                        output += "</table>";
+
+                        document.getElementById('comment-list').innerHTML = output;
+                        document.getElementById('commentWriter').value = '';
+                        document.getElementById('commentContent').value = '';
+                    },
+                    error: function(err){
+                        //console.log("요청실패", err);
                     }
-                    output += "</table>";
-
-                    document.getElementById('comment-list').innerHTML = output;
-                    document.getElementById('commentWriter').value = '';
-                    document.getElementById('commentContent').value = '';
-                },
-                error: function(err){
-                    //console.log("요청실패", err);
-                }
-            });
+                });
+            }
+        }else{
+            alert("회원 전용 기능입니다.");
+            return;
         }
     }
 </script>
-
-<!-- 이거 나머지는 댓글 삭제에 쓰자
-<script>
-document.addEventListener("DOMContentLoaded", ()=> {
-    const deleteBtn = document.getElementById("deleteButton");
-
-    if (deleteBtn){
-        deleteBtn.addEventListener("click", async (e)=> {
-            try{
-                if (!window.confirm('정말로 삭제하시겠습니까?')){
-                    event.preventDefault(); // 취소시 이벤트 발생 없음
-                    return false;
-                }
-
-                // 삭제하려는 게시물 ID 가져오기
-                const boardId = document.getElementById("boardId").value;
-
-                // 삭제 요청 보내기
-                const response = await fetch("../board/delete", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        boardId: boardId
-                    })
-                });
-
-                if (response.ok){
-                    alert("게시물이 삭제되었습니다.");
-                    window.location.href= "../board/list"
-                } else {
-                    alert("게시물 삭제에 실패했습니다.");
-                }
-            } catch (error){
-                console.log('오류 발생:', error);
-            }
-        });
-    }
-});
-</script> -->
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 
 </body>

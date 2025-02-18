@@ -327,7 +327,8 @@
             </div>
         </div>
 
-        <!-- 우측 상단: 커뮤니티 내용 (5개 게시물) -->
+
+        <!-- 우측 상단: 커뮤니티 내용 (4개 게시물) -->
         <div class="content-box right-top">
             <h2>커뮤니티</h2>
             <ul id="board">
@@ -339,9 +340,10 @@
             </ul>
         </div>
 
-        <!-- 우측 하단: 추천 게시판 내용 (5개 게시물) -->
+
+        <!-- 우측 하단: 추천 게시판 내용 (4개 게시물) -->
         <div class="content-box right-bottom">
-            <h2>추천 게시판 - <span class="sub-heading">추천 메뉴</span></h2>            
+            <h2>추천 게시판 - <span class="sub-heading">추천 메뉴</span></h2>
             <ul id="recommend">
                 <!-- <li><a href="/sjhealthy/recommend/post1">추천 게시글 1</a></li>
                 <li><a href="/sjhealthy/recommend/post2">추천 게시글 2</a></li>
@@ -353,8 +355,11 @@
     </div>
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
+        const board = document.getElementById("board");
+        const recommend= document.getElementById("recommend");
 
         /* 내 기록 */
         $.ajax({
@@ -406,21 +411,26 @@
 
         getBoardList();
         getRecommendList();
-        
+
         async function getBoardList(){
-            const board = document.getElementById("board");
-    
+
+
             try {
                 const response = await fetch("/sjhealthy/board/current");
-                const data = await response.json();
-                
+
                 if (response.status === 204){
                     // 게시글이 존재하지 않을 때
                     const li = document.createElement("li");
+
+                    console.log("게시글 없음");
                     li.textContent = "게시글이 존재하지 않습니다.";
                     board.appendChild(li);
                     //console.log(data.message);
                 } else if (response.ok){
+
+                    console.log("게시글 있음");
+
+                    const data = await response.json();
                     //console.log(data);
                     const boardList = data.data;
 
@@ -434,6 +444,9 @@
                         board.appendChild(row);
                     });
 
+
+                } else if (response.status === 500){
+                    alert("시스템 오류로 실패하였습니다.");
                 }
             } catch (error){
                 //console.log(data.message);
@@ -441,11 +454,11 @@
         }
 
         async function getRecommendList(){
-            const recommend= document.getElementById("recommend");
-    
+
+
             try {
                 const response = await fetch("/sjhealthy/recommend/best");
-                
+
                 if (response.status === 204){
                     // 게시글이 존재하지 않을 때
                     const li = document.createElement("li");

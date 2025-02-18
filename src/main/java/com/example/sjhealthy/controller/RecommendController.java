@@ -9,8 +9,6 @@ import jakarta.persistence.Tuple;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,6 +27,7 @@ import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static java.lang.Integer.parseInt;
 
 @Controller
 @RequestMapping("/sjhealthy/")
@@ -43,7 +42,9 @@ public class RecommendController {
     private String js_appKey;
 
     @GetMapping({"/recommend", "/recommend/"})
-    public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model){
+
+    public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model,
+                                   RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
 
         List<RecommendDTO> dto = recommendService.getList();
@@ -53,7 +54,7 @@ public class RecommendController {
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
 
             if (member.getMemberAuth().equals("A")){
-                model.addAttribute("administrator", member);
+                model.addAttribute("administrator", true);
             }
         }
 
@@ -71,25 +72,13 @@ public class RecommendController {
         try {
             Page<RecommendDTO> list = recommendService.getListWithPage(page, size);
 
-            // 관리자 기능
-            if (loginId != null){
-                MemberDTO memberDTO = memberService.findMemberIdAtPassFind(loginId);
-                System.out.println("Auth--------" + memberDTO.getMemberAuth());
-                if (memberDTO.getMemberAuth().equals("A")){
-                    model.addAttribute("admin", loginId);
-                    System.out.println("관리자입니다.");
-                }
-            }
-
             if (!list.isEmpty()){
                 // 추천글이 있을 때
-                System.out.println(list);
                 PagedModel<EntityModel<RecommendDTO>> recList = assembler.toModel(list);
                 return ResponseEntity.ok(recList);
             } else {
                 // 추천글이 없을 때
-                System.out.println("추천글 없음");
-                System.out.println(list);
+
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
         } catch (Exception e){
@@ -101,8 +90,7 @@ public class RecommendController {
     @GetMapping("/recommend/best")
     public ResponseEntity<Response<Object>> getRecommendListTop5LikeCount(){
         try {
-            List<RecommendDTO> dtoList = recommendService.getListTop5();
-            System.out.println("게시글 조회 = " + dtoList);
+            List<RecommendDTO> dtoList = recommendService.getListTop4();
 //            if (dtoList != null){ 이걸로 검색하면 List는 걸러지지 않는다
             if (!dtoList.isEmpty()){
                 return ResponseEntity.ok(new Response<>(dtoList, "추천글을 불러왔습니다."));
@@ -128,10 +116,13 @@ public class RecommendController {
                                               HttpServletRequest request, HttpServletResponse response){
         model.addAttribute("loginId", loginId);
 
+        if (loginId == null){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         RecommendEntity result = recommendService.readRecommendationById(recId);
+        System.out.println(result);
 
         if (result == null){
-            System.out.println("정보를 읽어오지 못했습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>(null, "정보를 읽어오지 못했습니다."));
         } else {
             // 조회수, 브라우저 종료시 다시 집계됨
@@ -139,8 +130,9 @@ public class RecommendController {
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-            RecommendEntity entity = recommendService.readRecommendationById(recId);
-            return ResponseEntity.ok().body(new Response<>(entity, "정보를 읽어왔습니다."));
+
+            RecommendDTO dto = RecommendMapper.toRecommendDTO(result, loginId);
+            return ResponseEntity.ok().body(new Response<>(dto, "정보를 읽어왔습니다."));
         }
     }
 
@@ -184,7 +176,6 @@ public class RecommendController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage("필드가 일치하지 않습니다."));
         }
         Long recId = likeRequest.getRecId();
-        System.out.println("likeRequest = " + likeRequest);
 
 //        좋아요 누르면 싫어요 눌렀던 거 사라짐(반대도 동일), ID당 1번 선택 가능
         boolean result = recommendService.handleLikeOrDislike(recId, loginId, "like");
@@ -199,8 +190,6 @@ public class RecommendController {
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-        System.out.println("like = " + likeCount);
-        System.out.println("dislike = " + dislikeCount);
 
         if (result){
             return ResponseEntity.ok(new ResponseMessage("좋아요가 반영되었습니다.", likeCount, dislikeCount));
@@ -230,8 +219,6 @@ public class RecommendController {
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-        System.out.println("like = " + likeCount);
-        System.out.println("dislike = " + dislikeCount);
 
         if (result){
             return ResponseEntity.ok(new ResponseMessage("싫어요가 반영되었습니다.", likeCount, dislikeCount));
@@ -240,33 +227,17 @@ public class RecommendController {
         }
     }
 
-//    @ResponseBody
-//    @GetMapping("/recommend/count/{recId}")
-//    public ResponseEntity<?> getLikeDislikeCount(@PathVariable Long recId){
-//        // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도
-//        List<Tuple> list = recommendService.countLikeAndDislike(recId);
-//        Tuple tuple = list.get(0);
-//        Integer like = tuple.get("likeCount", Integer.class);
-//        Long likeCount = like.longValue();
-//        Integer dislike = tuple.get("dislikeCount", Integer.class);
-//        Long dislikeCount = dislike.longValue();
-//        System.out.println("like = " + likeCount);
-//        System.out.println("dislike = " + dislikeCount);
-//
-//        if (!list.isEmpty()){
-//            return ResponseEntity.ok(new ResponseMessage("집계 완료", likeCount, dislikeCount));
-//        } else {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseMessage(
-//                "집계 오류", likeCount, dislikeCount));
-//        }
-//    }
-
     @ResponseBody
     @GetMapping("/recommend/detail/{recId}")
     public ResponseEntity<Response<Object>> getLikeDislikeCount(@PathVariable("recId") Long recId, HttpServletRequest request,
                                                                 @SessionAttribute(name = "loginId", required = false)String loginId,
                                                                 HttpServletResponse response, Model model){
         model.addAttribute("loginId", loginId);
+
+        if (loginId == null) {
+            // 회원 아니면 상세보기 불가능
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Response<>(null, "회원 전용 기능입니다."));
+        }
 
         // 상세페이지에서 좋아요 싫어요 개수만 가져오는 용도 + 상세페이지 내용도 포함함 ( 그냥 이걸로 다 하자)
         List<Tuple> list = recommendService.countLikeAndDislike(recId);
@@ -275,53 +246,30 @@ public class RecommendController {
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-        System.out.println("like = " + likeCount);
-        System.out.println("dislike = " + dislikeCount);
-
-        RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId);
-        System.out.println("상세보기 = " + dto);
 
         if (list.isEmpty()){
-            System.out.println("정보를 읽어오지 못했습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(
                 null, "집계 오류", likeCount, dislikeCount));
         } else {
-            // 조회수, 브라우저 종료시 다시 집계됨
+            RecommendDTO dto = RecommendMapper.toRecommendDTO(recommendService.readRecommendationById(recId), loginId);
+            MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
+
             Cookie viewCount = addViews(request, recId);
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-            return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount));
-        }
-    }
 
-    /*sy 작업*/
-    /*
-    //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
-    @PostMapping("/recommend/write")
-    public String writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
-                                        @SessionAttribute(name = "loginId", required = false)String loginId, Model model){
-        model.addAttribute("loginId", loginId);
+            if (member.getMemberAuth().equals("A")){ // 관리자
+                return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount, member));
+            } else { // 일반 회원
+                // 조회수, 브라우저 종료시 다시 집계됨
 
-        try {
-            RecommendDTO result = recommendService.addRecommendation(recommendDTO);
-
-            if (result == null){
-                System.out.println("추천글 등록에 실패하였습니다.");
-            } else {
-                System.out.println("추천글을 등록하였습니다.");
+                return ResponseEntity.ok(new Response<>(dto, "집계 완료", likeCount, dislikeCount));
             }
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println("시스템 오류");
         }
 
-        //ra.addAttribute("loginId", loginId); //addAttribute로 보내면 리다이렉트 값 유지못함
-        ra.addFlashAttribute("loginId", loginId);
-
-        return "redirect:/sjhealthy/recommend";
     }
-     */
+
     //@ResponseBody 이거 붙이면 redirect 작동안함.@ResponseBody 활성화되면 반환된 값은 리다이렉트와 같은 뷰 이름이 아닌 직접 HTTP 본문으로 처리되기 때문.
     @PostMapping("/recommend/write")
     public ResponseEntity<String> writeNewRecommendPost(@ModelAttribute RecommendDTO recommendDTO, RedirectAttributes ra,
@@ -332,15 +280,14 @@ public class RecommendController {
             RecommendDTO result = recommendService.addRecommendation(recommendDTO);
 
             if (result == null){
-                System.out.println("추천글 작성에 실패하였습니다.");
+
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("/sjhealthy/recommend");
             } else {
-                System.out.println("추천글이 작성되었습니다.");
                 return ResponseEntity.status(HttpStatus.OK).body("/sjhealthy/recommend");
             }
         } catch (Exception e){
             e.printStackTrace();
-            System.out.println("시스템 오류");
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("/sjhealthy/recommend");
         }
 
@@ -359,25 +306,21 @@ public class RecommendController {
     @PostMapping("/recommend/write/check")
     public ResponseEntity<Response<Object>> checkMenu(@RequestBody Map<String, String> data){
         String rec = data.get("recStore");
-        System.out.println("입력한 가게이름 = " + rec);
         String recMenu = data.get("recMenu");
-        System.out.println("입력한 메뉴 = " + recMenu);
 
         RecommendEntity result;
         try {
             if (rec.contains(" ")){ // 지점이 여러 개인 프랜차이즈일 때
                 String recStore = rec.split(" ")[0]; // 지점 뺀 앞 부분만
-                System.out.println("최종 가게이름 = \"" + recStore + "\"");
+
                 result = recommendService.checkByRecStoreAndRecMenu(recStore, recMenu);
             } else {
                 result = recommendService.checkByRecStoreAndRecMenu(rec, recMenu);
             }
 
             if (result == null){ // 중복이 아니면 204로 리턴
-                System.out.println("204 리턴");
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Response<>(recMenu, "등록 가능합니다."));
             } else {
-                System.out.println("중복");
                 return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(new Response<>(null, "중복되는 데이터가 존재합니다.\n추천을 원하시면 해당 추천글에 좋아요를 눌러주세요."));
             }
 
@@ -387,27 +330,57 @@ public class RecommendController {
         }
     }
 
-    @ResponseBody
-    @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
-    public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){
+//    @ResponseBody
+//    @GetMapping("/recommend/sort/{storeName}") // url 경로에서 storeName 추출 => @PathVariable 사용
+//    public ResponseEntity<List<RecommendDTO>> SearchByStoreName(@PathVariable String storeName, @SessionAttribute(name = "loginId", required = false)String loginId){
+//
+//        if (storeName == null || storeName.isEmpty()){
+//            return ResponseEntity.badRequest().build();
+//            // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
+//        }
+//        List<RecommendEntity> bySearch = recommendService.getListByPlaceName(storeName);
+//        List<RecommendDTO> dto = new ArrayList<>();
+//        for (RecommendEntity s : bySearch){
+//            dto.add(RecommendMapper.toRecommendDTO(s, loginId));
+//        }
+//        return ResponseEntity.ok(dto);
+//    }
+
+    @ResponseBody // 페이지네이션 추가
+    @PostMapping("/recommend/sort") // url 경로에서 storeName 추출 => @PathVariable 사용
+    public ResponseEntity<PagedModel<EntityModel<RecommendDTO>>> SearchByStoreName(@RequestBody Map<String, String> data,
+                                                                @SessionAttribute(name = "loginId", required = false)String loginId,
+                                                                PagedResourcesAssembler<RecommendDTO> assembler){
+        int size = 10 ;
+        String storeName = data.get("storeName");
+        int page = parseInt(data.get("page"));
+        System.out.println("page=" + page);
+        System.out.println("storeName=" + storeName);
 
         if (storeName == null || storeName.isEmpty()){
             return ResponseEntity.badRequest().build();
             // build() : ResponseEntity 객체를 생성할 때 body는 빈 상태로 HTTP 상태 코드만 설정 가능
         }
-        List<RecommendEntity> bySearch = recommendService.getListByPlaceName(storeName);
-        List<RecommendDTO> dto = new ArrayList<>();
-        for (RecommendEntity s : bySearch){
-            dto.add(RecommendMapper.toRecommendDTO(s, loginId));
+        try {
+            Page<RecommendDTO> list = recommendService.getListByPlaceNameWithPage(storeName, page, size);
+            System.out.println("검색 리스트 = " + list.getContent());
+            if (!list.isEmpty()){
+                // 추천글이 있을 때
+                PagedModel<EntityModel<RecommendDTO>> recList = assembler.toModel(list);
+                return ResponseEntity.ok(recList);
+            } else {
+                // 추천글이 없을 때
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        System.out.println(dto);
-        return ResponseEntity.ok(dto);
     }
 
     @RequestMapping("/recommend/delete/{recId}")
     public String deleteRecommend(@PathVariable("recId") Long recId, RedirectAttributes ra){
         try {
-            System.out.println("게시글 번호 = " + recId);
             boolean result = recommendService.delete(recId);
 
             if (result){

@@ -93,7 +93,23 @@
           </div>
           <div class="form-row">
             <label for="dailyGoalSf">목표만족도</label>
+
+            <div>
+              <label><input type="radio" name="dailyGoalSf" value="10" checked="checked" required> 😊</label>
+              <label style="margin-left: -60px;"><input type="radio" name="dailyGoalSf" value="20"> 😐</label>
+              <label style="margin-left: -60px;"><input type="radio" name="dailyGoalSf" value="30"> 😢</label>
+            </div>
+            <!--
+            <select id="dailyGoalSf" name="dailyGoalSf" class="form-control" required>
+              <option value="">선택</option>
+              <option value="10">😊</option>
+              <option value="20">😐</option>
+              <option value="30">😢</option>
+            </select>
+            -->
+            <!--
             <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
+            -->
           </div>
           <div class="form-row">
             <label for="dailyMemo">메모</label>
@@ -166,7 +182,9 @@
     var dailyDate = $("#dailyDate").val();
     var dailyCurWt = $("#dailyCurWt").val();
     var dailyGoalWt = $("#dailyGoalWt").val();
-    var dailyGoalSf = $("#dailyGoalSf").val();
+
+    //var dailyGoalSf = $("#dailyGoalSf").val();
+    var dailyGoalSf = $("input[name='dailyGoalSf']:checked").val();
     var dailyMemo = $("#dailyMemo").val();
 
     dailyDate = dailyDate.replaceAll("/","");
@@ -188,10 +206,14 @@
       alert("목표체중을 입력해주세요.");
       $("#dailyGoalWt").focus();
       return;
+
+    /*
     }else if(dailyGoalSf == ""){
       alert("목표만족도를 입력해주세요.");
       $("#dailyGoalSf").focus();
       return;
+
+    */
     }else{
       if(confirm("일지를 작성하시겠습니까?")){
         $.ajax({

@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
@@ -47,8 +48,8 @@ public class RecommendService {
         return RecommendMapper.convertToRecommendDTOPage(list);
     }
 
-    public List<RecommendDTO> getListTop5(){
-        List<RecommendEntity> list = recommendRepository.findTop5();
+    public List<RecommendDTO> getListTop4(){
+        List<RecommendEntity> list = recommendRepository.findTop4();
         List<RecommendDTO> dtoList = new ArrayList<>();
 
         for (RecommendEntity r : list){
@@ -141,7 +142,6 @@ public class RecommendService {
 
         // 수정한 데이터를 DB에 업로드
         recommendRepository.save(recommendEntity);
-        System.out.println("좋/싫 수정 = " + recommendEntity);
         return true;
     }
 
@@ -157,6 +157,14 @@ public class RecommendService {
 
     public List<RecommendEntity> getListByPlaceName(String recStore){
         return recommendRepository.getRecommendationByStoreName(recStore);
+    }
+
+
+    // 페이지네이션 추가한 검색 결과
+    public Page<RecommendDTO> getListByPlaceNameWithPage(String recStore, int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC, "recId"));
+        return RecommendMapper.convertToRecommendDTOPage(
+            recommendRepository.getRecommendationByStoreNameWithPage(recStore, pageable));
     }
 
     public RecommendEntity checkByRecStoreAndRecMenu(String recStore, String recMenu){

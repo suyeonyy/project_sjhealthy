@@ -22,6 +22,8 @@ public class MemberDTO {
     private String memberBirth;     //생년월일
     private String memberGender;    //성별
     private Double memberHeight;       //키
+
+    private String memberDivision;      //가입 경로
     private String memberAuth;      //권한
 
     private String isDeleted;       //삭제여부
@@ -35,19 +37,7 @@ public class MemberDTO {
         this.memberPassword = memberPassword;
     }
 
-//    public static MemberDTO toMemberDTO(MemberEntity memberEntity){
-//        MemberDTO memberDTO = new MemberDTO();
-//
-//        memberDTO.setMemberId(memberEntity.getMemberId());
-//        memberDTO.setMemberPassword(memberEntity.getMemberPassword());
-//        memberDTO.setMemberName(memberEntity.getMemberName());
-//        memberDTO.setMemberPnum(memberEntity.getMemberPnum());
-//        memberDTO.setMemberEmail(memberEntity.getMemberEmail());
-//        memberDTO.setMemberBirth(memberEntity.getMemberBirth());
-//        memberDTO.setMemberGender(memberEntity.getMemberGender());
-//        memberDTO.setMemberAuth(memberEntity.getMemberAuth());
-//        memberDTO.setIsDeleted(memberEntity.getIsDeleted());
-//
-//        return memberDTO;
-//    }
+    public MemberDTO(String memberId, String memberName, String memberEmail, String createDate, String memberGender, String memberBirth){
+        this(memberId, null, memberName, null, memberEmail, null, null, memberBirth, memberGender, null, null, null, null, createDate, null, null, null);
+    }
 }
