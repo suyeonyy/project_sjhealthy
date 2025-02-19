@@ -1,6 +1,5 @@
 package com.example.sjhealthy.service;
 
-
 import com.example.sjhealthy.component.BoardMapper;
 import com.example.sjhealthy.component.MemberMapper;
 import com.example.sjhealthy.dto.MemberDTO;

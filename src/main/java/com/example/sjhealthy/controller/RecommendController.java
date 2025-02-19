@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import static java.lang.Integer.parseInt;
 
+import static java.lang.Integer.parseInt;
+
 @Controller
 @RequestMapping("/sjhealthy/")
 public class RecommendController {
@@ -42,7 +44,6 @@ public class RecommendController {
     private String js_appKey;
 
     @GetMapping({"/recommend", "/recommend/"})
-
     public String openRecBoardForm(@SessionAttribute(name = "loginId", required = false)String loginId, Model model,
                                    RedirectAttributes ra){
         model.addAttribute("loginId", loginId);
@@ -78,7 +79,6 @@ public class RecommendController {
                 return ResponseEntity.ok(recList);
             } else {
                 // 추천글이 없을 때
-
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
             }
         } catch (Exception e){
@@ -130,7 +130,6 @@ public class RecommendController {
             if (viewCount != null){
                 response.addCookie(viewCount);
             }
-
             RecommendDTO dto = RecommendMapper.toRecommendDTO(result, loginId);
             return ResponseEntity.ok().body(new Response<>(dto, "정보를 읽어왔습니다."));
         }
@@ -280,14 +279,12 @@ public class RecommendController {
             RecommendDTO result = recommendService.addRecommendation(recommendDTO);
 
             if (result == null){
-
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("/sjhealthy/recommend");
             } else {
                 return ResponseEntity.status(HttpStatus.OK).body("/sjhealthy/recommend");
             }
         } catch (Exception e){
             e.printStackTrace();
-
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("/sjhealthy/recommend");
         }
 
@@ -312,7 +309,6 @@ public class RecommendController {
         try {
             if (rec.contains(" ")){ // 지점이 여러 개인 프랜차이즈일 때
                 String recStore = rec.split(" ")[0]; // 지점 뺀 앞 부분만
-
                 result = recommendService.checkByRecStoreAndRecMenu(recStore, recMenu);
             } else {
                 result = recommendService.checkByRecStoreAndRecMenu(rec, recMenu);

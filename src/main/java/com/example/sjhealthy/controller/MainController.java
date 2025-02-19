@@ -35,7 +35,6 @@ public class MainController {
         }
         // 파일 URL 생성
 //        String fileUrl = "http://localhost:8081/sjhealthy/uploads/files/" + fileName;
-
         // 파일을 resource로 감싸서 반환, URL만으로 이미지를 표시 가능
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()

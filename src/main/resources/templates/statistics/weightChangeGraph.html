@@ -35,7 +35,6 @@
             display: revert;
             flex-direction: column;
             justify-content: space-between;
-
             height: 100vh;
             padding: 10px;
         } */
@@ -49,18 +48,6 @@
             padding: 10px;
         }
 
-        span {
-            background: #F9F7F6;
-            border-left: 0.5em solid rgb(30,136,255);
-            padding: 0.5em;
-            font-weight: 600;
-            font-size: 15px;
-            margin-bottom: 20px; /* 아래쪽에 간격 추가 */
-            align-self: flex-start; /* 좌측 정렬 */
-        }
-
-=======
->>>>>>> JY
         .graph-controls {
             display: flex;
             justify-content: center;
@@ -78,11 +65,7 @@
             width: 120px;       /* 월별 버튼 크기와 동일한 너비 */
             /* height: 50px;       높이를 월별 버튼과 동일하게 맞춤 */
             /* padding: 0;         패딩을 없애서 버튼 크기 일관성 유지 */
-<<<<<<< HEAD
         /* } */
-=======
-        /* } */
->>>>>>> JY
 
         h3#now {
             font-weight: 400;
@@ -99,19 +82,6 @@
         }
 
         /* .content {
-<<<<<<< HEAD
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-=======
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
->>>>>>> JY
         }   */
         /* flex-grow: 1 콘텐츠가 화면을 꽉 채우도록 */
         /* justify-content: center 차트를 화면 중앙에 배치 */
@@ -135,9 +105,6 @@
         #btn {
             margin-bottom: 10px;
         }
-<<<<<<< HEAD
-=======
-
         /*span {*/
         #page_title {
             background: #F9F7F6;
@@ -148,27 +115,18 @@
             margin-bottom: 20px; /* 아래쪽에 간격 추가 */
             align-self: flex-start; /* 좌측 정렬 */
         }
->>>>>>> JY
     </style>
 </head>
 <body>
 <div th:replace="~{fragment/header :: main-head}"></div>
 
 <main>
-<<<<<<< HEAD
-    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">몸무게 변화 그래프</span>
-=======
     <span id="page_title" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">몸무게 변화 그래프</span>
->>>>>>> JY
 
     <!-- 그래프 제어 버튼들 -->
     <div class="graph-controls">
         <button id="before" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> <</button>
-<<<<<<< HEAD
-        <h3 id="now" class="text-center">현재</h3>
-=======
         <h3 id="now" class="text-center"></h3>
->>>>>>> JY
         <button id="after" class="btn btn-outline-primary"><i class="bi bi-arrow-right"></i> ></button>
     </div>
 
@@ -191,27 +149,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", async (e)=> {
         // 서버에 요청하여 데이터 받아옴
-<<<<<<< HEAD
-        const sortBtnByMonth = document.getElementById("month");
-        const sortBtnByYear = document.getElementById("year");
-        const before = document.getElementById("before");
-        const after = document.getElementById("after");
-
-        // if (!month) month = 0; // 버튼 안 누르면 0으로 설정, 나중에 < > 버튼 추가하고 수정
-        let month = 0;
-        let year = 0;
-
-        //console.log("month = " + month);
-        //console.log("year = " + year);
-
-        let monthlyData = Array(31).fill(null); // 월별 데이터 저장할 배열 초기화
-        let yearlyData = Array(12).fill(null); // 월 평균 데이터 12개 저장할 배열 초기화
-        let weightList = null;
-
-        const now = document.getElementById("now");
-        let monthNow = 0;
-        let yearNow = 0;
-=======
         const monthSortBtn = document.getElementById("month");
         const yearSortBtn = document.getElementById("year");
         const before = document.getElementById("before");
@@ -236,144 +173,10 @@
 
         // 현재 연월 출력
         now.textContent = yyyy + "년 " + MM +"월";
->>>>>>> JY
 
         // 그래프 사용을 위한 변수 선언 / 자세한 설정은 sortByMonth에서 함
         const ctx = document.getElementById('myChart').getContext('2d');
         let stackedLine = 0;
-<<<<<<< HEAD
-        let chartInstance = null;
-        let sorted = 0; // 0이면 월별, 1이면 연도별
-
-        let plus = 0;
-        let minus = 0;
-        // 증감 버튼 클릭시
-        before.addEventListener("click", (e) => {
-            //console.log("decrease");
-            plus = 0; // 초기화
-
-            // 일 단위일 때
-            if (sorted === 0){
-                month--; // 이전 달 데이터
-                //console.log("month = " + month);
-                minus--;
-                sortByMonth();
-                let mn = Number(monthNow);
-                if (mn + minus <= 0){
-                    now.innerText = mn + minus + 12 + "월";
-                } else {
-                    now.innerText = mn + minus + "월";
-                }
-            } else {
-                year--; // 월 단위일 때 이전 연도 데이터
-                //console.log("year = " + year);
-                minus--;
-                sortByYear();
-                now.innerText = Number(yearNow) + minus + "년";
-            }
-        });
-        after.addEventListener("click", (e) => {
-            //console.log("increase");
-            minus = 0;
-
-            if (sorted === 0){
-                month++;
-                //console.log("month = " + month);
-                plus++;
-                sortByMonth();
-                let mn = Number(monthNow);
-                if (mn + plus > 12){
-                    now.innerText = mn + plus - 12 + "월";
-                } else {
-                    now.innerText = mn + plus + "월";
-                }
-            } else {
-                year++;
-                //console.log("year = " + year);
-                plus++;
-                sortByYear();
-                now.innerText = Number(yearNow) + plus + "년";
-            }
-        });
-
-        // 버튼 안 누르면 기본으로 일 단위로 정렬
-        sortByMonth();
-
-
-        sortBtnByMonth.addEventListener("click", (e) => {
-            //console.log("Month");
-
-            // sorted 0이 일, 1이 월
-            if (sorted === 0){
-                e.preventDefault(); // 이미 일 단위 그래프라면 변화 없도록
-            } else {
-                sortByMonth(); // 아니라면 일 단위 정렬
-            }
-        });
-
-        sortBtnByYear.addEventListener("click", (e) => {
-            //console.log("Year");
-
-            if (sorted === 1){
-                e.preventDefault(); // 이미 월 단위 그래프라면 변화 없도록
-            } else {
-                sortByYear(); // 아니라면 연 단위 정렬
-            }
-        });
-
-
-
-
-
-
-
-
-
-        // 데이터 요청 함수
-        async function requestData(){
-            const response = await fetch("/sjhealthy/statistics/graph", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    month: month,
-                    year: year
-                })
-            });
-            if (response.status === 204){
-                // 데이터 없을 때
-                weightList = null;
-                console.log("데이터가 존재하지 않습니다.");
-                return;
-            } else {
-                const d1 = await response.json(); // List<날짜-몸무게>로 응답
-                if (!d1.data){
-                    console.log(d1.message);
-                } else{
-                weightList = d1.data;
-                //console.log("weightList = " + JSON.stringify(weightList));
-                console.log("message = " + d1.message);
-                }
-            }
-        }
-
-        async function sortByMonth(){ // 1달 단위 그래프
-
-            // 기존 데이터 초기화
-            monthlyData = Array(31).fill(null);
-
-            if (chartInstance){
-                chartInstance.destroy(); // 기존 차트 초기화
-            }
-
-            await requestData();
-            //console.log("request 후 " + weightList);
-
-            sorted = 0;
-
-
-=======
         let chartInstance = new Chart(ctx, {
                 type: "line", // 선 그래프
                 data: {
@@ -556,7 +359,6 @@
 
             sorted = 0;
 
->>>>>>> JY
             // 데이터 없을 때
             if (!weightList){
                 console.log("데이터 없음");
@@ -567,71 +369,6 @@
                         //console.log("forEach 진입");
                         const mapDate = date;
                         const mapWeight = weight;
-<<<<<<< HEAD
-                        //console.log("날짜" + mapDate + " 월, 몸무게" + mapWeight);
-                        const day = date.substring(6, 8); // yyyyMMdd 에서 dd를 가져옴
-                        monthlyData[day-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
-
-                        monthNow = date.substring(4, 6); // MM을 가져옴
-                        now.innerText = monthNow + "월";
-                    });
-                    //console.log("일별 체중 = " + monthlyData);
-                    //console.log("월 = " + monthNow);
-                });
-            }
-
-            const days = getDaysInMonth(monthNow);
-            const labels = Array.from({length: days}, (_, i) => `${i+1}일`);
-
-            // 그래프로 그림
-            chartInstance = new Chart(ctx, {
-                type: "line", // 선 그래프
-                data: {
-                    labels: labels,
-                datasets: [{
-                    label: "몸무게",
-                    data: monthlyData,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-                },
-                options: {
-                    responsive: true,  // 반응형 유지
-                    maintainAspectRatio: true, // 가로 세로 비율 유지
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "날짜(일)"
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: "체중(kg)"
-                            },
-                            beginAtZero: true  // y축이 0부터 시작
-                        }
-                    }
-                }
-            });
-        }
-
-        async function sortByYear(){ // 1년 단위 그래프
-            yearlyData = Array(12).fill(null); // 초기화
-
-            if (chartInstance){
-                chartInstance.destroy(); // 기존 차트 초기화
-            }
-
-            await requestData();
-            //console.log("request 후 " + weightList);
-            sorted = 1;
-
-            const labels = Array.from({length:12}, (_, i) => `${i+1}월`); // 1~12월로 labels 생성
-
-=======
                         const day = mapDate.substring(6, 8); // yyyyMMdd 에서 dd를 가져옴
                         monthlyData[day-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
                     });
@@ -645,15 +382,10 @@
 
             sorted = 1;
 
->>>>>>> JY
             // 데이터 없을 때
             if (!weightList){
                 console.log("데이터가 없습니다.");
             } else {
-<<<<<<< HEAD
-            weightList.forEach((map) => {
-                // map으로 보냈는데 확인해보니 일반객체로 찍혀서 Object.entries를 이용해 key, value 순회
-=======
                 weightList.forEach((map) => {
                     // map으로 보냈는데 확인해보니 일반객체로 찍혀서 Object.entries를 이용해 key, value 순회
                     let mapDate = null;
@@ -675,76 +407,10 @@
                 });
                 console.log(monthlyDataList);
 
->>>>>>> JY
                 let monthEverage = 0.0; // 월 평균
                 let monthTotal = 0.0; // 월 총합
                 let count = 0; // 데이터 개수
 
-<<<<<<< HEAD
-                Object.entries(map).forEach(([date, weight]) => {
-                    //console.log("forEach 진입");
-                    // 반복문으로 데이터 평균내어 월 평균 무게로 출력
-                    const mapDate = date;
-                    const mapWeight = weight;
-                    //console.log("날짜" + mapDate + " 년, 몸무게" + mapWeight);
-                    const month = date.substring(4, 6); // yyyyMMdd 에서 MM을 가져옴
-                    monthlyData[month-1] = mapWeight; // 해당일에 해당 데이터를 넣어줌
-
-                    yearNow = date.substring(0, 4); // yyyy을 가져옴
-                    now.innerText = yearNow + "년";
-                });
-
-                // 월 평균을 구해 출력
-                for (let i = 0; i < monthlyData.length; i++){
-                    if (monthlyData[i] != null){
-                        monthTotal += monthlyData[i];
-                        count++;
-                    }
-                }
-                monthEverage = ( monthTotal / count ).toFixed(1); // 소수점 첫째자리까지 반올림
-
-                let i = 0;
-                yearlyData[i] = monthEverage;
-                i++;
-            });
-            //console.log("일별 체중 = " + monthlyData);
-            //console.log("연도 = " + yearNow);
-            //console.log("월 평균 = " + yearlyData);
-            }
-            // 그래프로 그림
-            chartInstance = new Chart(ctx, {
-                type: "line", // 선 그래프
-                data: {
-                    labels: labels,
-                datasets: [{
-                    label: "몸무게",
-                    data: yearlyData,
-                    fill: false,
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-                },
-                options: {
-                    responsive: true,  // 반응형 유지
-                    maintainAspectRatio: true, // 가로 세로 비율 유지
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: "날짜(월)"
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: "체중(kg)"
-                            },
-                            beginAtZero: true  // y축이 0부터 시작
-                        }
-                    }
-                }
-            });
-=======
                 // 월 평균을 구해 출력
                 for (let i = 0; i < monthlyDataList.length; i++){
                     monthTotal = 0;
@@ -762,21 +428,14 @@
                 console.log("yearlyData");
                 console.log(yearlyData);
             }
->>>>>>> JY
         }
 
         // function getDaysInMonth(month, year{
         function getDaysInMonth(monthNow){
             // 월 단위로 출력할 때 월별 날짜 계산하는 함수
-<<<<<<< HEAD
-            const thirtyOndDaysMonths = ["01", "03", "05", "07", "09", "11"];
-            const thirtyDaysMonths = ["04", "06", "08", "10", "12"];
-            const twentyEightDaysMonths = ["02"];
-=======
             const thirtyOndDaysMonths = [1, 3, 5, 7, 9, 11];
             const thirtyDaysMonths = [4, 6, 8, 10, 12];
             const twentyEightDaysMonths = [2];
->>>>>>> JY
             if (thirtyOndDaysMonths.includes(monthNow)){
                 return 31;
             } else if (thirtyDaysMonths.includes(monthNow)){

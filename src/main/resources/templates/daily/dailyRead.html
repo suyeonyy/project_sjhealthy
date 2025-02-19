@@ -91,7 +91,6 @@
           <strong>목표만족도</strong>
         </div>
         <div class="col-md-9">
-
           <!--
           <span th:text="${dailyDTO.dailyGoalSf}"></span>
           -->
@@ -112,7 +111,6 @@
 
       <div class="text-center mt-4">
         <a th:if="${dailyDTO.memberId == loginId}" style="text-decoration: none;"
-
            th:href="@{../daily/update?dailyId={id}(id=${dailyDTO.dailyId}, year=${#strings.substring(dailyDTO.dailyDate, 0, 4)}, month=${#strings.substring(dailyDTO.dailyDate, 4, 6)} )}">
           <button type="button" class="btn btn-custom">수정</button>
         </a>
@@ -130,7 +128,6 @@
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script>
-
   var dailySaveDate;
   var list = document.getElementById("list");
 
@@ -141,7 +138,6 @@
     //console.log(formattedDate);  // "2025/01/08"
 
     $("#dailyDate").text(formattedDate);
-
 
     dailySaveDate = dailyDate;
 

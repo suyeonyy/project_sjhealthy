@@ -90,19 +90,11 @@
 <div class="text-center mt-4" id="pagination"></div>
 
 <div class="text-center mt-4">
-<<<<<<< HEAD
-    <a href="/sjhealthy/board/write"><button class="btn btn-custom">글 작성</button></a>
-=======
     <a href="/sjhealthy/board/write"><button id="writeBtn" class="btn btn-custom">글 작성</button></a>
->>>>>>> JY
     <a href="/sjhealthy"><button class="btn btn-secondary">홈</button></a>
 </div>
 
 </main>
-<<<<<<< HEAD
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-=======
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
         // 글 작성/수정하면서 리다이렉트한 메시지 띄움
@@ -122,15 +114,12 @@
             }
         });
 
->>>>>>> JY
         const boardDiv = document.getElementById("content");
 
         // 게시글 관리
         let currentPage = 1;
         const pageSize = 10;
 
-<<<<<<< HEAD
-=======
         // 만약 서버에서 보낸 페이지가 있다면 그걸로 사용
         const pageBefore = [[${page}]] || "empty";
         // if (pageBefore !== "empty"){
@@ -144,8 +133,6 @@
             localStorage.clear(); // 앞으로의 사용을 위해 페이지 저장을 초기화 해줌.
         }
 
-
->>>>>>> JY
         // 페이지 열면 자동으로 로드(1페이지로)
         loadBoardData(currentPage);
 
@@ -153,16 +140,6 @@
         async function loadBoardData(page){
             const boardListDiv = document.getElementById("content");
             content.innerHTML = ""; // 기존 내용 비움
-<<<<<<< HEAD
-
-            try {
-                // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
-                const response = await fetch("/sjhealthy/board/list?page=" + page);
-
-                const data = await response.json();
-
-                if (response.status === 200){
-=======
 
             // 목록 버튼 눌러서 왔을 땐 해당 글의 페이지로 이동
             try {
@@ -174,7 +151,6 @@
                 }
                 else if (response.ok){
                     const data = await response.json();
->>>>>>> JY
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
 
                     const boardList = data._embedded.boardDTOList;
@@ -211,11 +187,8 @@
                         row.appendChild(postNumber);
 
                         const title = document.createElement("td");
-<<<<<<< HEAD
-                        title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}">${board.boardTitle}</a>`;
-=======
+
                         title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}&page=${page}">${board.boardTitle}</a>`;
->>>>>>> JY
                         row.appendChild(title);
 
                         const writer = document.createElement("td");

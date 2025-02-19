@@ -159,7 +159,6 @@ public class RecommendService {
         return recommendRepository.getRecommendationByStoreName(recStore);
     }
 
-
     // 페이지네이션 추가한 검색 결과
     public Page<RecommendDTO> getListByPlaceNameWithPage(String recStore, int page, int size) {
         Pageable pageable = PageRequest.of(page-1, size, Sort.by(Sort.Direction.DESC, "recId"));

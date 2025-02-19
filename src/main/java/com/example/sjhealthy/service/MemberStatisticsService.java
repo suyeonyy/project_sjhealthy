@@ -31,7 +31,6 @@ public class MemberStatisticsService {
     }
 
     // 해당 회원의 한 달치 몸무게를 리스트로
-
 //    public List<Map<String, Double>> getWeightListByMemberIdAndMonth(String memberId, int month, int year) {
 //        int m, y;
 //
@@ -88,7 +87,6 @@ public class MemberStatisticsService {
             map.put(date, weight); // 데이터를 Map으로 만들고
             mapList.add(map);   // 리스트에 추가
         }
-
         return mapList;
     }
 

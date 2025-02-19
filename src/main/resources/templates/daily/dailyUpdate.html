@@ -93,7 +93,6 @@
 
           <div class="form-row">
             <label for="dailyGoalSf">목표만족도</label>
-
             <div>
               <label>
                 <input type="radio" name="dailyGoalSf" value="10" th:checked="${dailyDTO.dailyGoalSf eq '10'}" required> 😊
@@ -119,7 +118,6 @@
           <input type="hidden" id="dailyId" name="dailyId" th:value="${dailyDTO.dailyId}">
           <div class="text-center mt-4">
             <button type="button" class="btn btn-custom" onclick="fn_dailyUpdate();">수정</button>
-
             <!--
             <a href="../daily/dailyList" class="btn btn-secondary">목록</a>
             -->
@@ -133,7 +131,6 @@
 </main>
 <div th:replace="~{fragment/footer :: main-foot}"></div>
 <script>
-
   var list = document.getElementById("list");
 
   $(document).ready(function() {
@@ -176,7 +173,6 @@
     var dailyDate   = $("#dailyDate").val();
     var dailyCurWt  = $("#dailyCurWt").val();
     var dailyGoalWt = $("#dailyGoalWt").val();
-
     //var dailyGoalSf = $("#dailyGoalSf").val();
     var dailyGoalSf = $("input[name='dailyGoalSf']:checked").val();
     var dailyMemo   = $("#dailyMemo").val();
@@ -199,7 +195,6 @@
       alert("목표체중을 입력해주세요.");
       $("#dailyGoalWt").focus();
       return;
-
     /*
     }else if(dailyGoalSf == ""){
       alert("목표만족도를 입력해주세요.");

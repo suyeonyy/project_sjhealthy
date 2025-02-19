@@ -55,7 +55,6 @@
     <div id='calendar-container'>
         <div id='calendar'></div>
     </div>
-
     <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
 </main>
 <!-- jquery CDN -->
@@ -68,7 +67,6 @@
 
 <script th:inline="javascript">
     var dailyList = [[${dailyList}]];
-
     var initialDate;
     var moodEmoticons = {
         "10": "😊",  // 예: 상은 웃는 얼굴
@@ -95,6 +93,8 @@
                 var selected = dailyList[i];
                 var dailyDate = selected.dailyDate;
                 var dailyTitle = selected.dailyTitle;
+                var dailyGoalSf = selected.dailyGoalSf;
+                var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
 
                 var dailyGoalSf = selected.dailyGoalSf;
                 var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
@@ -112,7 +112,6 @@
 
                 // 날짜 형식을 출력
                 var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
-
 
                 var finalTitle = dailyTitle + " _ " + emoticon;
 
@@ -140,7 +139,6 @@
        }
     });
 
-
     function initializeFullCalendar(event1) {
         var calendarEl = $('#calendar')[0];
 
@@ -158,7 +156,6 @@
             },
             initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
             //initialDate: '2021-07-15', // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
-
             initialDate: initialDate,
             navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
             editable: true, // 수정 가능?
@@ -172,7 +169,6 @@
                 calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
             },
             select: function(arg) { // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
-
                 var memberId = $("#memberId").val();
 
                 var selectedDate = arg.startStr;  // 선택된 날짜 (yyyy-mm-dd 형식)
@@ -210,7 +206,6 @@
 
                 // 원하는 형식으로 출력
                 var dailyDate = year + month + day;
-
 
                 window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
             },

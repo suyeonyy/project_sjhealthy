@@ -92,7 +92,6 @@
                 <span th:text="${isUpdate} ? '커뮤니티 수정' : '커뮤니티 작성'"></span>
             </div>
             <div class="card-body">
-
                 <form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} + '&page=' + ${page} : '/sjhealthy/board/write'"
                       th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST"
                       enctype="multipart/form-data">
@@ -130,6 +129,14 @@
 
         const submitButton = document.getElementById("submit");
         const form = document.querySelector(".boardForm");
+        const writer = document.getElementById("boardWriter").value;
+
+        // 회원인지 확인
+        if (!writer){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy/board";
+        }
+
 
         const writer = document.getElementById("boardWriter").value;
 
@@ -143,7 +150,6 @@
         submitButton.addEventListener("click", (e) => {
             const title = document.getElementById("boardTitle").value;
             const content = document.getElementById("boardContent").value;
-
             const action = document.getElementById("boardTitle").value;
 
             // 제목이 없으면 폼 제출을 막고 알림
@@ -152,7 +158,6 @@
                 $("#boardTitle").focus();
                 e.preventDefault();  // 폼 제출을 막음
                 return;
-
             }
 
             // 수정일 때
@@ -170,7 +175,6 @@
                 }
             }
         });
-
 
         const listBtn = document.getElementById("listBtn");
     });

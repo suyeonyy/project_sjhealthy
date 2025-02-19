@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-
     <title>커뮤니티 게시글</title>
     <!-- 헤더 css -->
     <link rel="stylesheet" href="/css/header.css">
@@ -86,7 +85,6 @@
                 <hr>
 
                 <div class="text-center">
-
                     <a id="update" th:if="${boardDTO.memberId == loginId}" style="text-decoration: none;">
                         <button class="btn btn-primary">수정</button>
                     </a>
@@ -137,13 +135,11 @@
 <!--<script th:inline="javascript" th:src="@{/js/board.js}"></script>--><!-- js 분리 -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", ()=> {
-
         // 글 작성/수정하면서 리다이렉트한 메시지 띄움
         const message = /*[[${message}]]*/'';
         if (message) {
             alert(message);
         }
-
 
         const list = document.getElementById("list");
         const update = document.getElementById("update");
@@ -169,6 +165,7 @@
 
         if (deleteBtn){
             deleteBtn.addEventListener("click", (e)=> {
+                localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
 
                 localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
 
@@ -190,14 +187,12 @@
 
                 const imageUrl = "/uploads/files/" + fileName;
                 attachedImage.src = imageUrl;
-
             }
         }
     });
 
     /* 댓글 작성 */
     function commentWriteClick(){
-
         var memberId = $("#memberId").val();
 
         if(memberId != ""){

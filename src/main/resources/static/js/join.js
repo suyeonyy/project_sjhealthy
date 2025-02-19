@@ -1,5 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 8fc7bcae55c61dff5ad45b5cccdcc1275a94e7bc
 // memberDivision 값 없는 경로로 진입 시, 돌려보냄
 const memberDivision = document.getElementById("memberDivision").value;
 if (memberDivision == null){
@@ -8,7 +11,10 @@ if (memberDivision == null){
     return false;
 }
 
+<<<<<<< HEAD
 >>>>>>> JY
+=======
+>>>>>>> 8fc7bcae55c61dff5ad45b5cccdcc1275a94e7bc
 /* 아이디 중복체크 */
 $("#memberId").blur(function() {
    //console.log("아이디 중복체크 진입");
@@ -248,9 +254,13 @@ function saveMember() {
     var memberEmailPass = $("#memberEmailPass").val();
     var memberBirthPass = $("#memberBirthPass").val();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     var memberDivision = $('#memberDivision').val();
 >>>>>>> JY
+=======
+    var memberDivision = $('#memberDivision').val();
+>>>>>>> 8fc7bcae55c61dff5ad45b5cccdcc1275a94e7bc
 
     //이메일 형식 생성
     var memberEmailFirst = form.elements['memberEmailFirst'].value.trim();
