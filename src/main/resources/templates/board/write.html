@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${isUpdate} ? '커뮤니티 수정' : '커뮤니티 작성'"></title>
+    <!-- 헤더 css -->
+    <link rel="stylesheet" href="/css/header.css">
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <style>
+        .card-header {
+            background-color: #f8f9fa;
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-body {
+            font-size: 1.1rem;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .card {
+            margin-top: 30px;
+        }
+
+        .card-body label {
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            font-size: 1rem;
+        }
+
+        .form-control-file {
+            margin-top: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .form-row label {
+            width: 120px; /* 라벨의 너비를 설정 */
+            margin-right: 10px; /* 라벨과 입력칸 사이의 간격 */
+        }
+
+        .form-row .form-control {
+            flex: 1; /* 입력칸이 남은 공간을 채우도록 설정 */
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+<main>
+    <!-- 등록 페이지일 때 -->
+    <span th:if="${isUpdate == null}" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 작성</span>
+
+    <!-- 수정 페이지일 때 -->
+    <span th:if="${isUpdate != null}" style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">커뮤니티 수정</span>
+
+    <input type="hidden" id="isUpdateValue" th:value="${isUpdate != null ? 'true' : 'false'}" />
+
+    <div class="container mt-5">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <span th:text="${isUpdate} ? '커뮤니티 수정' : '커뮤니티 작성'"></span>
+            </div>
+            <div class="card-body">
+                <form class="boardForm" th:action="${isUpdate} != null ? '/sjhealthy/board/update?boardId=' + ${isUpdate.boardId} + '&page=' + ${page} : '/sjhealthy/board/write'"
+                      th:object="${isUpdate != null ? isUpdate : new com.example.sjhealthy.dto.BoardDTO()}" method="POST"
+                      enctype="multipart/form-data">
+                    <div class="form-row">
+                        <label for="boardTitle">제목</label>
+                        <input type="text" name="boardTitle" th:value="*{boardTitle}" id="boardTitle" class="form-control" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="boardContent">내용</label>
+                        <textarea name="boardContent" th:text="*{boardContent}" id="boardContent" class="form-control"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <label for="file">첨부파일</label>
+                        <input type="file" name="file" class="form-control-file" style="margin-top:10px;">
+                    </div>
+                    <div th:if="${isUpdate != null}">
+                        <span>첨부된 파일: </span>
+                        <span th:if="${fileName}" id="fileName" style="margin-top: 10px;" th:text="${fileName}"></span>
+                    </div>
+                    <input type="hidden" name="memberId" th:value="${loginId}" id="boardWriter">
+                    <div class="text-center mt-3">
+                        <button type="submit" name="submit" class="btn btn-custom" id="submit">
+                            <span id= "action" th:text="${isUpdate} ? '수정' : '작성'"></span>
+                        </button>
+                        <a href="/sjhealthy/board" class="btn btn-secondary ml-2">목록</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const isUpdate = document.getElementById("isUpdateValue").value;
+
+        const submitButton = document.getElementById("submit");
+        const form = document.querySelector(".boardForm");
+        const writer = document.getElementById("boardWriter").value;
+
+        // 회원인지 확인
+        if (!writer){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy/board";
+        }
+
+
+        const writer = document.getElementById("boardWriter").value;
+
+        // 회원인지 확인
+        if (!writer){
+            alert("회원 전용 기능입니다.");
+            window.location.href = "/sjhealthy/board";
+        }
+
+
+        submitButton.addEventListener("click", (e) => {
+            const title = document.getElementById("boardTitle").value;
+            const content = document.getElementById("boardContent").value;
+            const action = document.getElementById("boardTitle").value;
+
+            // 제목이 없으면 폼 제출을 막고 알림
+            if (!title){
+                alert("제목을 입력해 주세요.");
+                $("#boardTitle").focus();
+                e.preventDefault();  // 폼 제출을 막음
+                return;
+            }
+
+            // 수정일 때
+            if (isUpdate == 'true') {
+                if (confirm("글을 수정하시겠습니까?")) {
+                    form.submit();  // "확인"을 누르면 폼 제출
+                } else {
+                    e.preventDefault();  // "취소"를 누르면 제출 안됨
+                }
+            } else {  // 작성일 때
+                if (confirm("글을 작성하시겠습니까?")) {
+                    form.submit();  // "확인"을 누르면 폼 제출
+                } else {
+                    e.preventDefault();  // "취소"를 누르면 제출 안됨
+                }
+            }
+        });
+
+        const listBtn = document.getElementById("listBtn");
+    });
+</script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+</body>
+</html>

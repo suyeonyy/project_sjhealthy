@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>아이디 찾기</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <style>
+        .form-group label {
+          font-weight: bold;
+        }
+
+        .alert-custom {
+          font-size: 1.1rem;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .btn-custom {
+          background-color: #007bff;
+          color: white;
+        }
+
+        .btn-custom:hover {
+          background-color: #0056b3;
+          color: white;
+        }
+
+        .card {
+          margin-top: 3rem;
+        }
+
+        .card-header {
+          background-color: #f8f9fa;
+          font-size: 1.25rem;
+          font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragment/headerNoSession :: main-head}"></div>
+
+<main>
+    <div class="container mt-5">
+        <div class="card shadow-lg">
+            <div class="card-header text-left">
+                아이디 찾기
+            </div>
+            <div class="card-body">
+
+                <!-- 아이디 찾기 폼 -->
+                <form action="../member/find-id" method="POST" th:if="${memberDTO == null && dto == null}" id="findIdForm">
+                    <div class="form-group">
+                        <label for="memberName">이름</label>
+                        <input type="text" class="form-control" name="memberName" id="memberName" placeholder="이름을 입력해 주세요.">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="memberBirth">생년월일</label>
+                        <input type="text" class="form-control" name="memberBirth" id="memberBirth" placeholder="8자로 입력해 주세요.">
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" name="findId" id="findId" class="btn btn-custom" style="margin-top: 10px;">아이디 찾기</button>
+                        <a href="../member/login"><button type="button" class="btn btn-secondary" style="background-color: #6c757d; color:white; margin-top: 10px;">로그인</button></a>
+                    </div>
+                </form>
+
+                <!-- 아이디 찾기 결과 -->
+                <p th:if="${memberDTO != null}" class="alert alert-success alert-custom" style="background-color: #F1FCFE;">
+                    찾으시는 아이디는 <strong th:text="${memberDTO.memberId}"></strong> 입니다.<br>
+                </p>
+                <div class="text-center" th:if="${memberDTO != null}">
+                    <a href="../member/login"><button class="btn btn-custom">로그인</button></a>
+                    <a href="../member/find-password"><button class="btn btn-custom">비밀번호 찾기</button></a>
+                </div>
+
+                <p th:if="${dto != null}" class="alert alert-danger alert-custom">
+                    아이디가 존재하지 않습니다.<br>
+                    <a href="../member/login"><button class="btn btn-custom">로그인</button></a>
+                    <a href="../member/find-id"><button class="btn btn-custom">아이디 찾기</button></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const findId = document.getElementById("findId");
+        const findIdForm = document.getElementById("findIdForm");
+
+        findId.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("memberName").value;
+            const birth = document.getElementById("memberBirth").value;
+            const check = /^\d{8}$/; // 8자 유효성 검사
+
+            if (!name){
+                alert("이름을 입력해 주세요.");
+            } else if (!birth){
+                alert("생년월일을 입력해 주세요.");
+            } else if (!check.test(birth)){ 
+                alert("생년월일은 8자리 숫자로 입력해주세요.");
+            } else {
+                findIdForm.submit();
+                // 되나 확인하기
+            }
+        });
+    });
+</script>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+</body>
+</html>

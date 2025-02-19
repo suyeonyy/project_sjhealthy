@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>일지 작성</title>
+  <!-- 헤더 css -->
+  <link rel="stylesheet" href="/css/header.css">
+  <!-- 헤더, 메인, 푸터 위치 고정 -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery-3.6.0.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <style>
+    .card-header {
+        background-color: #f8f9fa;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        font-size: 1.1rem;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-row label {
+        width: 120px; /* 라벨의 너비를 설정 */
+        margin-right: 10px; /* 라벨과 입력칸 사이의 간격 */
+        font-weight: 600;
+    }
+
+    .form-row .form-control {
+        flex: 1; /* 입력칸이 남은 공간을 채우도록 설정 */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .card {
+        margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+
+<main>
+  <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">일지 작성</span>
+
+  <div class="container mt-5">
+
+    <div class="card shadow-lg">
+      <div class="card-header">
+        <span>일지 작성</span>
+      </div>
+      <div class="card-body">
+        <form id="dailyWriteForm">
+          <div class="form-row">
+            <label for="dailyTitle">제목</label>
+            <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyDate">작성일</label>
+            <input type="text" id="dailyDate" name="dailyDate" class="form-control" placeholder="작성일" maxlength="8" readonly required>
+          </div>
+          <div class="form-row">
+            <label for="dailyCurWt">현재체중</label>
+            <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" oninput="validateInput(this)" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyGoalWt">목표체중</label>
+            <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" required>
+          </div>
+          <div class="form-row">
+            <label for="dailyGoalSf">목표만족도</label>
+            <div>
+              <label><input type="radio" name="dailyGoalSf" value="10" checked="checked" required> 😊</label>
+              <label style="margin-left: -60px;"><input type="radio" name="dailyGoalSf" value="20"> 😐</label>
+              <label style="margin-left: -60px;"><input type="radio" name="dailyGoalSf" value="30"> 😢</label>
+            </div>
+            <!--
+            <select id="dailyGoalSf" name="dailyGoalSf" class="form-control" required>
+              <option value="">선택</option>
+              <option value="10">😊</option>
+              <option value="20">😐</option>
+              <option value="30">😢</option>
+            </select>
+            -->
+            <!--
+            <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
+            -->
+          </div>
+          <div class="form-row">
+            <label for="dailyMemo">메모</label>
+            <textarea id="dailyMemo" name="dailyMemo" class="form-control" maxlength="2000"></textarea>
+          </div>
+
+          <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+          <div class="text-center mt-3">
+            <button type="button" class="btn btn-custom" onclick="saveDailyWrite()">작성</button>
+            <a href="../daily/dailyList" class="btn btn-secondary ml-2">목록</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</main>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+
+<script th:inline="javascript">
+  //페이지 진입 시
+  $(document).ready(function() {
+    //console.log("작성 페이지 진입!!");
+    // 현재 페이지의 URL에서 쿼리 파라미터를 가져오는 방법
+    const urlParams = new URLSearchParams(window.location.search);
+    // 'dailyDate' 파라미터의 값을 가져옴
+    const dailyDate = urlParams.get('dailyDate');
+    // 콘솔에 출력
+    //console.log(dailyDate);
+
+    var year = dailyDate.substring(0,4);
+    var month = dailyDate.substring(4,6);
+    var day = dailyDate.substring(6,8);
+    var title = year + "/" + month + "/" + day + " 일지";
+
+    //제목이 페이지에 자동으로 디폴값 설정되도록 처리
+    $("#dailyTitle").val(title);
+    //작성일이 페이지에 자동으로 디폴값 설정되도록 처리
+    $("#dailyDate").val(dailyDate);
+  });
+
+
+
+
+
+  /* 숫자와 소수점만 허용하고, 다른 문자는 삭제 */
+  var prev = "";
+  var regexp = /^\d*(\.\d{0,2})?$/;
+  function validateInput(obj) {
+      var id = obj.id;
+      var firstChar = obj.value.charAt(0);
+      if(firstChar == "."){
+        alert("첫 번째 값은 숫자로 입력해주세요.");
+        $("#" + id).val("");
+        return;
+      }
+
+      if(obj.value.search(regexp)==-1) {
+          obj.value = prev;
+      }
+      else {
+          prev = obj.value;
+      }
+  }
+
+  /*작성*/
+  function saveDailyWrite(){
+    var memberId = $("#memberId").val();
+    var dailyTitle = $("#dailyTitle").val();
+    var dailyDate = $("#dailyDate").val();
+    var dailyCurWt = $("#dailyCurWt").val();
+    var dailyGoalWt = $("#dailyGoalWt").val();
+    //var dailyGoalSf = $("#dailyGoalSf").val();
+    var dailyGoalSf = $("input[name='dailyGoalSf']:checked").val();
+    var dailyMemo = $("#dailyMemo").val();
+
+    dailyDate = dailyDate.replaceAll("/","");
+    dailyMemo = dailyMemo.trim();
+
+    var dailyYear = dailyDate.substring(0,4);
+    var dailyMonth = dailyDate.substring(4,6);
+
+    //유효성검사
+    if(dailyTitle.trim() == ""){
+      alert("제목을 입력해주세요.");
+      $("#dailyTitle").focus();
+      return;
+    }else if(dailyCurWt == ""){
+      alert("현재체중을 입력해주세요.");
+      $("#dailyCurWt").focus();
+      return;
+    }else if(dailyGoalWt == ""){
+      alert("목표체중을 입력해주세요.");
+      $("#dailyGoalWt").focus();
+      return;
+    /*
+    }else if(dailyGoalSf == ""){
+      alert("목표만족도를 입력해주세요.");
+      $("#dailyGoalSf").focus();
+      return;
+    */
+    }else{
+      if(confirm("일지를 작성하시겠습니까?")){
+        $.ajax({
+       url : '../daily/dailyWriteDetail',
+       type : 'post',
+       data: {
+            memberId: memberId,
+            dailyTitle: dailyTitle,
+            dailyDate: dailyDate,
+            dailyCurWt: dailyCurWt,
+            dailyGoalWt: dailyGoalWt,
+            dailyGoalSf: dailyGoalSf,
+            dailyMemo: dailyMemo,
+            dailyYear: dailyYear,
+            dailyMonth: dailyMonth
+       },
+       success : function(response) {
+          //console.log("success");
+
+          // 서버에서 받은 alert 메시지와 리다이렉트 URL
+          var alertMessage = response.alertMessage;
+          var redirectUrl = response.redirectUrl;
+
+          // alert을 띄운 후 리다이렉트
+          alert(alertMessage);
+          window.location.href = redirectUrl;
+
+       }, error : function() {
+          //console.log("fail");
+       }
+   });
+      }
+    }
+  }
+
+
+  /*datepicker 구현*/
+  /*
+  $(function() {
+    //기본적으로 현재 날짜 선택됨
+    $('input[name="dailyDate"]').daterangepicker({
+      singleDatePicker: true, //날짜 선택기를 단일 날짜 선택 모드로 설정
+      showDropdowns: true,    //날짜 선택 시 월과 년을 드롭다운으로 보여주기 위한 설정
+      minYear: 1901,          //날짜 선택기에서 선택할 수 있는 최소 연도 설정
+      maxYear: parseInt(moment().format('YYYY'),10), //날짜 선택기에서 선택할 수 있는 최대 연도를 현재 연도로 설정
+      locale: {
+        format: 'YYYY/MM/DD'   // 날짜 형식을 yyyy/mm/dd로 설정
+      }
+    }, function(start, end, label) {
+      //var years = moment().diff(start, 'years');
+    });
+  });
+  */
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원가입</title>
+    <style>
+        main {
+            padding: 0px !important;
+            overflow: hidden !important;
+        }
+
+        h2 {
+          text-align: center;
+          margin: 20px 0;
+          /*color: #50575e;*/
+          font-size: calc(1.325rem + .9vw);
+          font-weight: 550 !important;
+        }
+
+        .join_container {
+          width: 50%;
+          margin: 8px auto;
+          background-color: #fff;
+          padding: 10px;
+          border-radius: 8px;
+          /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+
+          box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+          transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        th {
+          text-align: left;
+          padding: 10px;
+          background-color: #f8f8f8;
+          font-weight: normal;
+        }
+
+        td {
+          padding: 7px;
+          border: 1px solid #ddd;
+        }
+
+        .ip_text, input[type="password"], input[type="number"] {
+          width: 80%;
+          padding: 8px;
+          margin: 5px 0;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        .memberEmail {
+          width: 35.5%;
+          padding: 8px;
+          margin: 5px 0;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          font-size: 14px;
+        }
+
+        .radio_group {
+          display: flex;
+          align-items: center;
+        }
+
+        .radios {
+          margin-right: 15px;
+        }
+
+        /* 버튼 스타일 */
+        .btn {
+          padding: 10px 20px;
+          border-radius: 4px;
+          cursor: pointer;
+          border: none;
+          font-size: 14px;
+        }
+
+        .btn-custom {
+          background-color: #007bff;
+          color: white;
+        }
+
+        .btn-custom:hover {
+          background-color: #0056b3;
+          color: white;
+        }
+
+        .btn_set {
+          text-align: center;
+          margin-top: 20px;
+        }
+    </style>
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="~{fragment/headerNoSession :: main-head}"></div>
+<main>
+<div class="join_container">
+<h2>회원가입</h2>
+    <!-- # onsubmit
+         onsubmit의 return 역할: form 전송하기 전 함수 실행하여
+         함수가 ture 반환하면 form 전송, false를 반환하면 form 전송하지 않음
+
+         onsubmit="return chkSum();" 와 같은 식으로 수정필요
+         https://kim22036.tistory.com/entry/onsubmit-return-false%EC%9D%98-%EC%9D%98%EB%AF%B8
+
+
+         # autocomplete
+         자동완성 끄기
+     -->
+    <!-- action="../member/join"은 상대경로 여서, 구글 로그인 회원가입 시 에러 발생하여 아래의 절대경로로 변경함  -->
+    <form id="joinForm" action="/sjhealthy/member/join" method="POST" onsubmit="return saveMember();" autocomplete="off">
+        <table>
+            <colgroup>
+                <col style="width:30%;" />
+                <col style="width:70%;" />
+            </colgroup>
+            <tbody>
+            <tr>
+                <th><span>*아이디</span></th>
+                <td>
+                    <input type="text" class="ip_text" id="memberId" name="memberId" placeholder="아이디" maxlength="500" th:value="${memberDTO != null ? memberDTO.memberId : ''}" th:readonly="${memberDTO != null}"  />
+
+                    <div id="memberIdMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*비밀번호</span></th>
+                <td>
+                    <input type="password" id="memberPassword" name="memberPassword" placeholder="비밀번호" maxlength="30" onblur="passwordCheck(this)" />
+                    <div id="passMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*비밀번호 확인</span></th>
+                <td>
+                    <input type="password" id="memberPasswordCheck" name="memberPasswordCheck" placeholder="비밀번호 확인" maxlength="30" onblur="cpasswordCheck()" />
+                    <div id="cpassMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*이름</span></th>
+                <td>
+                    <input type="text" class="ip_text" id="memberName" name="memberName" placeholder="이름" maxlength="10" onblur="memberNameCheck(this)" th:value="${memberDTO != null ? memberDTO.memberName : ''}"/>
+                    <div id="nameMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*전화번호</span></th>
+                <td>
+                    <input type="text" class="ip_text" id="memberPnum" name="memberPnum" placeholder="전화번호" maxlength="11" onblur="memberPnumCheck(this)" />
+                    <div id="pnumMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*이메일</span></th>
+                <td>
+                    <input type="text" class="memberEmail" id="memberEmailFirst" name="memberEmailFirst" onblur="memberEmailCheck(this)" th:value="${memberDTO != null ? memberDTO.memberEmailFirst : ''}" th:readonly="${memberDTO != null}"/> @
+                    <input type="text" class="memberEmail" id="memberEmailLast" name="memberEmailLast" onblur="memberEmailCheck(this)" th:value="${memberDTO != null ? memberDTO.memberEmailLast : ''}" th:readonly="${memberDTO != null}"/>
+                    <input type="hidden" id="memberEmail" name="memberEmail" />
+                    <div id="emailMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*생년월일</span></th>
+                <td>
+                    <input type="text" class="ip_text" id="memberBirth" name="memberBirth" placeholder="숫자 8자리 입력" maxlength="8" onblur="memberBirthCheck(this)" />
+                    <div id="birthMsg"></div>
+                </td>
+            </tr>
+            <tr>
+                <th><span>*성별</span></th>
+                <td>
+                    <div class="radio_group">
+                        <p class="radios">
+                            <input type="radio" id="male" name="memberGender" value="M" checked />
+                            <label for="male">남</label><span class="check"></span>
+                        </p>
+                        <p class="radios">
+                            <input type="radio" id="female" name="memberGender" value="F" />
+                            <label for="female">여</label><span class="check"></span>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+
+            <input type="hidden" id="memberDivision" name="memberDivision" th:value="${memberDivision}">
+
+            <tr style="display:none;">
+                <th><span>*권한</span></th>
+                <td>
+                    <input type="text" id="memberAuth" name="memberAuth" value="U" />
+                </td>
+            </tr>
+            <tr style="display:none;">
+                <th><span>*삭제여부</span></th>
+                <td>
+                    <input type="text" id="isDeleted" name="isDeleted" value="N" />
+                </td>
+            </tr>
+            <input type="hidden" id="memberIdPass" th:value="${memberDTO != null ? 'Y' : 'N'}">
+            <input type="hidden" id="memberPasswordPass" value="N">
+            <input type="hidden" id="memberPasswordCheckPass" value="N">
+            <input type="hidden" id="memberNamePass" th:value="${memberDTO != null ? 'Y' : 'N'}">
+            <input type="hidden" id="memberPnumPass" value="N">
+            <input type="hidden" id="memberEmailPass" th:value="${memberDTO != null ? 'Y' : 'N'}">
+            <input type="hidden" id="memberBirthPass" value="N">
+            </tbody>
+        </table>
+    </form>
+    <p class="btn_set">
+        <!-- 수정된 버튼들 -->
+        <button type="button" class="btn btn-custom" onclick="saveMember();">가입</button>
+        <a href="/sjhealthy/member/login"><button class="btn btn-secondary" style="background-color: #6c757d; color:white;">로그인</button></a>
+    </p>
+</div>
+</main>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript" th:src="@{/js/join.js}"></script>
+<script th:inline="javascript">
+</script>
+</html>

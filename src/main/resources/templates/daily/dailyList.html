@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset='utf-8' />
+    <title>일지</title>
+    <style>
+        /* 캘린더 위의 해더 스타일(날짜가 있는 부분) */
+        .fc-header-toolbar {
+          padding-top: 1em;
+          padding-left: 1em;
+          padding-right: 1em;
+        }
+
+        #calendar {
+            height: 674px !important;
+        }
+
+        .btn {
+          padding: 10px 20px;
+          border-radius: 4px;
+          cursor: pointer;
+          border: none;
+          font-size: 14px;
+        }
+
+        .btn_st1 {
+          background-color: #4CAF50;
+          color: white;
+        }
+
+        .fc-daygrid-day-number {
+            color: black !important;
+            text-decoration: auto !important;
+            cursor: auto !important;
+        }
+
+        .fc-col-header-cell-cushion  {
+            color: black !important;
+            text-decoration: auto !important;
+            cursor: auto !important;
+        }
+    </style>
+    <!-- 헤더 css -->
+    <link rel="stylesheet" href="/css/header.css">
+    <!-- 헤더, 메인, 푸터 위치 고정 -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+
+<main>
+    <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">일지 목록</span>
+
+    <!-- calendar 태그 -->
+    <div id='calendar-container'>
+        <div id='calendar'></div>
+    </div>
+    <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+</main>
+<!-- jquery CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- fullcalendar CDN -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css' rel='stylesheet' />
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.js'></script>
+<!-- fullcalendar 언어 CDN -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/locales-all.min.js'></script>
+
+<script th:inline="javascript">
+    var dailyList = [[${dailyList}]];
+    var initialDate;
+    var moodEmoticons = {
+        "10": "😊",  // 예: 상은 웃는 얼굴
+        "20": "😐",  // 중은 무표정
+        "30": "😢"   // 하는 우는 얼굴
+    };
+
+    $(document).ready(function() {
+        // URLSearchParams를 사용하여 URL 파라미터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+        let initialyear = urlParams.get('year');
+        let initialmonth = urlParams.get('month');
+
+        // year와 month가 존재하면 초기 날짜를 구성, 없으면 오늘 날짜 사용
+        if (initialyear && initialmonth) {
+            initialDate = initialyear + '-' + initialmonth + '-01';
+        } else {
+            initialDate = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+        }
+
+        if(dailyList.length > 0){
+            var events = [];
+            for(var i = 0; i < dailyList.length; i++){
+                var selected = dailyList[i];
+                var dailyDate = selected.dailyDate;
+                var dailyTitle = selected.dailyTitle;
+                var dailyGoalSf = selected.dailyGoalSf;
+                var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
+
+                var dailyGoalSf = selected.dailyGoalSf;
+                var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
+
+                //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
+                //console.log(typeof dateString);
+
+                // 문자열을 연, 월, 일로 분리
+                var year = dailyDate.substring(0, 4);
+                var month = dailyDate.substring(4, 6) - 1; // 월은 0부터 시작
+                var day = dailyDate.substring(6, 8);
+
+                // 새로운 Date 객체 생성
+                var date = new Date(year, month, day);
+
+                // 날짜 형식을 출력
+                var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
+
+                var finalTitle = dailyTitle + " _ " + emoticon;
+
+                // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
+                var event = {
+                    //title: dailyTitle,
+                    title: finalTitle,
+                    start: dailyDate
+                };
+                events.push(event);
+
+                /*
+                // 위에서 생성된 FullCalendar 인스턴스에 이벤트 추가
+                calendar.addEvent({
+                    title: "테스트",    // 이벤트 제목
+                    start: startDate,   // 이벤트 시작 시간
+                    allDay: true        // 하루 종일 이벤트
+                });
+                */
+           }
+           initializeFullCalendar(events);
+       }else{
+            var events = [];
+            initializeFullCalendar(events);
+       }
+    });
+
+    function initializeFullCalendar(event1) {
+        var calendarEl = $('#calendar')[0];
+
+        //FullCalendar 생성 (한 번만 생성)
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            height: '700px', // calendar 높이 설정
+            expandRows: true, // 화면에 맞게 높이 재설정
+            slotMinTime: '08:00', // Day 캘린더에서 시작 시간
+            slotMaxTime: '20:00', // Day 캘린더에서 종료 시간
+            // 해더에 표시할 툴바
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                //right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' //month, week, day, list
+            },
+            initialView: 'dayGridMonth', // 초기 로드 될때 보이는 캘린더 화면(기본 설정: 달)
+            //initialDate: '2021-07-15', // 초기 날짜 설정 (설정하지 않으면 오늘 날짜가 보인다.)
+            initialDate: initialDate,
+            navLinks: true, // 날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+            editable: true, // 수정 가능?
+            selectable: true, // 달력 일자 드래그 설정가능
+            nowIndicator: true, // 현재 시간 마크
+            dayMaxEvents: true, // 이벤트가 오버되면 높이 제한 (+ 몇 개식으로 표현)
+            locale: 'ko', // 한국어 설정
+            events: event1, // 초기화 시 events 배열 사용
+            datesSet: function (info) {
+                currentMonth = info.view.title;
+                calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
+            },
+            select: function(arg) { // 캘린더에서 드래그로 이벤트를 생성할 수 있다.
+                var memberId = $("#memberId").val();
+
+                var selectedDate = arg.startStr;  // 선택된 날짜 (yyyy-mm-dd 형식)
+                // 현재 보이는 캘린더에 있는 모든 이벤트 가져오기
+                var events = calendar.getEvents();
+                // 선택된 날짜에 해당하는 이벤트가 있는지 확인
+                var eventExists = events.some(function(event) {
+                    return event.startStr === selectedDate; // 이벤트의 시작 날짜가 선택된 날짜와 일치하는지 확인
+                });
+
+                var clickedDate = arg.startStr;  //'yyyy-mm-dd'
+                var dailyDate = clickedDate.replaceAll("-", "");  //'yyyyMMdd' 형식으로 변환
+
+                if(memberId != ""){
+                    if(!eventExists){
+                        //클릭한 날짜
+                        var dailyDate = arg.startStr;
+                        dailyDate = dailyDate.replaceAll("-","");//날짜 yyyymmdd 형식으로 변경
+                        window.location.href = '../daily/dailyWriteDetail?dailyDate=' + encodeURIComponent(dailyDate);
+                    }else{ //이미 등록된 일지있음
+                        //alert("이미 등록된 일지가 있습니다.");
+                        window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
+                    }
+                }else{
+                    alert("글은 회원만 작성할 수 있습니다.");
+                    return;
+                }
+            },
+            eventClick : function(info){
+                //console.log(info.event.start);
+                var date = info.event.start;
+                var year = date.getFullYear() + "";
+                var month = (date.getMonth() + 1).toString().padStart(2, '0') + ""; // 월은 0부터 시작하므로 1을 더해야 합니다.
+                var day = date.getDate().toString().padStart(2, '0') + "";
+
+                // 원하는 형식으로 출력
+                var dailyDate = year + month + day;
+
+                window.location.href = '../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
+            },
+            datesSet: function (info) {
+                // 현재 월을 얻고, 필요한 경우 추가 작업을 수행
+                var currentData = info.view.title; //ex.현재 월: 2025년 2월 <-이렇게 console 찍힘
+
+                // "년"을 기준으로 분리하여 년과 월 추출
+                var parts = currentData.split('년');
+                var year = parts[0].trim(); // 년
+                var month = parts[1].replace('월', '').trim(); // 월
+
+                // padStart를 사용하여 2자리 문자열로 변환 (길이가 2가 될 때까지 '0'을 추가)
+                month = month.padStart(2, '0');
+
+                $.ajax({
+                   url : '../daily/dailyNewList',
+                   type : 'post',
+                   data: {
+                        year: year,
+                        month: month
+                   },
+                   dataType: 'json',  // 응답 데이터 형식을 JSON으로 설정
+                   success : function(response) {
+                      //console.log("success");
+                      var dailyList = response.dailyList; // dailyList 배열을 추출
+
+                      var events = [];  // 새로운 이벤트 배열을 초기화
+                      if(dailyList != null){
+                            if(dailyList.length > 0){
+
+                                for(var i = 0; i < dailyList.length; i++){
+                                    var selected = dailyList[i];
+                                    var dailyDate = selected.dailyDate;
+                                    var dailyTitle = selected.dailyTitle;
+                                    var dailyGoalSf = selected.dailyGoalSf;
+                                    var emoticon = moodEmoticons[dailyGoalSf] || ""; // 해당 값이 없을 경우 빈 문자열 사용
+
+                                    //var dateString = dailyList[i] + ""; //number타입으로 받아져, string타입으로 변경하기 위해 ""추가
+                                    //console.log(typeof dateString);
+
+                                    // 문자열을 연, 월, 일로 분리
+                                    var year = dailyDate.substring(0, 4);
+                                    var month = dailyDate.substring(4, 6) - 1; // 월은 0부터 시작
+                                    var day = dailyDate.substring(6, 8);
+
+                                    // 새로운 Date 객체 생성
+                                    var date = new Date(year, month, day);
+
+                                    // 날짜 형식을 출력
+                                    var  startDate = date.toString(); //Thu Dec 12 2024 00:00:00 GMT+0900 (한국 표준시) 와 같은 날짜 객체로 변경
+
+                                     var finalTitle = dailyTitle + " _ " + emoticon;
+
+                                    // 서버에서 받은 데이터(response)를 이벤트 객체로 변환하여 배열에 추가
+                                    var event = {
+                                        //title: dailyTitle,
+                                        title: finalTitle,
+                                        start: dailyDate
+                                    };
+                                    events.push(event);
+                               }
+
+                                // 이전 이벤트를 제거하고 새로운 이벤트로 업데이트
+                                calendar.removeAllEvents();
+                                calendar.addEventSource(events);  // 새 이벤트 배열을 이벤트 소스로 추가
+
+                                calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
+                          }else{
+                                var events = [];
+                                calendar.refetchEvents(); // FullCalendar에 이벤트 업데이트
+                          }
+
+                      }
+                   }, error : function() {
+                      //console.log("fail");
+                   }
+                });
+            }
+        });
+
+        // 캘린더 렌더링
+        calendar.render();
+    }
+</script>
+<!--
+<a href="/sjhealthy">
+    <button class="btn btn_st1" style="float: right; background: rgb(12,100,230); color:white;">메인</button>
+</a>
+-->
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+</body>
+</html>

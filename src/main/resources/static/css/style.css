@@ -1,0 +1,47 @@
+/* 헤더, 메인, 푸터 위치 고정 - 공통 css */
+html, body {
+height: 100%;
+margin: 0;
+}
+
+body {
+display: flex;
+flex-direction: column;
+min-height: 100vh; /* 페이지의 최소 높이를 화면 전체로 설정 */
+}
+
+header {
+background-color: #333;
+color: white;
+padding: 10px;
+text-align: center;
+
+height: 60px; /* 고정된 높이 */
+}
+
+main {
+/*flex: 1;*/
+/*padding: 20px;*/
+}
+
+/*
+main {
+    height: calc(100% - 120px); // 화면 높이에서 header와 footer의 높이를 빼기 (헤더와 푸터는 각각 60px로 가정)
+    overflow: auto; // main 영역에만 스크롤이 생기도록 설정
+}
+*/
+
+main {
+flex: 1; /* main 영역이 남은 공간을 차지하도록 설정 */
+    padding: 20px;
+    overflow: auto; /* main 영역에만 스크롤이 생기도록 설정 */
+}
+
+footer {
+background-color: #333;
+color: white;
+text-align: center;
+padding: 10px;
+
+height: 60px; /* 고정된 높이 */
+}

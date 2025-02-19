@@ -23,18 +23,18 @@ configurations {
 repositories {
 	mavenCentral()
 }
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0' // 헤더 푸터 레이아웃 다이얼렉트
 
 //	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
-    runtimeOnly 'com.mysql:mysql-connector-j'
+//	runtimeOnly 'com.mysql:mysql-connector-j'
+	implementation 'mysql:mysql-connector-java:8.0.33'
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -42,8 +42,33 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-mail' // 인증 메일
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas' // 페이징에서 EntityModel 사용
+
+
+	//Webflux
+	//카카오 로그인 의존성 추가
+	//Spring Framework에서 비동기 및 반응형(reactive) 프로그래밍을 지원하는 모듈.
+	//카카오 로그인 과정에서 비동기 방식으로 요청을 처리할 수 있음
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+/*
+	implementation 'org.slf4j:slf4j-api:1.7.32'        // SLF4J API
+	implementation 'ch.qos.logback:logback-classic:1.2.11'  // Logback Classic 버전
+*/
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+//tasks.withType(JavaCompile) {
+//    options.compilerArgs << '-parameters'
+//} // 재시작 없이 html/css 변경사항 반영 추가하다가 오류나서
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-parameters"]
+}
+// 같은 이윤데 여러 개의 옵션을 추가하거나 확장 가능성을 생각할 땐 이걸로
+

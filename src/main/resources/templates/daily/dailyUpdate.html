@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>일지 수정</title>
+  <!-- 헤더 css -->
+  <link rel="stylesheet" href="/css/header.css">
+  <!-- 헤더, 메인, 푸터 위치 고정 -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <script src="/js/jquery-3.6.0.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <style>
+    .card-header {
+        background-color: #f8f9fa;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        font-size: 1.1rem;
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-row label {
+        width: 120px; /* 라벨의 너비를 설정 */
+        margin-right: 10px; /* 라벨과 입력칸 사이의 간격 */
+        font-weight: 600;
+    }
+
+    .form-row .form-control {
+        flex: 1; /* 입력칸이 남은 공간을 채우도록 설정 */
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .card {
+        margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+<div th:replace="~{fragment/header :: main-head}"></div>
+<main>
+  <span style="background: #F9F7F6; border-left: 0.5em solid rgb(30,136,255); padding: 0.5em; font-weight: 600; font-size:15px;">일지 수정</span>
+
+  <div class="container mt-5">
+    <div class="card shadow-lg">
+      <div class="card-header">
+        <span>일지 수정</span>
+      </div>
+      <div class="card-body">
+        <!-- 수정 폼 시작 -->
+        <form th:action="@{../daily/update?dailyId={id}(id=${dailyDTO.dailyId})}" method="post">
+
+          <div class="form-row">
+            <label for="dailyTitle">제목</label>
+            <input type="text" id="dailyTitle" name="dailyTitle" class="form-control" placeholder="제목" maxlength="500" th:value="${dailyDTO.dailyTitle}" required>
+          </div>
+
+          <div class="form-row">
+            <label for="dailyDate">작성일</label>
+            <input type="text" id="dailyDate" class="form-control" th:value="${dailyDTO.dailyDate}" readonly>
+          </div>
+
+          <div class="form-row">
+            <label for="dailyCurWt">현재체중</label>
+            <input type="text" id="dailyCurWt" name="dailyCurWt" class="form-control" placeholder="현재체중" th:value="${dailyDTO.dailyCurWt}" oninput="validateInput(this)" required>
+          </div>
+
+          <div class="form-row">
+            <label for="dailyGoalWt">목표체중</label>
+            <input type="text" id="dailyGoalWt" name="dailyGoalWt" class="form-control" placeholder="목표체중" maxlength="5" oninput="validateInput(this)" th:value="${dailyDTO.dailyGoalWt}" required>
+          </div>
+
+          <div class="form-row">
+            <label for="dailyGoalSf">목표만족도</label>
+            <div>
+              <label>
+                <input type="radio" name="dailyGoalSf" value="10" th:checked="${dailyDTO.dailyGoalSf eq '10'}" required> 😊
+              </label>
+              <label style="margin-left: -60px;">
+                <input type="radio" name="dailyGoalSf" value="20" th:checked="${dailyDTO.dailyGoalSf eq '20'}" required> 😐
+              </label>
+              <label style="margin-left: -60px;">
+                <input type="radio" name="dailyGoalSf" value="30" th:checked="${dailyDTO.dailyGoalSf eq '30'}" required> 😢
+              </label>
+            </div>
+            <!--
+            <input type="text" id="dailyGoalSf" name="dailyGoalSf" class="form-control" th:value="${dailyDTO.dailyGoalSf}" placeholder="목표만족도(상/중/하 中 택 1)" maxlength="5" required>
+            -->
+          </div>
+
+          <div class="form-row">
+            <label for="dailyMemo">메모</label>
+            <textarea id="dailyMemo" name="dailyMemo" class="form-control" rows="4" maxlength="2000" th:text="${dailyDTO.dailyMemo}"></textarea>
+          </div>
+
+          <input type="hidden" id="memberId" name="memberId" th:value="${loginId}">
+          <input type="hidden" id="dailyId" name="dailyId" th:value="${dailyDTO.dailyId}">
+          <div class="text-center mt-4">
+            <button type="button" class="btn btn-custom" onclick="fn_dailyUpdate();">수정</button>
+            <!--
+            <a href="../daily/dailyList" class="btn btn-secondary">목록</a>
+            -->
+            <a id="list" href="#" class="btn btn-secondary">목록</a>
+          </div>
+        </form>
+        <!-- 수정 폼 끝 -->
+      </div>
+    </div>
+  </div>
+</main>
+<div th:replace="~{fragment/footer :: main-foot}"></div>
+<script>
+  var list = document.getElementById("list");
+
+  $(document).ready(function() {
+      // URLSearchParams를 사용하여 URL 파라미터 읽기
+      const urlParams = new URLSearchParams(window.location.search);
+      let initialyear = urlParams.get('year');
+      let initialmonth = urlParams.get('month');
+
+      // 목록 버튼 누르면 페이지 저장해서 경로 이동
+      list.addEventListener("click", () => {
+          event.preventDefault(); // 기본 동작 방지
+          window.location.href = "/sjhealthy/daily/dailyList?year=" + initialyear + "&month=" + initialmonth;
+      });
+  });
+
+  /* 숫자와 소수점만 허용하고, 다른 문자는 삭제 */
+  var prev = "";
+  var regexp = /^\d*(\.\d{0,2})?$/;
+  function validateInput(obj) {
+      var id = obj.id;
+      var firstChar = obj.value.charAt(0);
+      if(firstChar == "."){
+        alert("첫 번째 값은 숫자로 입력해주세요.");
+        $("#" + id).val("");
+        return;
+      }
+
+      if(obj.value.search(regexp)==-1) {
+          obj.value = prev;
+      }
+      else {
+          prev = obj.value;
+      }
+  }
+
+  function fn_dailyUpdate(){
+    var dailyId = $("#dailyId").val();
+    var memberId = $("#memberId").val();
+    var dailyTitle  = $("#dailyTitle").val();
+    var dailyDate   = $("#dailyDate").val();
+    var dailyCurWt  = $("#dailyCurWt").val();
+    var dailyGoalWt = $("#dailyGoalWt").val();
+    //var dailyGoalSf = $("#dailyGoalSf").val();
+    var dailyGoalSf = $("input[name='dailyGoalSf']:checked").val();
+    var dailyMemo   = $("#dailyMemo").val();
+
+    dailyMemo = dailyMemo.trim();
+
+    var dailyYear = dailyDate.substring(0,4);
+    var dailyMonth = dailyDate.substring(4,6);
+
+    //유효성검사
+    if(dailyTitle.trim() == ""){
+      alert("제목을 입력해주세요.");
+      $("#dailyTitle").focus();
+      return;
+    }else if(dailyCurWt == ""){
+      alert("현재체중을 입력해주세요.");
+      $("#dailyCurWt").focus();
+      return;
+    }else if(dailyGoalWt == ""){
+      alert("목표체중을 입력해주세요.");
+      $("#dailyGoalWt").focus();
+      return;
+    /*
+    }else if(dailyGoalSf == ""){
+      alert("목표만족도를 입력해주세요.");
+      $("#dailyGoalSf").focus();
+      return;
+
+    */
+    }else{
+      if(confirm("일지를 수정하시겠습니까?")){
+        $.ajax({
+         url : '../daily/update',
+         type : 'post',
+         data: {
+              dailyId: dailyId,
+              memberId: memberId,
+              dailyTitle: dailyTitle,
+              dailyDate: dailyDate,
+              dailyCurWt: dailyCurWt,
+              dailyGoalWt: dailyGoalWt,
+              dailyGoalSf: dailyGoalSf,
+              dailyMemo: dailyMemo,
+              dailyYear: dailyYear,
+              dailyMonth: dailyMonth
+         },
+         success : function(response) {
+            //console.log("success");
+
+            // 서버에서 받은 alert 메시지와 리다이렉트 URL
+            var alertMessage = response.alertMessage;
+            var redirectUrl = response.redirectUrl;
+
+            // alert을 띄운 후 리다이렉트
+            alert(alertMessage);
+            window.location.href = redirectUrl;
+
+         }, error : function() {
+            //console.log("fail");
+         }
+        });
+      }
+    }
+  }
+
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
