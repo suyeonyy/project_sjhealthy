@@ -232,7 +232,7 @@
                     //     pagination.innerHTML = ""; // 기존 내용 초기화
                         
                     // } else {
-                    const boardList = data._embedded.boardDTOList;
+                    const boardList = data.data.content;
                     console.log(boardList);
 
                     const table = document.createElement("table");
