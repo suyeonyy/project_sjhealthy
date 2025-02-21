@@ -172,6 +172,7 @@ public class LoginController {
         // RestTemplate을 이용해 카카오 사용자 정보 API에 GET 요청
         RestTemplate restTemplate = new RestTemplate();
 
+
         try {
             // 카카오 사용자 정보 요청
             ResponseEntity<String> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, String.class);

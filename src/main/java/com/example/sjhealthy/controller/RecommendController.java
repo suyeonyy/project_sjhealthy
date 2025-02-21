@@ -9,8 +9,6 @@ import jakarta.persistence.Tuple;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,6 +27,7 @@ import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static java.lang.Integer.parseInt;
 
 import static java.lang.Integer.parseInt;
 
@@ -56,9 +55,7 @@ public class RecommendController {
             MemberDTO member = memberService.findMemberIdAtPassFind(loginId);
 
             if (member.getMemberAuth().equals("A")){
-
                 model.addAttribute("administrator", true);
-
             }
         }
 
@@ -75,7 +72,6 @@ public class RecommendController {
 
         try {
             Page<RecommendDTO> list = recommendService.getListWithPage(page, size);
-
 
             if (!list.isEmpty()){
                 // 추천글이 있을 때
@@ -249,8 +245,6 @@ public class RecommendController {
         Long likeCount = like.longValue();
         Integer dislike = tuple.get("dislikeCount", Integer.class);
         Long dislikeCount = dislike.longValue();
-
-
 
         if (list.isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>(

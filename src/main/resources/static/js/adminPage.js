@@ -3,6 +3,7 @@
         // 네비게이션바
         const memberNav = document.getElementById("memberNav");
         const postNav = document.getElementById("postNav");
+
         const content = document.getElementById("content");
 
         let currentPageM = 1;
@@ -177,6 +178,65 @@
                     } catch(error){
                         console.log("Error = " + error);
                     }
+                  
+        function deleteMember(index, memberId, memberDivision){
+            // 회원 탈퇴 버튼
+            const deleteMemberBtn = "deleteMemberBtn" + index; 
+
+            document.addEventListener("click", async (e) => {
+                if (e.target.id === deleteMemberBtn){
+                    if (!window.confirm("정말로 삭제하시겠습니까?")){
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (memberDivision === "G"){
+                        try {
+                            // 아이디를 보내 탈퇴처리하고 액세스토큰 받아옴
+                            const response = await fetch("/sjhealthy/member/delete/google/" + memberId);
+                            const accessToken = await response.text(); // 토큰이 json 형태 아니라고 오류나서
+                    
+                            try {
+                                // 액세스 토큰을 담아 구글에 연동 해제 요청
+                                const url = "https://accounts.google.com/o/oauth2/revoke?token=" + accessToken;
+                                const response = await fetch(url);
+                    
+                                if (response.ok){
+                                    alert("탈퇴가 완료되었습니다.");
+                                }
+                            } catch(error){
+                                console.log("error = ", error);
+                            }
+                        } catch (error){
+                            console.log("error = " + error);
+                        }
+
+                    } else if (memberDivision === "K"){
+                        try{
+                            const response = await fetch("/sjhealthy/member/delete/kakao/" + memberId, { method: "GET" });
+                            if (response.ok){
+                                const result = await response.json();
+                                alert("탈퇴가 완료되었습니다.");
+                                window.location.href = "http://localhost:8081/sjhealthy";
+                            }
+                        } catch(error){
+                            console.log("error = ", error);
+                        }
+                    }
+                } else if (memberDivision === "S"){
+                    try {
+                        const response = await fetch("/sjhealthy/admin/member/delete/" + memberId);
+                        const data = await response.json();
+
+                        if (!data){
+                            alert(data.message);
+                        } else {
+                            alert(data.message);
+                            loadMemberData(currentPage);
+                        }
+                    } catch(error){
+                        console.log("Error = " + error);
+                    }
                 }
             });
         }
@@ -233,7 +293,6 @@
                         
                     // } else {
                     const boardList = data.data.content;
-                    console.log(boardList);
 
                     const table = document.createElement("table");
                     table.className ="table table-hover text-center table-bordered mt-4";
@@ -265,7 +324,6 @@
                         deleteBtn.className = "adminButton";
                         deleteBtn.value = "삭제";
                         deleteBtn.onclick = () => deletePost(index, board.boardId);
-                        
                         deleteCell.appendChild(deleteBtn);
                         // row.append(deleteCell);
 
@@ -303,7 +361,6 @@
                     content.appendChild(table);
 
                     displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
-                    
                 } else {
                     alert("관리자만 접근 가능한 페이지입니다.");
                     window.location.href = "/sjhealthy";

@@ -145,7 +145,7 @@
         const update = document.getElementById("update");
         const page = /*[[${page}]]*/"1";
         const boardId = /*[[${boardDTO.boardId}]]*/""
-        
+
         // 목록 버튼 누르면 페이지 저장해서 경로 이동
         list.addEventListener("click", () => {
             if (!localStorage.getItem("boardPage")){ // 기존에 수정 버튼 눌러서 저장된 값이 없을 경우에만 새로 저장
@@ -165,6 +165,8 @@
 
         if (deleteBtn){
             deleteBtn.addEventListener("click", (e)=> {
+                localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
+
                 localStorage.setItem("boardPage", page); // 로컬에 저장해서 board/list로 요청 보낼 때 쓸 거다
 
                 if (!window.confirm('정말로 삭제하시겠습니까?')){

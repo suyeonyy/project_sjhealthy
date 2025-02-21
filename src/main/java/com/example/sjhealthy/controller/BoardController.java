@@ -69,8 +69,9 @@ public class BoardController {
     public ResponseEntity<PagedModel<EntityModel<BoardDTO>>> getBoardList(
         @SessionAttribute(name = "loginId", required = false) String loginId, Model model,
         @RequestParam(name="page", defaultValue = "1") int page, PagedResourcesAssembler<BoardDTO> assembler) {
-//        model.addAttribute("loginId", loginId); 이 형태에선 model도 못 쓴다
 
+//        model.addAttribute("loginId", loginId); 이 형태에선 model도 못 쓴다
+//        model.addAttribute("loginId", loginId); 이 형태에선 model도 못 쓴다
         int pageSize = 10;
 
         try {

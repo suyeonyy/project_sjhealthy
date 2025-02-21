@@ -93,7 +93,6 @@ public class DailyController {
                 ra.addFlashAttribute("loginId", loginId);
                 ra.addFlashAttribute("alertMessage", "일지가 작성되었습니다.");
 
-
                 //'../daily/dailyRead?dailyDate=' + encodeURIComponent(dailyDate);
                 Map<String, String> response = new HashMap<>();
                 //String redirectUrl = "/sjhealthy/daily/dailyList";

@@ -102,7 +102,7 @@
         if (message !== "empty") {
             alert(message);
         }
-        
+
         // 작성 버튼은 회원 전용 기능
         const loginId = [[${loginId}]] || "empty";
         console.log("ID=" + loginId);
@@ -119,13 +119,13 @@
         // 게시글 관리
         let currentPage = 1;
         const pageSize = 10;
-        
+
         // 만약 서버에서 보낸 페이지가 있다면 그걸로 사용
         const pageBefore = [[${page}]] || "empty";
         // if (pageBefore !== "empty"){
         //     console.log("이전 페이지 = " + pageBefore);
         //     currentPage = pageBefore;
-        // } else 
+        // } else
         if (localStorage.getItem("boardPage")){
             console.log("로컬 페이지" + localStorage.getItem("boardPage"));
             // 목록, 수정, 삭제 버튼 눌러서 왔을 땐 해당 글의 페이지로 이동
@@ -133,11 +133,10 @@
             localStorage.clear(); // 앞으로의 사용을 위해 페이지 저장을 초기화 해줌.
         }
 
-
         // 페이지 열면 자동으로 로드(1페이지로)
         loadBoardData(currentPage);
 
-        // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로 
+        // 페이지 눌러 해당 게시글 요청하고 게시글 목록 HTML로
         async function loadBoardData(page){
             const boardListDiv = document.getElementById("content");
             content.innerHTML = ""; // 기존 내용 비움
@@ -146,14 +145,14 @@
             try {
                 // 페이지 누를 때마다 해당 페이지의 게시글 10개를 요청해 받음
                 const response = await fetch("/sjhealthy/board/list?page=" + page);
-                
+
                 if (response.status === 204){
                     alert("게시글이 존재하지 않습니다.");
                 }
                 else if (response.ok){
                     const data = await response.json();
                     boardListDiv.innerHTML = ""; // 기존 내용 초기화
-                    
+
                     const boardList = data._embedded.boardDTOList;
                     //console.log(boardList);
 
@@ -188,6 +187,7 @@
                         row.appendChild(postNumber);
 
                         const title = document.createElement("td");
+
                         title.innerHTML = `<a href="/sjhealthy/board/read?boardId=${board.boardId}&page=${page}">${board.boardTitle}</a>`;
                         row.appendChild(title);
 
@@ -215,7 +215,7 @@
                     boardDiv.appendChild(table);
 
                     displayPagination(data.page.totalPages, page); // 페이지 버튼 생성
-            
+
                 } else if (response.status === 204){// 게시글 X
                     console.log("게시글이 존재하지 않습니다.");
                 }
@@ -236,12 +236,12 @@
                 const pageButton = document.createElement("button");
                 pageButton.textContent = i;
                 pageButton.disabled = (i === currentPage); // 현재 페이지는 버튼 비활성화
-                
+
                 pageButton.addEventListener("click", () => {
                     loadBoardData(i); // 클릭한 페이지 데이터 요청하고 html 생성
                     currentPage = i; // 클릭한 페이지를 현재 페이지로 저장
                 });
-                pagination.appendChild(pageButton); 
+                pagination.appendChild(pageButton);
             }
         }
     });

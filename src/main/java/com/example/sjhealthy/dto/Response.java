@@ -24,4 +24,5 @@ public class Response<T> { // data 필드를 제네릭으로 받아서 어떠한
     public Response(T data, T data2, String message){ // 관리자 확인 때만 쓸 것임
         this(data, message, 0L, 0L, data2);
     }
+
 }

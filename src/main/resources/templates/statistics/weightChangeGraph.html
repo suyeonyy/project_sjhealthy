@@ -82,11 +82,6 @@
         }
 
         /* .content {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
         }   */
         /* flex-grow: 1 콘텐츠가 화면을 꽉 채우도록 */
         /* justify-content: center 차트를 화면 중앙에 배치 */
@@ -110,7 +105,6 @@
         #btn {
             margin-bottom: 10px;
         }
-
         /*span {*/
         #page_title {
             background: #F9F7F6;
@@ -161,7 +155,7 @@
         const after = document.getElementById("after");
         const now = document.getElementById("now");
 
-        // -------- 현재 날짜 가져옴 --------- 
+        // -------- 현재 날짜 가져옴 ---------
         const today = new Date();
         // // ko-KR 한국어로 설정 -> 2025. 02. 08. 이런 식으로 반환
         // const formattedDate = today.toLocaleDateString("ko-KR", {
@@ -172,9 +166,9 @@
         // year, month, day 따로 받을 거라 get으로 가져와 직접 포맷팅
         let yyyy = today.getFullYear();
         // js는 0부터 시작하니 1 더해줌 / padStart: 앞쪽을 특정 문자로 채워주는 메서드
-        // let MM = String(today.getMonth() + 1).padStart(2, "0"); 
+        // let MM = String(today.getMonth() + 1).padStart(2, "0");
         let MM = today.getMonth() + 1;
-        // let dd = String(today.getDate()).padStart(2, "0"); 
+        // let dd = String(today.getDate()).padStart(2, "0");
         let dd = today.getDate();
 
         // 현재 연월 출력
@@ -217,7 +211,7 @@
             });
 
         let monthlyData = Array(31).fill(null); // 월별 데이터 저장할 배열 초기화
-        let monthlyDataList = Array.from({ length: 12 }, () => Array(31).fill(null));  //이차원배열[월][일]      
+        let monthlyDataList = Array.from({ length: 12 }, () => Array(31).fill(null));  //이차원배열[월][일]
         let yearlyData = Array(12).fill(null); // 월 평균 데이터 12개 저장할 배열 초기화
         let weightList = null;
 
@@ -226,25 +220,25 @@
         monthSortBtn.disabled = true;  // 비활성화, 클릭 불가능
         monthSortBtn.style.pointerEvents = 'none'; // 비활성화 느낌
         monthSortBtn.style.opacity = '0.5';
-        
+
         before.onclick = () => changeDate("month", -1);
         after.onclick = () => changeDate("month", 1);
 
         // 월별 정렬하면 <> 버튼을 월 단위로 연결
         monthSortBtn.addEventListener("click", () => {
-            
+
             monthSortBtn.disabled = true;  // 비활성화, 클릭 불가능
             monthSortBtn.style.pointerEvents = 'none';  // 비활성화, 클릭 불가능
-            monthSortBtn.style.opacity = '0.5';  
+            monthSortBtn.style.opacity = '0.5';
 
             yearSortBtn.disabled = false;
-            yearSortBtn.style.pointerEvents = 'auto'; 
-            yearSortBtn.style.opacity = '1';  
-            
+            yearSortBtn.style.pointerEvents = 'auto';
+            yearSortBtn.style.opacity = '1';
+
             resetClickEvent();
             before.onclick = () => changeDate("month", -1);
             after.onclick = () => changeDate("month", 1);
-            
+
             changeDate("month", 0);
         });
 
@@ -254,16 +248,16 @@
         yearSortBtn.addEventListener("click", () => {
             yearSortBtn.disabled = true;  // 비활성화, 클릭 불가능
             yearSortBtn.style.pointerEvents = 'none';  // 비활성화, 클릭 불가능
-            yearSortBtn.style.opacity = '0.5';  
+            yearSortBtn.style.opacity = '0.5';
 
             monthSortBtn.disabled = false;
-            monthSortBtn.style.pointerEvents = 'auto';  
-            monthSortBtn.style.opacity = '1';  
+            monthSortBtn.style.pointerEvents = 'auto';
+            monthSortBtn.style.opacity = '1';
 
             resetClickEvent();
             before.onclick = () => changeDate("year", -1);
             after.onclick = () => changeDate("year", 1);
-            
+
 
             changeDate("year", 0); // 주의. year로 보내면 year값(숫자)이 들어가므로 "year"로 제대로 표기해야함
         });
@@ -321,14 +315,14 @@
                 } else {
                     const d1 = await response.json(); // List<날짜-몸무게>로 응답
                     weightList = d1.data;
-                    
+
                     if (type === "year"){
                         sortByYear(weightList);
                         setGraph(yearlyData, type, month);
                     } else if (type === "month"){
                         sortByMonth(weightList);
                         setGraph(monthlyData, type, month);
-                    }                        
+                    }
                 }
             } catch(error){
                 console.log("시스템오류");
@@ -354,7 +348,7 @@
 
                 chartInstance.data.labels = Array.from({length: days}, (_, i) => `${i+1}일`);
                 chartInstance.data.datasets[0].data = graphData;
-                
+
                 chartInstance.update(); // 그래프 업데이트
             }
         }
@@ -384,7 +378,7 @@
 
         async function sortByYear(weightList){ // 1년 단위 그래프
             yearlyData = Array(12).fill(null); // 초기화
-            monthlyDataList = Array.from({ length: 12 }, () => Array(31).fill(null));  //이차원배열[월][일]  초기화    
+            monthlyDataList = Array.from({ length: 12 }, () => Array(31).fill(null));  //이차원배열[월][일]  초기화
 
             sorted = 1;
 
